@@ -13,6 +13,7 @@ Thumbs.db
 
 # IDE user config
 .vscode/
+!.vscode/extensions.json
 .idea/
 .vs/
 .buildpath
@@ -30,6 +31,9 @@ nbproject/
 *.dbmdl
 *.jfm
 *.tmproj
+*.local
+*.ntvs*
+*.njsproj
 tags
 
 # npm
@@ -37,6 +41,8 @@ node_modules
 package-lock.json
 .env
 .yarn
+dist
+dist-ssr
 
 # Logs
 yarn-error.log
