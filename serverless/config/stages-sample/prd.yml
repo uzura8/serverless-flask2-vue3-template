@@ -1,0 +1,103 @@
+domainName: your-project-api.example.com
+corsAcceptOrigins: 'https://prod.example.com,https://stg.example.com'
+notificationEmail: admin@example.com
+
+debugLogEnabled: true
+
+logRetentionInDays: 14
+
+logsRestApi:
+  accessLogging: false # Optional configuration which enables or disables access logging. Defaults to true.
+  executionLogging: false # Optional configuration which enables or disables execution logging. Defaults to true.
+  level: ERROR # Optional configuration which specifies the log level to use for execution logging. May be set to either INFO or ERROR.
+  fullExecutionData: true # Optional configuration which specifies whether or not to log full requests/responses for execution logging. Defaults to true.
+
+associateWafName: your-waf-name # If need to use WAF, set existing name of WebACL. If set not existing name, ignore this.
+
+appConf:
+  memorySize: 256 # MB
+  timeout: 30 # s
+  provisionedConcurrency: 2
+
+media:
+  s3BucketName: "your-project-media.example.com"
+  imageMaker:
+    memorySize: 256 # MB
+    timeout: 600 # s
+    fileSizeLimit: 20 # MB
+
+#mediaUnusedFilesCleanerMemorySize: 256 # MB
+#mediaUnusedFilesCleanerTimeout: 600 # s
+#mediaUnusedFilesCleanerReservedFileExpirationHours: 24 # Hours
+#mediaUnusedFilesCleanerEventSchedule: rate(1 day)
+
+# For Admin Console
+cognito:
+  region: 'ap-northeast-1'
+  userpoolId: 'ap-northeast-1_*********'
+  appClientId: '**************************'
+  checkTokenExpiration: True # If set Falsae, disable token expiration checking for testing purposes
+
+dynamoDbBackupTargetTagValue: 'aws-backup' # 'aws-backup':backup target / other value: not target
+
+dynamodbConfig:
+  siteConfig:
+    billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  service:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  serviceConfig:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  adminUserConfig:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  category:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  post:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  postGroup:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+#  comment:
+#    billingMode: 'PAY_PER_REQUEST'
+#    provisionedThroughput:
+#      readCapacityUnits: 0
+#      writeCapacityUnits: 0
+#  commentCount:
+#    billingMode: 'PAY_PER_REQUEST'
+#    provisionedThroughput:
+#      readCapacityUnits: 0
+#      writeCapacityUnits: 0
+  tag:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  postTag:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
+  file:
+    billingMode: 'PAY_PER_REQUEST'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0

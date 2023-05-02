@@ -1,0 +1,15 @@
+# Python
+.venv
+__pycache__
+
+# serverless
+/.serverless
+/.serverless-wsgi
+/serverless_wsgi.py
+/wsgi_handler.py
+/.dynamodb
+/config/stages/*
+/config/templates/*
+
+/develop/env.sh
+/develop/var/*

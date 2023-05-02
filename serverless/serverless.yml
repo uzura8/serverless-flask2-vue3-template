@@ -1,0 +1,161 @@
+service: ${file(./config/stages/common.yml):service}
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+  - serverless-deployment-bucket
+  - serverless-prune-plugin
+  - serverless-domain-manager
+  - serverless-api-gateway-throttling
+  - serverless-plugin-lambda-insights
+  - serverless-plugin-aws-alerts
+  - serverless-associate-waf
+  - serverless-dynamodb-local
+
+custom:
+  defaultStage: dev
+  prjPrefix: ${self:service}-${self:provider.stage}
+  stageConfigFileName: ./config/stages/${self:provider.stage}.yml
+  dynamoDbBackupTargetTagValue: ${file(${self:custom.stageConfigFileName}):dynamoDbBackupTargetTagValue}
+  mediaS3BucketName: ${file(${self:custom.stageConfigFileName}):media.s3BucketName}
+  awsAccontId: ${file(./config/stages/common.yml):awsAccountId}
+  cognitoRegion: ${file(${self:custom.stageConfigFileName}):cognito.region}
+  cognitoUserpoolId: ${file(${self:custom.stageConfigFileName}):cognito.userpoolId}
+  dynamodbConfig: ${file(${self:custom.stageConfigFileName}):dynamodbConfig}
+
+  wsgi:
+    app: app/handler.app
+    packRequirements: false
+
+  deploymentBucket:
+    versioning: true
+    accelerate: true
+    blockPublicAccess: true
+
+  customDomain:
+    domainName: ${file(${self:custom.stageConfigFileName}):domainName}
+    stage: ${self:provider.stage}
+    basePath: 'api'
+    certificateName: ${self:custom.customDomain.domainName}
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+
+  dynamodb:
+    start:
+      port: 8000
+      migrate: true
+      docker: true
+      noStart: true
+    stages:
+      - dev
+
+  prune:
+    automatic: true
+    number: 5
+
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 100
+    maxConcurrentRequests: 50
+
+  lambdaInsights:
+    defaultLambdaInsights: true #enables Lambda Insights for all functions
+
+  alerts:
+    stages:
+      - prd
+    topics:
+      alarm:
+        topic: ${self:custom.prjPrefix}-alerts-alarm
+        notifications:
+          - protocol: email
+            endpoint: ${file(${self:custom.stageConfigFileName}):notificationEmail}
+      #ok:
+      #  topic: ${self:custom.prjPrefix}-alerts-ok
+    alarms:
+      - functionErrors
+      - functionThrottles
+    definitions:
+      functionErrors:
+        period: 60
+
+  associateWaf:
+    name: ${file(${self:custom.stageConfigFileName}):associateWafName}
+    version: V2 #(optional) Regional | V2
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ${file(./config/stages/common.yml):defaultRegion}
+  endpointType: REGIONAL
+  stackTags:
+    deployedBy: ${self:custom.prjPrefix}
+    projectName: ${self:custom.prjPrefix}
+  iam:
+    role:
+      statements: ${file(./config/iam-role-statements.yml)}
+  deploymentBucket:
+    name: ${file(./config/stages/common.yml):deploymentBucketName}
+    serverSideEncryption: AES256
+  logs:
+    restApi:
+      accessLogging: ${file(${self:custom.stageConfigFileName}):logsRestApi.accessLogging}
+      executionLogging: ${file(${self:custom.stageConfigFileName}):logsRestApi.executionLogging}
+      level: ${file(${self:custom.stageConfigFileName}):logsRestApi.level}
+      fullExecutionData: ${file(${self:custom.stageConfigFileName}):logsRestApi.fullExecutionData}
+  logRetentionInDays: ${file(${self:custom.stageConfigFileName}):logRetentionInDays}
+
+  environment:
+    PRJ_PREFIX: ${self:custom.prjPrefix}
+    APP_ROOT: /${self:custom.customDomain.basePath}
+    CORS_ACCEPT_ORIGINS: ${file(${self:custom.stageConfigFileName}):corsAcceptOrigins}
+    DEBUG_LOG_ENABLED: ${file(${self:custom.stageConfigFileName}):debugLogEnabled}
+    MEDIA_S3_BUCKET_NAME: ${self:custom.mediaS3BucketName}
+    MEDIA_IMAGE_MAKER_FILE_SIZE_LIMIT: ${file(${self:custom.stageConfigFileName}):media.imageMaker.fileSizeLimit}
+    #MEDIA_UNUSED_FILES_CLEANER_RESERVED_FILE_EXPIRATION_HOURS: ${file(${self:custom.stageConfigFileName}):mediaUnusedFilesCleanerReservedFileExpirationHours}
+    SES_REGION: ${file(./config/stages/common.yml):sesRegion}
+    COGNITO_REGION: ${self:custom.cognitoRegion}
+    COGNITO_USERPOOL_ID: ${self:custom.cognitoUserpoolId}
+    COGNITO_APP_CLIENT_ID: ${file(${self:custom.stageConfigFileName}):cognito.appClientId}
+    COGNITO_CHECK_TOKEN_EXPIRATION: ${file(${self:custom.stageConfigFileName}):cognito.checkTokenExpiration}
+    COGNITO_JWT_HEADER_NAME: ${file(./config/stages/common.yml):cognito.jwtHeaderName}
+    COGNITO_JWT_HEADER_PREFIX: ${file(./config/stages/common.yml):cognito.jwtHeaderPrefix}
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!config/stages-sample/**'
+    - '!config-bkup_*'
+    - '!.venv/**'
+    - '!__pycache__'
+    - '!package-lock.json'
+    - '!.dynamodb/**'
+    - '!tags'
+    - '!.DS_Store'
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    name: ${self:service}-${self:provider.stage}-api
+    memorySize: ${file(${self:custom.stageConfigFileName}):appConf.memorySize}
+    events:
+      - http: ANY /
+      - http: 'ANY /{proxy+}'
+    timeout: ${file(${self:custom.stageConfigFileName}):appConf.timeout}
+    provisionedConcurrency: ${file(${self:custom.stageConfigFileName}):appConf.provisionedConcurrency}
+
+resources:
+  Resources:
+    SiteConfigDynamoDBTable: ${file(./config/dynamodb/site-config.yml)}
+    ServiceDynamoDBTable: ${file(./config/dynamodb/service.yml)}
+    ServiceConfigDynamoDBTable: ${file(./config/dynamodb/service-config.yml)}
+    AdminUserConfigDynamoDBTable: ${file(./config/dynamodb/admin-user-config.yml)}
+    CategoryDynamoDBTable: ${file(./config/dynamodb/category.yml)}
+    PostDynamoDBTable: ${file(./config/dynamodb/post.yml)}
+    PostGroupDynamoDBTable: ${file(./config/dynamodb/post-group.yml)}
+    #CommentDynamoDBTable: ${file(./config/dynamodb/comment.yml)}
+    #CommentCountDynamoDBTable: ${file(./config/dynamodb/comment-count.yml)}
+    TagDynamoDBTable: ${file(./config/dynamodb/tag.yml)}
+    PostTagDynamoDBTable: ${file(./config/dynamodb/post-tag.yml)}
+    FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}

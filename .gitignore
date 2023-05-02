@@ -1,0 +1,57 @@
+# OS file
+*~
+.DS_Store
+Thumbs.db
+
+# temp files for editor
+*.swp
+*.swo
+*.swn
+*.bak
+*.orig
+*.tmp
+
+# IDE user config
+.vscode/
+.idea/
+.vs/
+.buildpath
+.project
+.settings
+desktop.ini
+nbproject/
+*.iml
+*.suo
+*.sln
+*.user
+*.userosscache
+*.cache
+*.svclog
+*.dbmdl
+*.jfm
+*.tmproj
+tags
+
+# npm
+node_modules
+package-lock.json
+.env
+.yarn
+
+# Logs
+yarn-error.log
+npm-debug.log
+lerna-debug.log
+
+# Istanbul coverage
+coverage/
+
+# cypress
+cypress/screenshots
+cypress/videos
+
+.vercel
+.now
+
+# For this project
+/public
