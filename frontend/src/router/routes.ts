@@ -1,6 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 import MainLayout from '@/layouts/MainLayout.vue'
-//import AdminLayout from '@/layouts/AdminLayout.vue'
+import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -26,18 +26,24 @@ const routes: RouteRecordRaw[] = [
         path: '/posts/:slug',
         name: 'PostDetailPage',
         component: () => import('@/views/PostDetailPage.vue')
-      },
-    ],
+      }
+    ]
   },
-  //{
-  //  path: '/admin',
-  //  component: AdminLayout,
-  //  children: [],
-  //},
+  {
+    path: '/admin',
+    component: AdminLayout,
+    children: [
+      {
+        path: '',
+        name: 'AdminTopPage',
+        component: () => import('@/views/AdminTopPage.vue')
+      }
+    ]
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/views/NotFound.vue')
-  },
+  }
 ]
 
 export default routes
