@@ -1,6 +1,6 @@
 <template>
   <header
-    class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-gray-800 text-sm py-5 xs:px-5 sm:px-7 dark:bg-white z-40"
+    class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-gray-800 text-sm py-2 xs:px-5 dark:bg-white z-40"
   >
     <nav
       class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between"
@@ -9,7 +9,7 @@
       <div class="flex items-center justify-between">
         <RouterLink
           to="/"
-          class="flex-none text-xl font-medium text-white dark:text-gray-800"
+          class="flex-none text-xl font-medium text-white dark:text-gray-800 py-1"
         >
           {{ siteName }}
         </RouterLink>
@@ -42,28 +42,20 @@
       >
         <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:mt-0 sm:pl-5">
           <RouterLink
-            to="/"
+            to="/admin"
             exact
-            :aria-current="current === '/' ? 'page' : null"
+            :aria-current="current === '/admin' ? 'page' : null"
             class="font-medium text-gray-50"
           >
-            {{ $t('page.top') }}
+            {{ $t('page.adminTop') }}
           </RouterLink>
           <RouterLink
-            to="/about"
+            to="/admin/sign-in"
             exact
-            :aria-current="current === '/about' ? 'page' : null"
+            :aria-current="current === '/admin/sign-in' ? 'page' : null"
             class="font-medium text-gray-50"
           >
-            {{ $t('page.about') }}
-          </RouterLink>
-          <RouterLink
-            to="/posts"
-            exact
-            :aria-current="current === '/posts' ? 'page' : null"
-            class="font-medium text-gray-50"
-          >
-            {{ $t('term.postList') }}
+            {{ $t('common.signIn') }}
           </RouterLink>
         </div>
       </div>
