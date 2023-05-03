@@ -1,5 +1,6 @@
 <template>
   <header
+    id="header"
     class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-gray-800 text-sm py-2 xs:px-5 dark:bg-white z-40"
   >
     <nav
@@ -25,12 +26,12 @@
           >
             <FontAwesomeIcon
               v-if="!isMenuOpen"
-              class="w-4 h-4"
+              class="w-4 h-4 pointer-events-none"
               icon="bars"
             />
             <FontAwesomeIcon
               v-else
-              class="w-4 h-4"
+              class="w-4 h-4 pointer-events-none"
               icon="xmark"
             />
           </button>
