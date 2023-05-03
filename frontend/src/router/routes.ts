@@ -13,17 +13,17 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/TopPage.vue')
       },
       {
-        path: '/about',
+        path: 'about',
         name: 'AboutPage',
         component: () => import('@/views/AboutPage.vue')
       },
       {
-        path: '/posts',
+        path: 'posts',
         name: 'PostListPage',
         component: () => import('@/views/PostListPage.vue')
       },
       {
-        path: '/posts/:slug',
+        path: 'posts/:slug',
         name: 'PostDetailPage',
         component: () => import('@/views/PostDetailPage.vue')
       }
@@ -37,6 +37,11 @@ const routes: RouteRecordRaw[] = [
         path: '',
         name: 'AdminTopPage',
         component: () => import('@/views/AdminTopPage.vue')
+      },
+      {
+        path: 'sign-in',
+        name: 'AdminSignInPage',
+        component: () => import('@/views/AdminSignInPage.vue')
       }
     ]
   },

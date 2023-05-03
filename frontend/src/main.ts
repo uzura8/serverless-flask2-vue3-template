@@ -1,3 +1,6 @@
+// For Amplify
+window.global = window
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 

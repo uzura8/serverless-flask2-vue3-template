@@ -1,5 +1,5 @@
 export default {
-  substr(text: string, len: number, truncation='') :string {
+  substr(text: string, len: number, truncation = ''): string {
     const textArray = text.split('')
     let count = 0
     let str = ''
@@ -8,7 +8,7 @@ export default {
       if (n.length < 4) {
         count++
       } else {
-        count += 2;
+        count += 2
       }
       if (count > len) {
         return str + truncation
@@ -16,5 +16,11 @@ export default {
       str += text.charAt(i)
     }
     return text
+  },
+
+  checkEmail(text: string): boolean {
+    const regexp =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return regexp.test(text)
   }
 }
