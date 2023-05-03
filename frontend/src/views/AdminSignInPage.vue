@@ -93,6 +93,7 @@ import { useI18n } from 'vue-i18n'
 import str from '@/utils/str'
 import { useGlobalLoaderStore } from '@/stores/globalLoader'
 import { useAdminUserStore } from '@/stores/adminUser'
+import { AdminAuthApi } from '@/apis'
 
 interface FieldErrors {
   email: string
@@ -143,8 +144,9 @@ export default defineComponent({
 
       try {
         globalLoader.updateLoading(true)
-        const user = await adminUser.signIn(email.value, password.value)
+        const user = await AdminAuthApi.signIn(email.value, password.value)
         if (!user) throw new Error('Failed to sign in')
+        adminUser.setUser(user)
         globalLoader.updateLoading(false)
         router.push('/admin/')
       } catch (error) {

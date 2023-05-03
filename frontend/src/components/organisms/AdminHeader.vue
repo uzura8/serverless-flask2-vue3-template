@@ -8,7 +8,7 @@
     >
       <div class="flex items-center justify-between">
         <RouterLink
-          to="/"
+          to="/admin"
           class="flex-none text-xl font-medium text-white dark:text-gray-800 py-1"
         >
           {{ siteName }}
@@ -42,6 +42,7 @@
       >
         <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:mt-0 sm:pl-5">
           <RouterLink
+            v-if="isAuth"
             to="/admin"
             exact
             :aria-current="current === '/admin' ? 'page' : null"
@@ -50,6 +51,7 @@
             {{ $t('page.adminTop') }}
           </RouterLink>
           <RouterLink
+            v-if="!isAuth"
             to="/admin/sign-in"
             exact
             :aria-current="current === '/admin/sign-in' ? 'page' : null"
@@ -57,6 +59,13 @@
           >
             {{ $t('common.signIn') }}
           </RouterLink>
+          <a
+            v-if="isAuth"
+            @click="signOut"
+            class="font-medium text-gray-50 cursor-pointer"
+          >
+            {{ $t('common.signOut') }}
+          </a>
         </div>
       </div>
     </nav>
@@ -65,9 +74,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import config from '@/configs/config.json'
 import { useGlobalHeaderStore } from '@/stores/globalHeader'
+import { useGlobalLoaderStore } from '@/stores/globalLoader'
+import { useAdminUserStore } from '@/stores/adminUser'
+import { AdminAuthApi } from '@/apis'
 
 export default defineComponent({
   components: {},
@@ -77,6 +89,24 @@ export default defineComponent({
 
     const route = useRoute()
     const current = computed((): string => route.path)
+
+    const adminUser = useAdminUserStore()
+    const isAuth = computed((): boolean => adminUser.isAuthenticated)
+
+    const globalLoader = useGlobalLoaderStore()
+    const router = useRouter()
+    const signOut = async () => {
+      try {
+        globalLoader.updateLoading(true)
+        await AdminAuthApi.signOut()
+        adminUser.setUser(null)
+        globalLoader.updateLoading(false)
+        router.push('/admin/sign-in')
+      } catch (error) {
+        console.error(error)
+        globalLoader.updateLoading(false)
+      }
+    }
 
     const header = ref<HTMLElement | null>(null)
     const globalHeader = useGlobalHeaderStore()
@@ -131,6 +161,8 @@ export default defineComponent({
       current,
       siteName,
       isMenuOpen,
+      isAuth,
+      signOut,
       toggleHeaderMenuOpenStatus
     }
   }

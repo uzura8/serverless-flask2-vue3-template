@@ -1,5 +1,5 @@
-// For Amplify
-window.global = window
+// For Amplify to work in the browser, it needs to be able to access the global window object.
+//window.global = window
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

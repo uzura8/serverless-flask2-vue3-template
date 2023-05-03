@@ -1,5 +1,4 @@
+import AdminAuthApi from './adminAuth'
 import PostApi from './post'
 
-export {
-  PostApi,
-}
+export { AdminAuthApi, PostApi }

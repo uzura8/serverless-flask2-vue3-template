@@ -36,7 +36,11 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'AdminTopPage',
-        component: () => import('@/views/AdminTopPage.vue')
+        component: () => import('@/views/AdminTopPage.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresRoleAdmin: true
+        }
       },
       {
         path: 'sign-in',
