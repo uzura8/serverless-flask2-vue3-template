@@ -39,7 +39,7 @@ export const useGlobalLoaderStore = defineStore('globalLoader', () => {
 
     if (isStart) {
       if (!loadingTimerId.value) {
-        loadingTimerId.value = setTimeout(() => {
+        loadingTimerId.value = window.setTimeout(() => {
           resetLoading()
         }, config.common.loadingTimeoutThreshold)
       }
