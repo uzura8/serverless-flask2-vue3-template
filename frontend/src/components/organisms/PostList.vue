@@ -33,7 +33,7 @@ import type { PostPublic, PagerKey } from '@/types/Post.d'
 import type { PropType } from 'vue'
 import { defineComponent, reactive, ref, computed, onBeforeMount } from 'vue'
 import { PostApi } from '@/apis'
-import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
+import { useGlobalLoaderStore } from '@/stores/globalLoader'
 import PostListItem from '@/components/organisms/PostListItem.vue'
 
 // Types
