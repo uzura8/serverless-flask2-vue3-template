@@ -1,3 +1,23 @@
+<script lang="ts">
+import type { PostPublic } from '@/types/Post.d'
+import type { PropType } from 'vue'
+import { defineComponent } from 'vue'
+import MediaImg from '@/components/atoms/MediaImg.vue'
+
+export default defineComponent({
+  components: {
+    MediaImg
+  },
+
+  props: {
+    post: {
+      type: Object as PropType<PostPublic>,
+      required: true
+    }
+  }
+})
+</script>
+
 <template>
   <div class="bg-white overflow-hidden rounded-lg shadow-md grid grid-cols-1 md:grid-cols-3">
     <div
@@ -30,23 +50,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import type { PostPublic } from '@/types/Post.d'
-import type { PropType } from 'vue'
-import { defineComponent } from 'vue'
-import MediaImg from '@/components/atoms/MediaImg.vue'
-
-export default defineComponent({
-  components: {
-    MediaImg
-  },
-
-  props: {
-    post: {
-      type: Object as PropType<PostPublic>,
-      required: true
-    }
-  }
-})
-</script>

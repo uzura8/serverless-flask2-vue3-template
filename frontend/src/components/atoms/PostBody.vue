@@ -1,10 +1,3 @@
-<template>
-  <div
-    v-html="body"
-    class="post-body"
-  ></div>
-</template>
-
 <script lang="ts">
 import type { PropType } from 'vue'
 import { defineComponent, onMounted } from 'vue'
@@ -39,3 +32,10 @@ export default defineComponent({
   }
 }
 </style>
+
+<template>
+  <div
+    v-html="body"
+    class="post-body"
+  ></div>
+</template>

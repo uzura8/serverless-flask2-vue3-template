@@ -1,19 +1,3 @@
-<template>
-  <figure class="">
-    <img
-      :src="imageUrl"
-      @error="noImageUrl"
-      :class="{ 'rounded-lg': isRounded, 'cursor-pointer': isClickable }"
-      class="h-auto max-w-full"
-      :alt="caption ? caption : ''"
-    >
-    <figcaption
-      v-if="caption && isDisplayCaption"
-      class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400"
-    >{{ caption }}</figcaption>
-  </figure>
-</template>
-
 <script lang="ts">
 //import type { MimeTypeImage } from '@/types/Media.d'
 import type { PropType } from 'vue'
@@ -36,44 +20,44 @@ export default defineComponent({
   props: {
     serviceId: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     fileId: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     mimeType: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     size: {
       type: String as PropType<string>,
-      default: 'raw',
+      default: 'raw'
     },
     src: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     sizeClass: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     caption: {
       type: String as PropType<string>,
-      default: '',
+      default: ''
     },
     isClickable: {
       type: Boolean as PropType<boolean>,
-      default: false,
+      default: false
     },
     isRounded: {
       type: Boolean as PropType<boolean>,
-      default: false,
+      default: false
     },
     isDisplayCaption: {
       type: Boolean as PropType<boolean>,
-      default: false,
-    },
+      default: false
+    }
   },
 
   setup(props) {
@@ -86,7 +70,7 @@ export default defineComponent({
 
     const noImageUrl = (event: any): void => {
       // TODO: 型定義を追加する
-      if ((event.target instanceof HTMLImageElement) === false) return
+      if (event.target instanceof HTMLImageElement === false) return
       if (event.target == null) return
       event.target.src = assetUrl('assets/img/noimage.jpg')
     }
@@ -98,10 +82,27 @@ export default defineComponent({
 
     return {
       imageUrl,
-      noImageUrl,
+      noImageUrl
       //activate,
     }
-  },
+  }
 })
 </script>
 
+<template>
+  <figure class="">
+    <img
+      :src="imageUrl"
+      @error="noImageUrl"
+      :class="{ 'rounded-lg': isRounded, 'cursor-pointer': isClickable }"
+      class="h-auto max-w-full"
+      :alt="caption ? caption : ''"
+    />
+    <figcaption
+      v-if="caption && isDisplayCaption"
+      class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400"
+    >
+      {{ caption }}
+    </figcaption>
+  </figure>
+</template>

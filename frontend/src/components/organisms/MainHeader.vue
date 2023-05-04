@@ -1,3 +1,53 @@
+<script lang="ts">
+import { defineComponent, ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+import config from '@/configs/config.json'
+import { useGlobalHeaderStore } from '@/stores/globalHeader'
+
+export default defineComponent({
+  components: {},
+
+  setup() {
+    const siteName = config.site.name
+
+    const route = useRoute()
+    const current = computed((): string => route.path)
+
+    const header = ref<HTMLElement | null>(null)
+    const globalHeader = useGlobalHeaderStore()
+    const isMenuOpen = computed((): boolean => globalHeader.isMenuOpen)
+
+    const toggleHeaderMenuOpenStatus = () => {
+      globalHeader.updateMenuOpenStatus(!isMenuOpen.value)
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (header.value && !header.value.contains(event.target as Node)) {
+        globalHeader.updateMenuOpenStatus(false)
+      }
+    }
+
+    onMounted(async () => {
+      await nextTick(() => {
+        header.value = document.querySelector('#header')
+      })
+      document.addEventListener('click', handleClickOutside)
+    })
+
+    onUnmounted(() => {
+      document.removeEventListener('click', handleClickOutside)
+    })
+
+    return {
+      current,
+      siteName,
+      isMenuOpen,
+      toggleHeaderMenuOpenStatus
+    }
+  }
+})
+</script>
+
 <template>
   <header
     id="header"
@@ -70,56 +120,6 @@
     </nav>
   </header>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
-import config from '@/configs/config.json'
-import { useGlobalHeaderStore } from '@/stores/globalHeader'
-
-export default defineComponent({
-  components: {},
-
-  setup() {
-    const siteName = config.site.name
-
-    const route = useRoute()
-    const current = computed((): string => route.path)
-
-    const header = ref<HTMLElement | null>(null)
-    const globalHeader = useGlobalHeaderStore()
-    const isMenuOpen = computed((): boolean => globalHeader.isMenuOpen)
-
-    const toggleHeaderMenuOpenStatus = () => {
-      globalHeader.updateMenuOpenStatus(!isMenuOpen.value)
-    }
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (header.value && !header.value.contains(event.target as Node)) {
-        globalHeader.updateMenuOpenStatus(false)
-      }
-    }
-
-    onMounted(async () => {
-      await nextTick(() => {
-        header.value = document.querySelector('#header')
-      })
-      document.addEventListener('click', handleClickOutside)
-    })
-
-    onUnmounted(() => {
-      document.removeEventListener('click', handleClickOutside)
-    })
-
-    return {
-      current,
-      siteName,
-      isMenuOpen,
-      toggleHeaderMenuOpenStatus
-    }
-  }
-})
-</script>
 
 <style scoped>
 .router-link-exact-active {

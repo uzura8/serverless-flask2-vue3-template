@@ -1,33 +1,3 @@
-<template>
-  <div>
-    <div
-      v-if="posts.length"
-      class="grid grid-cols-1 gap-6"
-    >
-      <PostListItem
-        v-for="post in posts"
-        :key="post.postId"
-        :post="post"
-      />
-      <div
-        v-if="hasNext"
-        class="text-center"
-      >
-        <a
-          @click="setPostList"
-          class="cursor-pointer text-blue-600 hover:text-blue-800"
-        >
-          {{ $t('common.more') }}
-        </a>
-      </div>
-    </div>
-
-    <div v-else>
-      <p class="text-gray-500 text-center">{{ $t('msg.noData') }}</p>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 import type { PostPublic, PagerKey } from '@/types/Post.d'
 import type { PropType } from 'vue'
@@ -97,3 +67,33 @@ export default defineComponent({
   }
 })
 </script>
+
+<template>
+  <div>
+    <div
+      v-if="posts.length"
+      class="grid grid-cols-1 gap-6"
+    >
+      <PostListItem
+        v-for="post in posts"
+        :key="post.postId"
+        :post="post"
+      />
+      <div
+        v-if="hasNext"
+        class="text-center"
+      >
+        <a
+          @click="setPostList"
+          class="cursor-pointer text-blue-600 hover:text-blue-800"
+        >
+          {{ $t('common.more') }}
+        </a>
+      </div>
+    </div>
+
+    <div v-else>
+      <p class="text-gray-500 text-center">{{ $t('msg.noData') }}</p>
+    </div>
+  </div>
+</template>

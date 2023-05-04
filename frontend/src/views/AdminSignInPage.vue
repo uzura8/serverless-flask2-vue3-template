@@ -1,3 +1,86 @@
+<script lang="ts">
+import { defineComponent, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import str from '@/utils/str'
+import { useGlobalLoaderStore } from '@/stores/globalLoader'
+import { useAdminUserStore } from '@/stores/adminUser'
+import { AdminAuthApi } from '@/apis'
+
+interface FieldErrors {
+  email: string
+  password: string
+}
+
+export default defineComponent({
+  setup() {
+    const router = useRouter()
+    const { t } = useI18n()
+    const globalLoader = useGlobalLoaderStore()
+    const adminUser = useAdminUserStore()
+
+    const errors = ref<FieldErrors>({ email: '', password: '' })
+    const hasErrors = computed(() => {
+      return Object.values(errors.value).some((error) => error)
+    })
+
+    const email = ref<string>('')
+    const validateEmail = () => {
+      errors.value.email = ''
+      if (!email.value) {
+        errors.value.email = t('msg.inputRequired')
+      } else if (!str.checkEmail(email.value)) {
+        errors.value.email = t('msg.inputInvalid')
+      }
+    }
+
+    const password = ref<string>('')
+    const showPassword = ref<boolean>(false)
+    const validatePassword = () => {
+      errors.value.password = ''
+      if (!password.value) {
+        errors.value.password = t('msg.inputRequired')
+      } else if (password.value.length < 6) {
+        errors.value.password = t('msg.atLeastCharacters', { count: 6 })
+      }
+    }
+
+    const validateAll = () => {
+      validateEmail()
+      validatePassword()
+    }
+
+    const signIn = async () => {
+      validateAll()
+      if (hasErrors.value) return
+
+      try {
+        globalLoader.updateLoading(true)
+        const user = await AdminAuthApi.signIn(email.value, password.value)
+        if (!user) throw new Error('Failed to sign in')
+        adminUser.setUser(user)
+        globalLoader.updateLoading(false)
+        router.push('/admin/')
+      } catch (error) {
+        console.error(error)
+        globalLoader.updateLoading(false)
+      }
+    }
+
+    return {
+      errors,
+      hasErrors,
+      email,
+      validateEmail,
+      password,
+      showPassword,
+      validatePassword,
+      signIn
+    }
+  }
+})
+</script>
+
 <template>
   <div>
     <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
@@ -85,86 +168,3 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import str from '@/utils/str'
-import { useGlobalLoaderStore } from '@/stores/globalLoader'
-import { useAdminUserStore } from '@/stores/adminUser'
-import { AdminAuthApi } from '@/apis'
-
-interface FieldErrors {
-  email: string
-  password: string
-}
-
-export default defineComponent({
-  setup() {
-    const router = useRouter()
-    const { t } = useI18n()
-    const globalLoader = useGlobalLoaderStore()
-    const adminUser = useAdminUserStore()
-
-    const errors = ref<FieldErrors>({ email: '', password: '' })
-    const hasErrors = computed(() => {
-      return Object.values(errors.value).some((error) => error)
-    })
-
-    const email = ref<string>('')
-    const validateEmail = () => {
-      errors.value.email = ''
-      if (!email.value) {
-        errors.value.email = t('msg.inputRequired')
-      } else if (!str.checkEmail(email.value)) {
-        errors.value.email = t('msg.inputInvalid')
-      }
-    }
-
-    const password = ref<string>('')
-    const showPassword = ref<boolean>(false)
-    const validatePassword = () => {
-      errors.value.password = ''
-      if (!password.value) {
-        errors.value.password = t('msg.inputRequired')
-      } else if (password.value.length < 6) {
-        errors.value.password = t('msg.atLeastCharacters', { count: 6 })
-      }
-    }
-
-    const validateAll = () => {
-      validateEmail()
-      validatePassword()
-    }
-
-    const signIn = async () => {
-      validateAll()
-      if (hasErrors.value) return
-
-      try {
-        globalLoader.updateLoading(true)
-        const user = await AdminAuthApi.signIn(email.value, password.value)
-        if (!user) throw new Error('Failed to sign in')
-        adminUser.setUser(user)
-        globalLoader.updateLoading(false)
-        router.push('/admin/')
-      } catch (error) {
-        console.error(error)
-        globalLoader.updateLoading(false)
-      }
-    }
-
-    return {
-      errors,
-      hasErrors,
-      email,
-      validateEmail,
-      password,
-      showPassword,
-      validatePassword,
-      signIn
-    }
-  }
-})
-</script>

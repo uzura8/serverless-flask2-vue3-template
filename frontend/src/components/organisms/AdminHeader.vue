@@ -1,78 +1,3 @@
-<template>
-  <header
-    id="header"
-    class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-gray-800 text-sm py-2 xs:px-5 dark:bg-white z-40"
-  >
-    <nav
-      class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between"
-      aria-label="Global"
-    >
-      <div class="flex items-center justify-between">
-        <RouterLink
-          to="/admin"
-          class="flex-none text-xl font-medium text-white dark:text-gray-800 py-1"
-        >
-          {{ siteName }}
-        </RouterLink>
-        <div class="sm:hidden">
-          <button
-            @click="toggleHeaderMenuOpenStatus"
-            type="button"
-            :class="{ open: isMenuOpen }"
-            class="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-2 rounded-md border border-gray-700 font-medium bg-gray-800 text-gray-400 shadow-sm align-middle hover:bg-gray-700/[.25] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600 transition-all text-sm dark:bg-gray-800 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
-            data-hs-collapse="#navbar-dark"
-            aria-controls="navbar-dark"
-            aria-label="Toggle navigation"
-          >
-            <FontAwesomeIcon
-              v-if="!isMenuOpen"
-              class="w-4 h-4 pointer-events-none"
-              icon="bars"
-            />
-            <FontAwesomeIcon
-              v-else
-              class="w-4 h-4 pointer-events-none"
-              icon="xmark"
-            />
-          </button>
-        </div>
-      </div>
-      <div
-        id="navbar-dark"
-        class="hs-collapse hidden overflow-hidden transition-all ease-in-out duration-300 basis-full grow sm:block md:ml-10"
-      >
-        <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:mt-0 sm:pl-5">
-          <RouterLink
-            v-if="isAuth"
-            to="/admin"
-            exact
-            :aria-current="current === '/admin' ? 'page' : null"
-            class="font-medium text-gray-50"
-          >
-            {{ $t('page.adminTop') }}
-          </RouterLink>
-          <RouterLink
-            v-if="!isAuth"
-            to="/admin/sign-in"
-            exact
-            :aria-current="current === '/admin/sign-in' ? 'page' : null"
-            class="font-medium text-gray-50"
-          >
-            {{ $t('common.signIn') }}
-          </RouterLink>
-          <a
-            v-if="isAuth"
-            @click="signOut"
-            class="font-medium text-gray-50 cursor-pointer"
-          >
-            {{ $t('common.signOut') }}
-          </a>
-        </div>
-      </div>
-    </nav>
-  </header>
-</template>
-
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -169,6 +94,81 @@ export default defineComponent({
   }
 })
 </script>
+
+<template>
+  <header
+    id="header"
+    class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-gray-800 text-sm py-2 xs:px-5 dark:bg-white z-40"
+  >
+    <nav
+      class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between"
+      aria-label="Global"
+    >
+      <div class="flex items-center justify-between">
+        <RouterLink
+          to="/admin"
+          class="flex-none text-xl font-medium text-white dark:text-gray-800 py-1"
+        >
+          {{ siteName }}
+        </RouterLink>
+        <div class="sm:hidden">
+          <button
+            @click="toggleHeaderMenuOpenStatus"
+            type="button"
+            :class="{ open: isMenuOpen }"
+            class="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-2 rounded-md border border-gray-700 font-medium bg-gray-800 text-gray-400 shadow-sm align-middle hover:bg-gray-700/[.25] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-600 transition-all text-sm dark:bg-gray-800 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800"
+            data-hs-collapse="#navbar-dark"
+            aria-controls="navbar-dark"
+            aria-label="Toggle navigation"
+          >
+            <FontAwesomeIcon
+              v-if="!isMenuOpen"
+              class="w-4 h-4 pointer-events-none"
+              icon="bars"
+            />
+            <FontAwesomeIcon
+              v-else
+              class="w-4 h-4 pointer-events-none"
+              icon="xmark"
+            />
+          </button>
+        </div>
+      </div>
+      <div
+        id="navbar-dark"
+        class="hs-collapse hidden overflow-hidden transition-all ease-in-out duration-300 basis-full grow sm:block md:ml-10"
+      >
+        <div class="flex flex-col gap-5 mt-5 sm:flex-row sm:items-center sm:mt-0 sm:pl-5">
+          <RouterLink
+            v-if="isAuth"
+            to="/admin"
+            exact
+            :aria-current="current === '/admin' ? 'page' : null"
+            class="font-medium text-gray-50"
+          >
+            {{ $t('page.adminTop') }}
+          </RouterLink>
+          <RouterLink
+            v-if="!isAuth"
+            to="/admin/sign-in"
+            exact
+            :aria-current="current === '/admin/sign-in' ? 'page' : null"
+            class="font-medium text-gray-50"
+          >
+            {{ $t('common.signIn') }}
+          </RouterLink>
+          <a
+            v-if="isAuth"
+            @click="signOut"
+            class="font-medium text-gray-50 cursor-pointer"
+          >
+            {{ $t('common.signOut') }}
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+</template>
 
 <style scoped>
 .router-link-exact-active {
