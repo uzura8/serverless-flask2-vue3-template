@@ -11,6 +11,7 @@ from .site_config import SiteConfig
 #from .tag import Tag
 #from .post_tag import PostTag
 #from .file import File
+from .field import Field
 
 __all__ = [
     'Base',
@@ -27,4 +28,5 @@ __all__ = [
     #'Tag',
     #'PostTag',
     #'File',
+    'Field',
 ]
