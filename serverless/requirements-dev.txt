@@ -1,8 +1,12 @@
 astroid==2.15.4
+black @ git+https://github.com/psf/black@eb32729ab562c010d9f644a3bbb2305196b2deb7
 dill==0.3.6
 isort==5.12.0
 lazy-object-proxy==1.9.0
 mccabe==0.7.0
+mypy-extensions==1.0.0
+packaging==23.1
+pathspec==0.11.1
 platformdirs==3.5.0
 pylint==2.17.3
 tomli==2.0.1
