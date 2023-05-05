@@ -2,8 +2,8 @@ import os
 from flask import Flask, jsonify, request
 from flask_cognito import CognitoAuth
 from werkzeug.routing import Rule
-from app.common.error import InvalidUsage
-from app.common.decimal_encoder import DecimalEncoder
+from app.utils.error import InvalidUsage
+from app.utils.decimal_encoder import DecimalEncoder
 from app.root import bp as root_module
 #from app.post import bp as post_module
 #from app.comment import bp as comment_module
