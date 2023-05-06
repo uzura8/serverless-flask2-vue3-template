@@ -2,29 +2,29 @@
 
 from app.models.dynamodb.base import Base
 
-class Field(Base):
-    """DynamoDB Model class for `field` table."""
+class Event(Base):
+    """DynamoDB Model class for `event` table."""
 
-    table_name = 'field'
+    table_name = 'event'
     public_attrs = [
+        'eventId',
         'fieldId',
+        'date',
         'name',
         'body',
         'createdAt',
         'updatedAt',
-        'profileImage',
         'images',
-        #'zipCode',
-        'address',
-        'tel',
-        'website',
-        'fieldType',
+        'eventType',
+        'weatherType',
+        'weatherText',
     ]
     response_attrs = public_attrs + [
     ]
     private_attrs = [
+        'fieldIdDate',
         'createdBy',
     ]
     all_attrs = public_attrs + private_attrs
 
-    allowed_field_types = ['outdoor', 'indoor', 'paintball']
+    allowed_event_types = []

@@ -160,3 +160,4 @@ resources:
     PostTagDynamoDBTable: ${file(./config/dynamodb/post-tag.yml)}
     FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
     FieldDynamoDBTable: ${file(./config/dynamodb/field.yml)}
+    EventDynamoDBTable: ${file(./config/dynamodb/event.yml)}

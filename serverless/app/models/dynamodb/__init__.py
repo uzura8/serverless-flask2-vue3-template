@@ -12,6 +12,7 @@ from .site_config import SiteConfig
 #from .post_tag import PostTag
 #from .file import File
 from .field import Field
+from .event import Event
 
 __all__ = [
     'Base',
@@ -29,4 +30,5 @@ __all__ = [
     #'PostTag',
     #'File',
     'Field',
+    'Event',
 ]
