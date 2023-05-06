@@ -17,7 +17,7 @@ class SlFieldImporter:
 
 
     def load_csv(self):
-        self.csvfile = open(self.csv_file_path, 'r', encoding='utf-8')
+        self.csvfile = open(self.csv_file_path, 'r', encoding='utf-8-sig')
         self.reader = csv.DictReader(self.csvfile)
 
 
