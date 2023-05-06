@@ -26,12 +26,12 @@ class TableScanner:
             pprint(items)
         elif operation == 'delete' or operation == 'truncate':
             model_class.truncate()
-            print(f"{class_name}.delete() executed.")
+            print(f'{class_name}.delete() executed.')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("table", choices=["field", "post"], help="Choose the table: 'field' or 'post'")
-    parser.add_argument("operation", choices=["scan", "delete"], help="Choose the operation: 'scan' or 'delete'")
+    parser.add_argument('table', choices=['field', 'post'], help="Choose the table: 'field' or 'post'")
+    parser.add_argument('operation', choices=['scan', 'delete', 'truncate'], help="Choose the operation: 'scan' or 'delete'")
     args = parser.parse_args()
 
     scanner = TableScanner()
