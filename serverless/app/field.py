@@ -7,8 +7,7 @@ from app.models.dynamodb import Field
 bp = Blueprint('field', __name__, url_prefix='/fields')
 
 
-@bp.get('/hoge')
+@bp.get('/')
 def get_field_list():
-    print('hoge')
-    body = Field.scan()
-    return jsonify(body), 200
+    items = Field.scan()
+    return jsonify({'items':items}), 200
