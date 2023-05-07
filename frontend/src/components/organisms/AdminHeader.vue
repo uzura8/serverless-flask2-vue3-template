@@ -149,6 +149,15 @@ export default defineComponent({
             {{ $t('page.adminTop') }}
           </RouterLink>
           <RouterLink
+            v-if="isAuth"
+            to="/admin/fields"
+            exact
+            :aria-current="current === '/admin/fields' ? 'page' : null"
+            class="font-medium text-gray-50"
+          >
+            {{ $t('sl.term.fields') }}
+          </RouterLink>
+          <RouterLink
             v-if="!isAuth"
             to="/admin/sign-in"
             exact

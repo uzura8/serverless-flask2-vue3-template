@@ -97,6 +97,9 @@
     "equalTo": "Equal To",
     "contains": "Contains",
     "undo": "Undo",
+    "today": "Today",
+    "showDetailItems": "Show Detail Items",
+    "hideDetailItems": "Hide Detail Items",
     "more": "More"
   },
   "msg": {
@@ -276,5 +279,16 @@
   },
   "site": {
     "name": "Sample Site"
+  },
+  "sl": {
+    "term": {
+      "field": "Field",
+      "fields": "Fields",
+      "fieldsShort": "Fields",
+      "event": "Event",
+      "eventOnDate": "Event on {date}",
+      "airsoft": "Airsoft",
+      "airsoftFull": "Airsoft"
+    }
   }
 }

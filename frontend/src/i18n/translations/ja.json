@@ -277,5 +277,17 @@
   },
   "site": {
     "name": "サンプルサイト"
+  },
+  "sl": {
+    "term": {
+      "field": "フィールド",
+      "fields": "フィールド一覧",
+      "fieldsShort": "フィールド",
+      "fieldType": "フィールド種別",
+      "event": "イベント",
+      "eventOnDate": "{date}のイベント",
+      "airsoft": "サバゲー",
+      "airsoftFull": "サバイバルゲーム"
+    }
   }
 }
