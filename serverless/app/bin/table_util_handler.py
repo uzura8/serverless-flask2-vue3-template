@@ -1,10 +1,13 @@
 import argparse
-from app.models.dynamodb import Field, SiteConfig
+from app.models.dynamodb import Field, Event, SiteConfig
 from pprint import pprint
+
+allowed_tables = ['field', 'event', 'site_config']
+
 
 class TableScanner:
     def __init__(self):
-        self.allowed_tables = ['field', 'post', 'site_config']
+        self.allowed_tables = allowed_tables
 
     def __del__(self):
         pass
@@ -30,7 +33,7 @@ class TableScanner:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('table', choices=['field', 'post'], help="Choose the table: 'field' or 'post'")
+    parser.add_argument('table', choices=allowed_tables, help="Choose the table: 'field' or 'post'")
     parser.add_argument('operation', choices=['scan', 'delete', 'truncate'], help="Choose the operation: 'scan' or 'delete'")
     args = parser.parse_args()
 

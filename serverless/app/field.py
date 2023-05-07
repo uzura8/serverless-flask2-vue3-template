@@ -1,5 +1,6 @@
+import traceback
 from flask import Blueprint, jsonify, request
-from app.models.dynamodb import Field, Event
+from app.models.dynamodb import Field, Event, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
@@ -29,6 +30,30 @@ def get_field_detail(field_id):
     return jsonify(Field.to_response(item)), 200
 
 
+@bp.post('/<string:field_id>/events')
+def post_event(field_id):
+    field = get_field(field_id)
+    schema = validation_schema_post_event()
+    vals = validate_req_params(schema, request.json)
+    vals['fieldId'] = field_id
+    #created_by = current_cognito_jwt.get('cognito:username', '')
+    #if created_by:
+    #    vals['createdBy'] = created_by
+
+    try:
+        event = Event.create(vals, 'eventId')
+
+    except ModelInvalidParamsException as e:
+        raise InvalidUsage(e.message, 400)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    event_response = Event.to_response(event)
+    return jsonify(event_response), 201
+
+
 @bp.get('/<string:field_id>/events/<string:date>')
 def get_field_detail_event_list(field_id, date):
     field = get_field(field_id)
@@ -53,4 +78,92 @@ def validation_schema_get_field_detail():
             'empty': False,
             'valid_ulid': True,
         }
+    }
+
+def validation_schema_post_event():
+    return {
+        'fieldId': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': True,
+            'empty': False,
+            'valid_ulid': True,
+        },
+        'date': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': True,
+            'empty': False,
+            'regex': r'^\d{4}\d{2}\d{2}$'
+        },
+        'name': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': True,
+            'empty': False,
+        },
+        'body': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+        },
+        'eventType': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': True,
+            'allowed': ['regular', 'exclusive', 'others'],
+        },
+        'joinedCount': {
+            'type': 'integer',
+            'coerce': int,
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
+        'weatherType': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': [
+                'clear',
+                'cloudy',
+                'cloudyOccasionallyClear',
+                'rain',
+                'heavyRain',
+                'cloudyOccasionallyRain',
+                'snow',
+                'sleet'
+            ],
+        },
+        'weatherText': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
+        'windType': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': ['calm', 'light', 'moderate', 'strong', 'gale'],
+        },
+        'temperature': {
+            'type': 'integer',
+            'coerce': int,
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
+        #'temperatureUnit': {
+        #    'type': 'string',
+        #    'coerce': (str, NormalizerUtils.trim),
+        #    'required': False,
+        #    'allowed': ['celsius', 'fahrenheit'],
+        #},
     }

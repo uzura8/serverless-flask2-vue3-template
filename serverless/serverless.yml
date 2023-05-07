@@ -133,6 +133,8 @@ package:
     - '!.dynamodb/**'
     - '!tags'
     - '!.DS_Store'
+    - '!develop/**'
+    - '!app/bin/**'
 
 functions:
   app:
