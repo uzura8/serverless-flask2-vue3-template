@@ -48,7 +48,6 @@ def validation_schema_get_event_detail():
             'coerce': (str, NormalizerUtils.trim),
             'required': True,
             'empty': False,
-            'length': 26,
             'valid_ulid': True,
         }
     }

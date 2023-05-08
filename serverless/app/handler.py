@@ -11,6 +11,7 @@ from app.root import bp as root_module
 #from app.tag import bp as tag_module
 #from app.admin import bp as admin_module
 from app.field import bp as field_module
+from app.event import bp as event_module
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
 CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(',') if cors_accept_origins_str else []
@@ -98,4 +99,5 @@ def add_cors_headers(response):
 #app.register_blueprint(comment_module)
 #app.register_blueprint(admin_module)
 app.register_blueprint(field_module)
+app.register_blueprint(event_module)
 app.register_blueprint(root_module)

@@ -18,7 +18,11 @@ class Event(Base):
         'eventType',
         'weatherType',
         'weatherText',
+        'joinedCount',
+        'windType',
+        'temperature',
     ]
+
     response_attrs = public_attrs + [
     ]
     private_attrs = [
