@@ -36,6 +36,7 @@ def post_event(field_id):
     schema = validation_schema_post_event()
     vals = validate_req_params(schema, request.json)
     vals['fieldId'] = field_id
+    vals['fieldIdDate'] = f'{field_id}#{vals["date"]}'
     #created_by = current_cognito_jwt.get('cognito:username', '')
     #if created_by:
     #    vals['createdBy'] = created_by
@@ -58,9 +59,9 @@ def post_event(field_id):
 def get_field_detail_event_list(field_id, date):
     field = get_field(field_id)
     pkeys = {'key':'fieldIdDate', 'val':f'{field_id}#{date}'}
-    events = Event.get_all_by_pkey(pkeys, None, 'FieldIdDateIndex')
+    events = Event.get_all_by_pkey(pkeys, None, 'fieldIdDateIndex')
     events_response = [Event.to_response(event) for event in events]
-    return jsonify(Field.to_response(events_response)), 200
+    return jsonify(events_response), 200
 
 
 @bp.route('/<string:field_id>', methods=['HEAD'])

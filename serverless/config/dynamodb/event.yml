@@ -27,7 +27,7 @@ Properties:
 
   GlobalSecondaryIndexes:
     -
-      IndexName: fieldIdDateNumberIndex
+      IndexName: fieldIdDateIndex
       KeySchema:
       -
         AttributeName: fieldIdDate
