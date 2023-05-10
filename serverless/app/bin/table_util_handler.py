@@ -5,7 +5,7 @@ from pprint import pprint
 allowed_tables = ['field', 'event', 'site_config']
 
 
-class TableScanner:
+class TableUtilHandler:
     def __init__(self):
         self.allowed_tables = allowed_tables
 
@@ -27,9 +27,14 @@ class TableScanner:
         if operation == 'scan':
             items = model_class.scan()
             pprint(items)
-        elif operation == 'delete' or operation == 'truncate':
+
+        elif operation == 'truncate':
             model_class.truncate()
             print(f'{class_name}.delete() executed.')
+
+        elif operation == 'delete':
+            model_class.delete_table()
+            print(f'{class_name}.delete_table() executed.')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -37,5 +42,5 @@ if __name__ == '__main__':
     parser.add_argument('operation', choices=['scan', 'delete', 'truncate'], help="Choose the operation: 'scan' or 'delete'")
     args = parser.parse_args()
 
-    scanner = TableScanner()
+    scanner = TableUtilHandler()
     scanner.main(args.table, args.operation)
