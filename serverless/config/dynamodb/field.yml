@@ -10,10 +10,10 @@ Properties:
       AttributeName: fieldId
       KeyType: HASH
 
-  BillingMode: ${self:custom.dynamodbConfig.field.billingMode}
+  BillingMode: ${self:custom.dynamodbConfig.field.billingMode, 'PAY_PER_REQUEST'}
   ProvisionedThroughput:
-    ReadCapacityUnits: ${self:custom.dynamodbConfig.field.provisionedThroughput.readCapacityUnits}
-    WriteCapacityUnits: ${self:custom.dynamodbConfig.field.provisionedThroughput.writeCapacityUnits}
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.field.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.field.provisionedThroughput.writeCapacityUnits, 0}
 
   Tags:
     - Key: backup

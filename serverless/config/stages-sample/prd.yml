@@ -41,73 +41,8 @@ cognito:
 dynamoDbBackupTargetTagValue: 'aws-backup' # 'aws-backup':backup target / other value: not target
 
 dynamodbConfig:
-  siteConfig:
-    billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  service:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  serviceConfig:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  adminUserConfig:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  category:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  post:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  postGroup:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-#  comment:
-#    billingMode: 'PAY_PER_REQUEST'
-#    provisionedThroughput:
-#      readCapacityUnits: 0
-#      writeCapacityUnits: 0
-#  commentCount:
-#    billingMode: 'PAY_PER_REQUEST'
-#    provisionedThroughput:
-#      readCapacityUnits: 0
-#      writeCapacityUnits: 0
-  tag:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  postTag:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  file:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  field:
-    billingMode: 'PAY_PER_REQUEST'
-    provisionedThroughput:
-      readCapacityUnits: 0
-      writeCapacityUnits: 0
-  #event:
-  #  billingMode: 'PAY_PER_REQUEST'
+  #siteConfig:
+  #  billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
   #  provisionedThroughput:
   #    readCapacityUnits: 0
   #    writeCapacityUnits: 0
