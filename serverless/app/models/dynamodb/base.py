@@ -15,11 +15,11 @@ class Base():
     @classmethod
     def connect_dynamodb(self):
         if self.IS_LOCAL:
-            dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+            dynamodb = boto3.resource(
+                'dynamodb', endpoint_url='http://localhost:8000')
         else:
             dynamodb = boto3.resource('dynamodb')
         return dynamodb
-
 
     @classmethod
     def get_table(self, table_name=None):
@@ -27,18 +27,16 @@ class Base():
         table_name = self.get_table_name()
         return dynamodb.Table(table_name)
 
-
     @classmethod
     def get_table_name(self):
         return '-'.join([self.PRJ_PREFIX, self.table_name])
 
-
     @classmethod
     def prj_exps_str(self, is_public=True):
         attrs = self.public_attrs if is_public else self.all_attrs
-        res = [ attr['key'] if isinstance(attr, dict) else attr for attr in attrs ]
+        res = [attr['key'] if isinstance(
+            attr, dict) else attr for attr in attrs]
         return ', '.join(res)
-
 
     @classmethod
     def to_response(self, item):
@@ -58,7 +56,6 @@ class Base():
 
         return res
 
-
     @classmethod
     def scan(self, options=None, is_return_raw=False):
         if options is None:
@@ -70,7 +67,6 @@ class Base():
             return res
 
         return res.get('Items', [])
-
 
     @classmethod
     def get_all(self, keys, is_desc=False, index_name=None, limit=0, projections=None):
@@ -107,12 +103,10 @@ class Base():
         res = table.query(**option)
         return res['Items'] if len(res['Items']) > 0 else []
 
-
     @classmethod
     def get_one(self, keys, is_desc=False, index_name=None, projections=None):
         items = self.get_all(keys, is_desc, index_name, 1, projections)
         return items[0] if len(items) > 0 else None
-
 
     @classmethod
     def get_all_by_pkey(self, pkeys, params=None, index_name=None, is_all_attr=True):
@@ -123,7 +117,8 @@ class Base():
                 params = {}
             params['is_desc'] = params.get('order') == 'desc'
 
-        option = {'ScanIndexForward': not (params and  params.get('is_desc', False))}
+        option = {'ScanIndexForward': not (
+            params and params.get('is_desc', False))}
 
         if params and params.get('count'):
             option['Limit'] = params['count']
@@ -143,8 +138,7 @@ class Base():
         if is_all_attr:
             return items
 
-        return [ self.to_response(item) for item in items ]
-
+        return [self.to_response(item) for item in items]
 
     @classmethod
     def get_one_by_pkey(self, hkey_name, hkey_val, is_desc=False, index_name=None):
@@ -165,22 +159,19 @@ class Base():
         res = table.query(**option)
         return res['Items'][0] if len(res['Items']) > 0 else None
 
-
     @classmethod
     def delete(self, key_dict):
         table = self.get_table()
         res = table.delete_item(
-          Key=key_dict
+            Key=key_dict
         )
         return res
-
 
     @classmethod
     def delete_table(self):
         table = self.get_table()
         res = table.delete()
         return res
-
 
     @classmethod
     def get_reserved_values(self, attr):
@@ -191,7 +182,6 @@ class Base():
             return []
 
         return self.reserved_values[attr]
-
 
     @classmethod
     def check_set_reserved_value(self, vals, is_raise_exp=True):
@@ -204,12 +194,12 @@ class Base():
 
             if vals[attr] in self.reserved_values[attr]:
                 if is_raise_exp:
-                    raise ModelInvalidParamsException('%s value is not allowed' % attr)
+                    raise ModelInvalidParamsException(
+                        '%s value is not allowed' % attr)
                 else:
                     return True
 
         return False
-
 
     @classmethod
     def create(self, vals, uuid_name=None):
@@ -228,7 +218,6 @@ class Base():
         table.put_item(Item=vals)
         return vals
 
-
     @classmethod
     def update(self, query_keys, vals, is_update_time=False):
         self.check_set_reserved_value(vals)
@@ -239,11 +228,11 @@ class Base():
             vals['updatedAt'] = utc_iso(False, True)
 
         update_attrs = {}
-        for key,val in vals.items():
-            update_attrs[key] = { 'Value': val }
+        for key, val in vals.items():
+            update_attrs[key] = {'Value': val}
 
         update_keys = {}
-        for key_type,key_dict in query_keys.items():
+        for key_type, key_dict in query_keys.items():
             key_name = key_dict['key']
             update_keys[key_name] = key_dict['val']
         res = table.update_item(
@@ -252,7 +241,6 @@ class Base():
         )
         items = self.get_one(query_keys)
         return items
-
 
     @classmethod
     def update_pk_value(self, current_keys, update_vals, is_update_time=False):
@@ -273,7 +261,6 @@ class Base():
         self.delete(key_dict)
         return self.create(item)
 
-
     @classmethod
     def batch_get_items(self, keys):
         dynamodb = self.connect_dynamodb()
@@ -289,33 +276,30 @@ class Base():
         )
         return res['Responses'][table_name]
 
-
     @classmethod
     def batch_save(self, items, pkeys=None, is_overwrite=False):
         table = self.get_table()
         overwrite_by_pkeys = pkeys if is_overwrite and pkeys else []
         with table.batch_writer(overwrite_by_pkeys=overwrite_by_pkeys) as batch:
             for item in items:
-                #target_keys = {k: v for k, v in item.items() if k in pkeys or not pkeys}
+                # target_keys = {k: v for k, v in item.items() if k in pkeys or not pkeys}
                 target_keys = {k: v for k, v in item.items()}
                 batch.put_item(target_keys)
-
 
     @classmethod
     def batch_delete(self, items, pkeys=None):
         table = self.get_table()
         with table.batch_writer() as batch:
             for item in items:
-                #target_keys = {k: v for k, v in item.items() if k in pkeys or not pkeys}
+                # target_keys = {k: v for k, v in item.items() if k in pkeys or not pkeys}
                 target_keys = {k: v for k, v in item.items()}
                 batch.delete_item(target_keys)
-
 
     @classmethod
     def truncate(self):
         table = self.get_table()
         delete_items = []
-        params   = {}
+        params = {}
         while True:
             res = table.scan(**params)
             delete_items.extend(res['Items'])
@@ -324,13 +308,13 @@ class Base():
             else:
                 break
 
-        key_names = [ x['AttributeName'] for x in table.key_schema ]
-        delete_keys = [ { k:v for k,v in x.items() if k in key_names } for x in delete_items ]
+        key_names = [x['AttributeName'] for x in table.key_schema]
+        delete_keys = [{k: v for k, v in x.items() if k in key_names}
+                       for x in delete_items]
 
         with table.batch_writer() as batch:
             for key in delete_keys:
-                batch.delete_item(Key = key)
-
+                batch.delete_item(Key=key)
 
     @classmethod
     def query_pager_published(self, pkeys, params, pager_keys_def, index_name=None, filter_conds=None):
@@ -362,7 +346,8 @@ class Base():
         filter_exps_str = ''
         if filter_conds:
             exp_attr_names, exp_attr_vals, filter_exps_str =\
-                self.get_filter_exps_for_pager_published(exp_attr_names, exp_attr_vals, filter_conds)
+                self.get_filter_exps_for_pager_published(
+                    exp_attr_names, exp_attr_vals, filter_conds)
 
         if filter_exps_str:
             option['FilterExpression'] = filter_exps_str
@@ -372,17 +357,15 @@ class Base():
         option['ExpressionAttributeValues'] = exp_attr_vals
 
         items, pager_key = self.query_loop_for_limit(option, limit, start_key,
-                                                 pager_keys_def, len(filter_exps_str) > 0)
+                                                     pager_keys_def, len(filter_exps_str) > 0)
         return {
             'items': items,
             'pagerKey': pager_key
         }
 
-
     @classmethod
     def get_filter_exps_for_pager_published(self, exp_attr_names, exp_attr_vals, filter_conds):
         return exp_attr_names, exp_attr_vals, ''
-
 
     @classmethod
     def query_loop_for_limit(self, option, target_count, pager_key, pager_keys, use_cate_filter=False):
@@ -415,17 +398,15 @@ class Base():
         if len(items_all) > target_count:
             items_all = items_all[:target_count]
             pager_key = self.get_pager_key_from_list(items_all, pager_keys['pkey'],
-                                         pager_keys['index_pkey'], pager_keys['index_skey'])
+                                                     pager_keys['index_pkey'], pager_keys['index_skey'])
 
         return items_all, pager_key
-
 
     @classmethod
     def exe_query(self, option):
         table = self.get_table()
         res = table.query(**option)
         return res.get('Items', []), res.get('LastEvaluatedKey')
-
 
     @staticmethod
     def get_ajust_count(reqired_count, use_cate_filter=False):
@@ -445,7 +426,6 @@ class Base():
                 adjust_count = 100
 
         return adjust_count
-
 
     @staticmethod
     def get_pager_key_from_list(items, pkey, index_pkey, index_skey):

@@ -11,12 +11,10 @@ class SiteConfig(Base):
     private_attrs = []
     all_attrs = public_attrs + private_attrs
 
-
     @classmethod
     def get_val(self, name):
         item = self.get_one_by_name(name)
         return item['configVal'] if item else None
-
 
     @classmethod
     def get_one_by_name(self, name):
@@ -25,7 +23,6 @@ class SiteConfig(Base):
             KeyConditionExpression=Key('configName').eq(name)
         )
         return res['Items'][0] if 'Items' in res and res['Items'] else None
-
 
     @classmethod
     def save(self, name, val):
@@ -61,7 +58,6 @@ class SiteConfig(Base):
             'updatedAt': time,
         }
 
-
     @classmethod
     def increament_number(self, name):
         item = self.get_one_by_name(name)
@@ -70,7 +66,7 @@ class SiteConfig(Base):
             return 1
 
         table = self.get_table()
-        #service_id_name = '#'.join([service_id, name])
+        # service_id_name = '#'.join([service_id, name])
         table.update_item(
             Key={'configName': name},
             UpdateExpression='ADD configVal :incr',

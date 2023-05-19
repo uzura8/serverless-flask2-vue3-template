@@ -9,9 +9,9 @@ bp = Blueprint('field', __name__, url_prefix='/fields')
 
 
 def get_field(field_id):
-    params = {'fieldId':field_id}
+    params = {'fieldId': field_id}
     vals = validate_req_params(validation_schema_get_field_detail(), params)
-    item = Field.get_one({'p': {'key':'fieldId', 'val':field_id}})
+    item = Field.get_one({'p': {'key': 'fieldId', 'val': field_id}})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -21,7 +21,7 @@ def get_field(field_id):
 @bp.get('/')
 def get_field_list():
     items = Field.scan()
-    return jsonify({'items':items}), 200
+    return jsonify({'items': items}), 200
 
 
 @bp.get('/<string:field_id>')
@@ -31,14 +31,14 @@ def get_field_detail(field_id):
 
 
 @bp.post('/<string:field_id>/events')
-def post_event(field_id):
+def post_field_event(field_id):
     field = get_field(field_id)
     schema = validation_schema_post_event()
     vals = validate_req_params(schema, request.json)
     vals['fieldId'] = field_id
     vals['fieldIdDate'] = f'{field_id}#{vals["date"]}'
-    #created_by = current_cognito_jwt.get('cognito:username', '')
-    #if created_by:
+    # created_by = current_cognito_jwt.get('cognito:username', '')
+    # if created_by:
     #    vals['createdBy'] = created_by
 
     try:
@@ -58,7 +58,7 @@ def post_event(field_id):
 @bp.get('/<string:field_id>/events/<string:date>')
 def get_field_detail_event_list(field_id, date):
     field = get_field(field_id)
-    pkeys = {'key':'fieldIdDate', 'val':f'{field_id}#{date}'}
+    pkeys = {'key': 'fieldIdDate', 'val': f'{field_id}#{date}'}
     events = Event.get_all_by_pkey(pkeys, None, 'fieldIdDateIndex')
     events_response = [Event.to_response(event) for event in events]
     return jsonify(events_response), 200
@@ -80,6 +80,7 @@ def validation_schema_get_field_detail():
             'valid_ulid': True,
         }
     }
+
 
 def validation_schema_post_event():
     return {
@@ -161,10 +162,10 @@ def validation_schema_post_event():
             'empty': True,
             'nullable': True,
         },
-        #'temperatureUnit': {
+        # 'temperatureUnit': {
         #    'type': 'string',
         #    'coerce': (str, NormalizerUtils.trim),
         #    'required': False,
         #    'allowed': ['celsius', 'fahrenheit'],
-        #},
+        # },
     }
