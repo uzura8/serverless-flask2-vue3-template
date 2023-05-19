@@ -13,6 +13,7 @@ from .site_config import SiteConfig
 # from .file import File
 from .field import Field
 from .event import Event
+from .game import Game
 
 __all__ = [
     'Base',
@@ -31,4 +32,5 @@ __all__ = [
     # 'File',
     'Field',
     'Event',
+    'Game',
 ]

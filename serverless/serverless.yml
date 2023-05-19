@@ -163,3 +163,4 @@ resources:
     FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
     FieldDynamoDBTable: ${file(./config/dynamodb/field.yml)}
     EventDynamoDBTable: ${file(./config/dynamodb/event.yml)}
+    GameDynamoDBTable: ${file(./config/dynamodb/game.yml)}

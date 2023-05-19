@@ -1,8 +1,8 @@
 import argparse
-from app.models.dynamodb import Field, Event, SiteConfig
+from app.models.dynamodb import Field, Event, SiteConfig, Game
 from pprint import pprint
 
-allowed_tables = ['field', 'event', 'site_config']
+allowed_tables = ['field', 'event', 'game', 'site_config']
 
 
 class TableUtilHandler:
@@ -20,7 +20,6 @@ class TableUtilHandler:
 
         # Generate class name from table name as PasscalCase
         class_name = ''.join(word.capitalize() for word in table.split('_'))
-
         # Get class object from class name using globals()
         model_class = globals()[class_name]
 
