@@ -5,16 +5,17 @@ from werkzeug.routing import Rule
 from app.utils.error import InvalidUsage
 from app.utils.decimal_encoder import DecimalEncoder
 from app.root import bp as root_module
-#from app.post import bp as post_module
-#from app.comment import bp as comment_module
-#from app.category import bp as category_module
-#from app.tag import bp as tag_module
-#from app.admin import bp as admin_module
+# from app.post import bp as post_module
+# from app.comment import bp as comment_module
+# from app.category import bp as category_module
+# from app.tag import bp as tag_module
+# from app.admin import bp as admin_module
 from app.field import bp as field_module
 from app.event import bp as event_module
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
-CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(',') if cors_accept_origins_str else []
+CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(
+    ',') if cors_accept_origins_str else []
 
 app = Flask(
     __name__,
@@ -86,18 +87,20 @@ def add_cors_headers(response):
     if not CORS_ACCEPT_ORIGINS or r is not None and r in CORS_ACCEPT_ORIGINS:
         allow_headers = ['X-Requested-With', 'X-HTTP-Method-Override', 'Content-Type',
                          'Cache-Control', 'Accept', 'Authorization', 'Time-Zone']
-        response.headers.add('Access-Control-Allow-Headers', ','.join(allow_headers))
-        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE')
+        response.headers.add('Access-Control-Allow-Headers',
+                             ','.join(allow_headers))
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET, POST, OPTIONS, PUT, DELETE')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
 
     return response
 
 
-#app.register_blueprint(category_module)
-#app.register_blueprint(tag_module)
-#app.register_blueprint(post_module)
-#app.register_blueprint(comment_module)
-#app.register_blueprint(admin_module)
+# app.register_blueprint(category_module)
+# app.register_blueprint(tag_module)
+# app.register_blueprint(post_module)
+# app.register_blueprint(comment_module)
+# app.register_blueprint(admin_module)
 app.register_blueprint(field_module)
 app.register_blueprint(event_module)
 app.register_blueprint(root_module)
