@@ -41,8 +41,8 @@ cognito:
 dynamoDbBackupTargetTagValue: 'none' # 'aws-backup':backup target / other value: not target
 
 dynamodbConfig:
-  #siteConfig:
-  #  billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
-  #  provisionedThroughput:
-  #    readCapacityUnits: 0
-  #    writeCapacityUnits: 0
+  sampleTable:
+    billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
+    provisionedThroughput:
+      readCapacityUnits: 0
+      writeCapacityUnits: 0
