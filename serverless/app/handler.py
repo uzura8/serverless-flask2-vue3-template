@@ -4,14 +4,14 @@ from flask_cognito import CognitoAuth
 from werkzeug.routing import Rule
 from app.utils.error import InvalidUsage
 from app.utils.decimal_encoder import DecimalEncoder
-from app.root import bp as root_module
+from app.routes.root import bp as root_module
 # from app.post import bp as post_module
 # from app.comment import bp as comment_module
 # from app.category import bp as category_module
 # from app.tag import bp as tag_module
 # from app.admin import bp as admin_module
-from app.field import bp as field_module
-from app.event import bp as event_module
+from app.routes.field import bp as field_module
+from app.routes.event import bp as event_module
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
 CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(
