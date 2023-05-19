@@ -53,7 +53,7 @@ def post_event_game(event_id):
     #    vals['createdBy'] = created_by
 
     try:
-        event = Game.create(vals, 'gameId')
+        game = Game.create(vals, 'gameId')
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -62,8 +62,8 @@ def post_event_game(event_id):
         print(traceback.format_exc())
         raise InvalidUsage('Server Error', 500)
 
-    event_response = Event.to_response(event)
-    return jsonify(event_response), 201
+    response = Game.to_response(game)
+    return jsonify(response), 201
 
 
 @bp.get('/<string:event_id>/games')
