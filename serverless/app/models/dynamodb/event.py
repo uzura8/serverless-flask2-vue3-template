@@ -22,7 +22,7 @@ class Event(Base):
         'joinedCount',
         'windType',
         'temperature',
-        'gameNum'
+        'gameNumber'
     ]
 
     response_attrs = public_attrs + [
@@ -47,8 +47,8 @@ class Event(Base):
         table = self.get_table()
         table.update_item(
             Key={'eventId': event_id},
-            UpdateExpression='ADD gameNum :incr',
+            UpdateExpression='ADD gameNumber :incr',
             ExpressionAttributeValues={':incr': 1}
         )
         item = self.get_one_by_pkey('eventId', event_id)
-        return item['gameNum']
+        return item['gameNumber']
