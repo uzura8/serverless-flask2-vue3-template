@@ -207,7 +207,7 @@ class Base():
             if vals.get('updatedAt'):
                 vals['createdAt'] = vals['updatedAt']
             else:
-                vals['createdAt'] = utc_iso(False, True)
+                vals['createdAt'] = utc_iso()
 
         self.check_set_reserved_value(vals)
 
@@ -225,7 +225,7 @@ class Base():
         table = self.get_table()
 
         if is_update_time:
-            vals['updatedAt'] = utc_iso(False, True)
+            vals['updatedAt'] = utc_iso()
 
         update_attrs = {}
         for key, val in vals.items():
@@ -249,7 +249,7 @@ class Base():
             item[attr] = val
 
         if is_update_time:
-            item['updatedAt'] = utc_iso(False, True)
+            item['updatedAt'] = utc_iso()
 
         key_dict = {}
         pkey = current_keys['p']['key']

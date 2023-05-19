@@ -26,7 +26,7 @@ class SiteConfig(Base):
 
     @classmethod
     def save(self, name, val):
-        time = utc_iso(False, True)
+        time = utc_iso()
         table = self.get_table()
         item = self.get_one_by_name(name)
         if not item:
