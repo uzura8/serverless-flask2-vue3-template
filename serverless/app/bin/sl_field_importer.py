@@ -1,7 +1,13 @@
+import os
+import sys
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(parent_dir)
+
 import csv
 from app.models.dynamodb import Field
 
-CSV_FILE_PATH = '../develop/var/sl_field.csv'
+CSV_FILE_PATH = '../../develop/var/sl_field.csv'
 
 class SlFieldImporter:
     def __init__(self, csv_file_path):

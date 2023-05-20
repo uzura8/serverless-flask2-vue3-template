@@ -1,6 +1,12 @@
+import os
+import sys
 import argparse
-from app.models.dynamodb import Field, Event, SiteConfig, Game
 from pprint import pprint
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(parent_dir)
+
+from app.models.dynamodb import Field, Event, SiteConfig, Game
 
 allowed_tables = ['field', 'event', 'game', 'site_config']
 
