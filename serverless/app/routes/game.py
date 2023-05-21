@@ -1,6 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
-from app.models.dynamodb import game, Game, ModelInvalidParamsException
+from app.firebase import check_user_token
+from app.models.dynamodb import Game, GameUser, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
@@ -36,18 +37,20 @@ def head_game_detail(game_id):
     return jsonify(), 200
 
 
-@bp.post('/<string:game_id>/games')
-def post_game_game(game_id):
+@bp.post('/<string:game_id>/users')
+@check_user_token
+def post_game_user(game_id):
     get_game(game_id)
-    schema = validation_schema_post_game()
+    schema = validation_schema_post_game_user()
     vals = validate_req_params(schema, request.json)
     vals['gameId'] = game_id
-    # created_by = current_cognito_jwt.get('cognito:username', '')
-    # if created_by:
-    #    vals['createdBy'] = created_by
+
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['userId'] = user_id
 
     try:
-        game = Game.create(vals, 'gameId')
+        game_user = GameUser.create(vals, 'gameUserId')
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -56,7 +59,7 @@ def post_game_game(game_id):
         print(traceback.format_exc())
         raise InvalidUsage('Server Error', 500)
 
-    response = Game.to_response(game)
+    response = GameUser.to_response(game_user)
     return jsonify(response), 201
 
 
@@ -131,4 +134,47 @@ def validation_schema_post_game():
         #    'required': True,
         #    'empty': False,
         # },
+    }
+
+
+def validation_schema_post_game_user():
+    return {
+        'gameUserId': ulid_schema,
+        'gameId': ulid_schema,
+        'userId': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': True,
+            'empty': False,
+            'regex': r'^[a-zA-Z0-9]{28,32}$',
+        },
+        'killCount': {
+            'type': 'integer',
+            'coerce': int,
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
+        'deathCount': {
+            'type': 'integer',
+            'coerce': int,
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
+        'isFlugGet': {
+            'type': 'boolean',
+            'coerce': bool,
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'default': False,
+        },
+        'gameMemo': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+        },
     }

@@ -14,6 +14,7 @@ from .site_config import SiteConfig
 from .field import Field
 from .event import Event
 from .game import Game
+from .game_user import GameUser
 
 __all__ = [
     'Base',
@@ -33,4 +34,5 @@ __all__ = [
     'Field',
     'Event',
     'Game',
+    'GameUser'
 ]
