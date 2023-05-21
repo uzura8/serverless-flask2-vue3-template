@@ -1,5 +1,6 @@
 import traceback
 from flask import Blueprint, jsonify, request
+from app.firebase import check_user_token
 from app.models.dynamodb import Event, Game, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
@@ -27,12 +28,6 @@ def get_event_list():
 @bp.get('/<string:event_id>')
 def get_event_detail(event_id):
     item = get_event(event_id)
-    params = {'eventId': event_id}
-    vals = validate_req_params(validation_schema_get_event_detail(), params)
-    item = Event.get_one({'p': {'key': 'eventId', 'val': event_id}})
-    if not item:
-        raise InvalidUsage('Not Found', 404)
-
     return jsonify(Event.to_response(item)), 200
 
 
@@ -43,14 +38,17 @@ def head_event_detail(event_id):
 
 
 @bp.post('/<string:event_id>/games')
+@check_user_token
 def post_event_game(event_id):
-    field = get_event(event_id)
+    get_event(event_id)
     schema = validation_schema_post_game()
     vals = validate_req_params(schema, request.json)
     vals['eventId'] = event_id
-    # created_by = current_cognito_jwt.get('cognito:username', '')
-    # if created_by:
-    #    vals['createdBy'] = created_by
+
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['createdBy'] = user_id
+        vals['createdUserType'] = 'user'
 
     try:
         game = Game.create(vals, 'gameId')
@@ -68,7 +66,7 @@ def post_event_game(event_id):
 
 @bp.get('/<string:event_id>/games')
 def get_event_game_list(event_id):
-    field = get_event(event_id)
+    get_event(event_id)
     pkeys = {'key': 'eventId', 'val': event_id}
     games = Game.get_all_by_pkey(pkeys, None, 'eventIdIndex')
     response = [Game.to_response(game) for game in games]
@@ -134,7 +132,7 @@ def validation_schema_post_game():
             'empty': True,
             'nullable': True,
         },
-        'durationText': {
+        'durationUnit': {
             'type': 'string',
             'coerce': (str, NormalizerUtils.trim),
             'required': False,
