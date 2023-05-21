@@ -12,6 +12,7 @@ from app.routes.root import bp as root_module
 # from app.admin import bp as admin_module
 from app.routes.field import bp as field_module
 from app.routes.event import bp as event_module
+from app.routes.game import bp as game_module
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
 CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(
@@ -103,4 +104,5 @@ def add_cors_headers(response):
 # app.register_blueprint(admin_module)
 app.register_blueprint(field_module)
 app.register_blueprint(event_module)
+app.register_blueprint(game_module)
 app.register_blueprint(root_module)

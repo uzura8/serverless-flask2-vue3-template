@@ -38,6 +38,6 @@ class Game(Base):
         """Create a new game."""
         # TODO: implement transaction
         game_num = Event.increament_game_num(vals['eventId'])
-        vals['gameNum'] = game_num
+        vals['gameNumber'] = game_num
 
         return super().create(vals, uuid_name)
