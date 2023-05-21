@@ -121,6 +121,7 @@ provider:
     COGNITO_CHECK_TOKEN_EXPIRATION: ${file(${self:custom.stageConfigFileName}):cognito.checkTokenExpiration}
     COGNITO_JWT_HEADER_NAME: ${file(./config/stages/common.yml):cognito.jwtHeaderName}
     COGNITO_JWT_HEADER_PREFIX: ${file(./config/stages/common.yml):cognito.jwtHeaderPrefix}
+    GOOGLE_APPLICATION_CREDENTIALS: ./config/stages/firebase-admin-credentials-${self:provider.stage}.json
 
 package:
   patterns:

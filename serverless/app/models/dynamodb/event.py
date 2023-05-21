@@ -30,6 +30,7 @@ class Event(Base):
     private_attrs = [
         'fieldIdDate',
         'createdBy',
+        'createdUserType',
     ]
     all_attrs = public_attrs + private_attrs
 

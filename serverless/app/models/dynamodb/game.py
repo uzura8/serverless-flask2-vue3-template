@@ -28,6 +28,7 @@ class Game(Base):
     ]
     private_attrs = [
         'createdBy',
+        'createdUserType',
     ]
     all_attrs = public_attrs + private_attrs
 

@@ -1,5 +1,6 @@
 import traceback
 from flask import Blueprint, jsonify, request
+from app.firebase import check_user_token
 from app.models.dynamodb import Field, Event, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
@@ -31,15 +32,18 @@ def get_field_detail(field_id):
 
 
 @bp.post('/<string:field_id>/events')
+@check_user_token
 def post_field_event(field_id):
     field = get_field(field_id)
     schema = validation_schema_post_event()
     vals = validate_req_params(schema, request.json)
     vals['fieldId'] = field_id
     vals['fieldIdDate'] = f'{field_id}#{vals["date"]}'
-    # created_by = current_cognito_jwt.get('cognito:username', '')
-    # if created_by:
-    #    vals['createdBy'] = created_by
+
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['createdBy'] = user_id
+        vals['createdUserType'] = 'user'
 
     try:
         event = Event.create(vals, 'eventId')
