@@ -1,10 +1,11 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.firebase import check_user_token
-from app.models.dynamodb import Game, GameUser, ModelInvalidParamsException
+from app.models.dynamodb import Game, UserGame, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
+from app.validators.schemas import ulid_schema
 
 bp = Blueprint('game', __name__, url_prefix='/games')
 
@@ -37,6 +38,14 @@ def head_game_detail(game_id):
     return jsonify(), 200
 
 
+@bp.get('/<string:game_id>/users')
+def get_game_user_list(game_id):
+    get_game(game_id)
+    pkeys = {'key': 'gameId', 'val': game_id}
+    items = UserGame.get_all_by_pkey(pkeys, None, 'gameIdIndex')
+    return jsonify({'items': items}), 200
+
+
 @bp.post('/<string:game_id>/users')
 @check_user_token
 def post_game_user(game_id):
@@ -50,7 +59,7 @@ def post_game_user(game_id):
         vals['userId'] = user_id
 
     try:
-        game_user = GameUser.create(vals, 'gameUserId')
+        game_user = UserGame.create(vals, 'gameUserId')
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -59,17 +68,8 @@ def post_game_user(game_id):
         print(traceback.format_exc())
         raise InvalidUsage('Server Error', 500)
 
-    response = GameUser.to_response(game_user)
+    response = UserGame.to_response(game_user)
     return jsonify(response), 201
-
-
-ulid_schema = {
-    'type': 'string',
-    'coerce': (str, NormalizerUtils.trim),
-    'required': True,
-    'empty': False,
-    'valid_ulid': True,
-}
 
 
 def validation_schema_get_game_detail():

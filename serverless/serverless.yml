@@ -165,4 +165,5 @@ resources:
     FieldDynamoDBTable: ${file(./config/dynamodb/field.yml)}
     EventDynamoDBTable: ${file(./config/dynamodb/event.yml)}
     GameDynamoDBTable: ${file(./config/dynamodb/game.yml)}
-    GameUserDynamoDBTable: ${file(./config/dynamodb/game-user.yml)}
+    UserEventDynamoDBTable: ${file(./config/dynamodb/user-event.yml)}
+    UserGamerDynamoDBTable: ${file(./config/dynamodb/user-game.yml)}

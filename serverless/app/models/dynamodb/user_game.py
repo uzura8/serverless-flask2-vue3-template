@@ -4,10 +4,10 @@ from app.models.dynamodb.base import Base
 #from app.models.dynamodb.game import Game
 
 
-class GameUser(Base):
-    """DynamoDB Model class for `game_user` table."""
+class UserGame(Base):
+    """DynamoDB Model class for `user-game` table."""
 
-    table_name = 'game-user'
+    table_name = 'user-game'
     public_attrs = [
         'gameUserId',
         'gameId',

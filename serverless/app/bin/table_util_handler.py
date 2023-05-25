@@ -6,9 +6,9 @@ from pprint import pprint
 parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(parent_dir)
 
-from app.models.dynamodb import Field, Event, SiteConfig, Game, GameUser
+from app.models.dynamodb import Field, Event, SiteConfig, Game, UserEvent, UserGame
 
-allowed_tables = ['field', 'event', 'game', 'site_config', 'game_user']
+allowed_tables = ['field', 'event', 'game', 'site_config', 'user_event', 'user_game']
 
 
 class TableUtilHandler:

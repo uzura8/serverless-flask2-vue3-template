@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.firebase import check_user_token
-from app.models.dynamodb import Event, Game, ModelInvalidParamsException
+from app.models.dynamodb import Event, Game, UserEvent, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
@@ -71,6 +71,15 @@ def get_event_game_list(event_id):
     games = Game.get_all_by_pkey(pkeys, None, 'eventIdIndex')
     response = [Game.to_response(game) for game in games]
     return jsonify(response), 200
+
+
+@bp.get('/<string:event_id>/users')
+def get_event_member_list(event_id):
+    get_event(event_id)
+    pkeys = {'key': 'eventId', 'val': event_id}
+    users = UserEvent.get_all_by_pkey(pkeys, None, 'eventIdIndex')
+    res_items = [UserEvent.to_response(user) for user in users]
+    return jsonify({'items': res_items}), 200
 
 
 ulid_schema = {
