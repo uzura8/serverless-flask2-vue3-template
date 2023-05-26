@@ -59,7 +59,6 @@ def put_member_game(game_id):
 
     res = UserGame.get_one(
         {'p': {'key': 'userIdGameId', 'val': user_id_game_id}})
-    print((111111111, res, vals))
     # if res:
     #    raise InvalidUsage('Already exists', 400)
     is_edit = bool(res)
@@ -69,6 +68,7 @@ def put_member_game(game_id):
             query_keys = {'p': {'key': 'userIdGameId', 'val': user_id_game_id}}
             res = UserGame.update(query_keys, vals, True)
         else:
+            vals['userIdGameId'] = user_id_game_id
             res = UserGame.create(vals)
 
     except ModelInvalidParamsException as e:
