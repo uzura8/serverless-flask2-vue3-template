@@ -1,2 +1,4 @@
 /src/configs/config.json
+/src/configs/config-*.json
 /src/configs/cognito-client-config.json
+/public

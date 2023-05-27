@@ -20,6 +20,6 @@ export default defineConfig({
   },
   publicDir: 'static',
   build: {
-    outDir: '../public',
+    outDir: 'public',
   },
 })
