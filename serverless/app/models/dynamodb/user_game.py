@@ -1,7 +1,7 @@
 """This module provides an example import from the `app.models.dynamodb` package."""
 
 from app.models.dynamodb.base import Base
-#from app.models.dynamodb.game import Game
+# from app.models.dynamodb.game import Game
 
 
 class UserGame(Base):
@@ -12,6 +12,7 @@ class UserGame(Base):
         'gameUserId',
         'gameId',
         'userId',
+        'eventId',
         'killCount',
         'deathCount',
         'isFlugGet',
@@ -24,11 +25,12 @@ class UserGame(Base):
     response_attrs = public_attrs + [
     ]
     private_attrs = [
+        'userIdEventId',
     ]
     all_attrs = public_attrs + private_attrs
 
-    #@classmethod
-    #def create(self, vals, uuid_name=None):
+    # @classmethod
+    # def create(self, vals, uuid_name=None):
     #    """Create a new game."""
     #    # TODO: implement transaction
     #    game_num = Event.increament_game_num(vals['eventId'])

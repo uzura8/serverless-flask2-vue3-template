@@ -12,6 +12,9 @@ Properties:
       AttributeName: userId
       AttributeType: S
     -
+      AttributeName: userIdEventId
+      AttributeType: S
+    -
       AttributeName: createdAt
       AttributeType: S
   KeySchema:
@@ -45,6 +48,17 @@ Properties:
       KeySchema:
       -
         AttributeName: gameId
+        KeyType: HASH
+      -
+        AttributeName: createdAt
+        KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    -
+      IndexName: userIdEventIdIndex
+      KeySchema:
+      -
+        AttributeName: userIdEventId
         KeyType: HASH
       -
         AttributeName: createdAt

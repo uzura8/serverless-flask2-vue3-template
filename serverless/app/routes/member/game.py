@@ -50,12 +50,9 @@ def put_member_game(game_id):
     user_id = request.user.get('user_id')
     user_id_game_id = f'{user_id}#{game_id}'
 
+    user_id = request.user.get('user_id')
     schema = validation_schema_put_game()
     vals = validate_req_params(schema, request.json)
-    vals['gameId'] = game_id
-    user_id = request.user.get('user_id')
-    vals['userId'] = user_id
-    # vals['userIdGameId'] = user_id_game_id
 
     res = UserGame.get_one(
         {'p': {'key': 'userIdGameId', 'val': user_id_game_id}})
@@ -68,7 +65,12 @@ def put_member_game(game_id):
             query_keys = {'p': {'key': 'userIdGameId', 'val': user_id_game_id}}
             res = UserGame.update(query_keys, vals, True)
         else:
+            event_id = game.get('eventId')
             vals['userIdGameId'] = user_id_game_id
+            vals['gameId'] = game_id
+            vals['userId'] = user_id
+            vals['eventId'] = event_id
+            vals['userIdEventId'] = f'{user_id}#{event_id}'
             res = UserGame.create(vals)
 
     except ModelInvalidParamsException as e:
