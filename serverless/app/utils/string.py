@@ -2,7 +2,7 @@ import re
 import string
 import random
 import uuid
-import ulid
+from ulid import ULID
 from typing import Iterator
 from html.parser import HTMLParser
 
@@ -74,7 +74,7 @@ def random_str(num, is_digits_only=False):
 
 def new_uuid(fmt='ulid'):
     if fmt == 'ulid':
-        return str(ulid.new()).lower()
+        return str(ULID()).lower()
 
     if fmt == 'uuidv4':
         return str(uuid.uuid4()).replace('-', '').lower()
