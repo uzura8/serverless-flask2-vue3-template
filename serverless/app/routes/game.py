@@ -5,7 +5,8 @@ from app.models.dynamodb import Game, UserGame, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
-from app.validators.schemas import ulid_schema
+from app.validators.schemas.common import ulid_schema
+from app.validators.schemas.survalog import game_schema
 
 bp = Blueprint('game', __name__, url_prefix='/games')
 
@@ -79,62 +80,9 @@ def validation_schema_get_game_detail():
 
 
 def validation_schema_post_game():
-    return {
-        'gameId': ulid_schema,
-        'name': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'body': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': False,
-            'nullable': True,
-        },
-        'gameType': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': True,
-            'empty': False,
-        },
-        'gameTypeText': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'joinedCount': {
-            'type': 'integer',
-            'coerce': int,
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'duration': {
-            'type': 'integer',
-            'coerce': int,
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'durationUnit': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'allowed': ['min', 'hour', 'day'],
-        },
-        # 'createdBy': {
-        #    'type': 'string',
-        #    'coerce': (str, NormalizerUtils.trim),
-        #    'required': True,
-        #    'empty': False,
-        # },
-    }
+    schema = game_schema
+    schema['gameId'] = ulid_schema
+    return schema
 
 
 def validation_schema_post_game_user():

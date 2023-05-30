@@ -5,6 +5,8 @@ from app.models.dynamodb import Event, Game, UserEvent, ModelInvalidParamsExcept
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
+from app.validators.schemas.common import ulid_schema
+from app.validators.schemas.survalog import game_schema
 
 bp = Blueprint('event', __name__, url_prefix='/events')
 
@@ -82,15 +84,6 @@ def get_event_member_list(event_id):
     return jsonify({'items': res_items}), 200
 
 
-ulid_schema = {
-    'type': 'string',
-    'coerce': (str, NormalizerUtils.trim),
-    'required': True,
-    'empty': False,
-    'valid_ulid': True,
-}
-
-
 def validation_schema_get_event_detail():
     return {
         'eventId': ulid_schema,
@@ -98,59 +91,6 @@ def validation_schema_get_event_detail():
 
 
 def validation_schema_post_game():
-    return {
-        'eventId': ulid_schema,
-        'name': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'body': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': False,
-            'nullable': True,
-        },
-        'gameType': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': True,
-            'empty': False,
-        },
-        'gameTypeText': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'joinedCount': {
-            'type': 'integer',
-            'coerce': int,
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'duration': {
-            'type': 'integer',
-            'coerce': int,
-            'required': False,
-            'empty': True,
-            'nullable': True,
-        },
-        'durationUnit': {
-            'type': 'string',
-            'coerce': (str, NormalizerUtils.trim),
-            'required': False,
-            'allowed': ['min', 'hour', 'day'],
-        },
-        # 'createdBy': {
-        #    'type': 'string',
-        #    'coerce': (str, NormalizerUtils.trim),
-        #    'required': True,
-        #    'empty': False,
-        # },
-    }
+    schema = game_schema
+    schema['eventId'] = ulid_schema
+    return schema

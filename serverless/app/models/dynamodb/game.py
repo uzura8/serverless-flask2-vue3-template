@@ -18,10 +18,17 @@ class Game(Base):
         'updatedAt',
         'images',
         'gameType',
-        'gameTypeText',
+        'gameTypeNote',
         'duration',
         'durationUnit',
+        'isUnlimitedRespawn',
+        'respawnCount',
+        'firepowerLimitType',
+        'firepowerLimitNote',
         'joinedCount',
+        'matchResultType',
+        'matchResultNote',
+        'respawnCount',
     ]
 
     response_attrs = public_attrs + [

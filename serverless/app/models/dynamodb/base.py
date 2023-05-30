@@ -51,7 +51,7 @@ class Base():
 
             if k in item:
                 val = item.get(k)
-                if val:
+                if val is not None:
                     res[l] = val
 
         return res

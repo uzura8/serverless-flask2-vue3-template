@@ -5,7 +5,7 @@ from app.models.dynamodb import Event, UserGame, UserEvent, ModelInvalidParamsEx
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
-from app.validators.schemas import ulid_schema
+from app.validators.schemas.common import ulid_schema
 from app.routes.member import bp
 
 
