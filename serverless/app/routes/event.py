@@ -5,7 +5,7 @@ from app.models.dynamodb import Event, Game, UserEvent, ModelInvalidParamsExcept
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
-from app.validators.schemas.common import ulid_schema
+from app.validators.schemas.common import ulid_schema, get_list_schema
 from app.validators.schemas.survalog import game_schema
 
 bp = Blueprint('event', __name__, url_prefix='/events')
@@ -69,8 +69,9 @@ def post_event_game(event_id):
 @bp.get('/<string:event_id>/games')
 def get_event_game_list(event_id):
     get_event(event_id)
+    params = validate_req_params(get_list_schema, request.args)
     pkeys = {'key': 'eventId', 'val': event_id}
-    games = Game.get_all_by_pkey(pkeys, None, 'eventIdIndex')
+    games = Game.get_all_by_pkey(pkeys, params, 'eventIdIndex')
     response = [Game.to_response(game) for game in games]
     return jsonify(response), 200
 

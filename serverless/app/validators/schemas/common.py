@@ -15,3 +15,20 @@ user_id_schema = {
     'empty': False,
     'regex': r'^[a-zA-Z0-9]{28,32}$',
 }
+
+get_list_schema = {
+    'count': {
+        'type': 'integer',
+        'coerce': int,
+        'required': False,
+        'min': 1,
+        'max': 50,
+        'default': 10,
+    },
+    'order': {
+        'type': 'string',
+        'required': False,
+        'allowed': ['asc', 'desc'],
+        'default': 'asc',
+    },
+}
