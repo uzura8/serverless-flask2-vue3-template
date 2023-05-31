@@ -6,7 +6,7 @@ from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
 from app.validators.schemas.common import ulid_schema, get_list_schema
-from app.validators.schemas.survalog import game_schema
+from app.validators.schemas.survalog import event_schema, game_schema
 
 bp = Blueprint('event', __name__, url_prefix='/events')
 
@@ -37,6 +37,31 @@ def get_event_detail(event_id):
 def head_event_detail(event_id):
     get_event(event_id)
     return jsonify(), 200
+
+
+@bp.put('/<string:event_id>')
+@check_user_token
+def put_event(event_id):
+    get_event(event_id)
+    vals = validate_req_params(event_schema, request.json)
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['createdBy'] = user_id
+        vals['createdUserType'] = 'user'
+
+    try:
+        keys = {'p': {'key': 'eventId', 'val': event_id}}
+        updated = Event.update(keys, vals, True)
+
+    except ModelInvalidParamsException as e:
+        raise InvalidUsage(e.message, 400)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    response = Event.to_response(updated)
+    return jsonify(response), 201
 
 
 @bp.post('/<string:event_id>/games')
