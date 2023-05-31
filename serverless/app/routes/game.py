@@ -39,6 +39,31 @@ def head_game_detail(game_id):
     return jsonify(), 200
 
 
+@bp.put('/<string:game_id>')
+@check_user_token
+def put_game(game_id):
+    get_game(game_id)
+    vals = validate_req_params(game_schema, request.json)
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['createdBy'] = user_id
+        vals['createdUserType'] = 'user'
+
+    try:
+        keys = {'p': {'key': 'gameId', 'val': game_id}}
+        updated = Game.update(keys, vals, True)
+
+    except ModelInvalidParamsException as e:
+        raise InvalidUsage(e.message, 400)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    response = Game.to_response(updated)
+    return jsonify(response), 201
+
+
 @bp.get('/<string:game_id>/users')
 def get_game_user_list(game_id):
     get_game(game_id)
@@ -77,12 +102,6 @@ def validation_schema_get_game_detail():
     return {
         'gameId': ulid_schema,
     }
-
-
-def validation_schema_post_game():
-    schema = game_schema
-    schema['gameId'] = ulid_schema
-    return schema
 
 
 def validation_schema_post_game_user():
