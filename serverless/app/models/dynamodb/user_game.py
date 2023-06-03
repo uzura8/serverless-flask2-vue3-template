@@ -13,6 +13,7 @@ class UserGame(Base):
         'gameId',
         'userId',
         'eventId',
+        'joinedTeamType',
         'killCount',
         'deathCount',
         'isFlagGet',

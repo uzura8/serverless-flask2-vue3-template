@@ -173,7 +173,8 @@ game_schema = {
         'required': False,
         'empty': True,
         'nullable': True,
-        'allowed': ['draw', 'redWin', 'yellowWin', 'others'],
+        'allowed': ['draw', 'redWin', 'yellowWin', 'blueWin',
+                    'greenWin', 'attackersWin', 'defendersWin', 'others'],
     },
     'matchResultNote': {
         'type': 'string',

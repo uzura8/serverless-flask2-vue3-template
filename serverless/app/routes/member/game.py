@@ -92,6 +92,14 @@ def validation_schema_get_game_detail():
 def validation_schema_put_game():
     return {
         'gameId': ulid_schema,
+        'joinedTeamType': {
+            'type': 'string',
+            'coerce': (str, NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': ['red', 'yellow', 'blue', 'green', 'attackers', 'defenders', 'others'],
+        },
         'killCount': {
             'type': 'integer',
             'coerce': int,
