@@ -15,7 +15,7 @@ class UserGame(Base):
         'eventId',
         'killCount',
         'deathCount',
-        'isFlugGet',
+        'isFlagGet',
         'gameMemo',
         'createdAt',
         'updatedAt',

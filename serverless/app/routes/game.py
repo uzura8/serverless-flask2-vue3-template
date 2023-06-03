@@ -129,7 +129,7 @@ def validation_schema_post_game_user():
             'empty': True,
             'nullable': True,
         },
-        'isFlugGet': {
+        'isFlagGet': {
             'type': 'boolean',
             'coerce': bool,
             'required': False,

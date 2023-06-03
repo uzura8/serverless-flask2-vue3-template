@@ -106,7 +106,7 @@ def validation_schema_put_game():
             'empty': True,
             'nullable': True,
         },
-        'isFlugGet': {
+        'isFlagGet': {
             'type': 'boolean',
             'coerce': bool,
             'required': False,
