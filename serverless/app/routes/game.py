@@ -64,6 +64,20 @@ def put_game(game_id):
     return jsonify(response), 201
 
 
+@bp.delete('/<string:game_id>')
+@check_user_token
+def delete_game(game_id):
+    get_game(game_id)
+    try:
+        Game.delete({'gameId': game_id})
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    return jsonify(), 204
+
+
 @bp.get('/<string:game_id>/users')
 def get_game_user_list(game_id):
     get_game(game_id)
