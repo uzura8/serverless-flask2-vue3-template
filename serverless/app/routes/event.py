@@ -64,6 +64,24 @@ def put_event(event_id):
     return jsonify(response), 201
 
 
+@bp.delete('/<string:event_id>')
+@check_user_token
+def delete_event(event_id):
+    get_event(event_id)
+    try:
+        keys = {'eventId': event_id}
+        Event.delete(keys)
+
+    except ModelInvalidParamsException as e:
+        raise InvalidUsage(e.message, 400)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    return jsonify(), 204
+
+
 @bp.post('/<string:event_id>/games')
 @check_user_token
 def post_event_game(event_id):
