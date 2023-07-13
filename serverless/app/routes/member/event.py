@@ -25,8 +25,14 @@ def get_member_events():
     # event = get_event(event_id)
     user_id = request.user.get('user_id')
     pkeys = {'key': 'userId', 'val': user_id}
-    events = Event.get_all_by_pkey(pkeys, None, 'userIdIndex')
-    return jsonify({'items': events}), 200
+    user_events = UserEvent.get_all_by_pkey(pkeys, None, 'userIdIndex')
+    event_ids = [ue.get('eventId') for ue in user_events]
+    keys = [{'eventId': eid} for eid in event_ids]
+    events = Event.batch_get_items(keys)
+    for ue in user_events:
+        ue['event'] = next((e for e in events if e.get('eventId') ==
+                            ue.get('eventId')), None)
+    return jsonify({'items': user_events}), 200
 
 
 @bp.get('/events/<string:event_id>')
