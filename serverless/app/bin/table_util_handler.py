@@ -1,19 +1,24 @@
+from app.models.dynamodb import Field, Event, SiteConfig, Game, UserEvent, UserGame
 import os
 import sys
 import argparse
 from pprint import pprint
+import boto3
 
-parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+parent_dir = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(parent_dir)
 
-from app.models.dynamodb import Field, Event, SiteConfig, Game, UserEvent, UserGame
 
-allowed_tables = ['field', 'event', 'game', 'site_config', 'user_event', 'user_game']
+allowed_tables = ['field', 'event', 'game',
+                  'site_config', 'user_event', 'user_game']
 
 
 class TableUtilHandler:
     def __init__(self):
         self.allowed_tables = allowed_tables
+        self.ddb_client = boto3.client('dynamodb')
 
     def __del__(self):
         pass
@@ -41,10 +46,18 @@ class TableUtilHandler:
             model_class.delete_table()
             print(f'{class_name}.delete_table() executed.')
 
+        elif operation == 'desc':
+            table_name = model_class.get_table_name()
+            table_info = self.ddb_client.describe_table(TableName=table_name)
+            pprint((table_info))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('table', choices=allowed_tables, help="Choose the table: 'field' or 'post'")
-    parser.add_argument('operation', choices=['scan', 'delete', 'truncate'], help="Choose the operation: 'scan' or 'delete'")
+    parser.add_argument('table', choices=allowed_tables,
+                        help="Choose the table: 'field' or 'post'")
+    parser.add_argument('operation', choices=[
+                        'scan', 'delete', 'truncate', 'desc'], help='Choose the operation')
     args = parser.parse_args()
 
     scanner = TableUtilHandler()
