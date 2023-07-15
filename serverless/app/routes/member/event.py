@@ -25,7 +25,8 @@ def get_member_events():
     # event = get_event(event_id)
     user_id = request.user.get('user_id')
     pkeys = {'key': 'userId', 'val': user_id}
-    user_events = UserEvent.get_all_by_pkey(pkeys, None, 'userIdIndex')
+    params = {'order': 'desc'}
+    user_events = UserEvent.get_all_by_pkey(pkeys, params, 'userIdIndex')
     event_ids = [ue.get('eventId') for ue in user_events]
     keys = [{'eventId': eid} for eid in event_ids]
     events = Event.batch_get_items(keys)

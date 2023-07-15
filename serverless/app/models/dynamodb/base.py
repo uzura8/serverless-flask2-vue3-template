@@ -117,8 +117,11 @@ class Base():
                 params = {}
             params['is_desc'] = params.get('order') == 'desc'
 
-        option = {'ScanIndexForward': not (
-            params and params.get('is_desc', False))}
+        is_forward = False
+        if params and params.get('is_desc', False) is False:
+            is_forward = True
+
+        option = {'ScanIndexForward': is_forward}
 
         if params and params.get('count'):
             option['Limit'] = params['count']
