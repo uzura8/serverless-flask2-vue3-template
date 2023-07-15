@@ -10,6 +10,7 @@ class Event(Base):
     public_attrs = [
         'eventId',
         'fieldId',
+        'fieldName',
         'date',
         'name',
         'body',

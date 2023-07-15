@@ -39,6 +39,7 @@ def post_field_event(field_id):
     vals = validate_req_params(schema, request.json)
     vals['fieldId'] = field_id
     vals['fieldIdDate'] = f'{field_id}#{vals["date"]}'
+    vals['fieldName'] = field.get('name')
 
     user_id = request.user.get('user_id')
     if user_id:
