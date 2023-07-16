@@ -45,7 +45,15 @@ class Game(Base):
     def create(self, vals, uuid_name=None):
         """Create a new game."""
         # TODO: implement transaction
-        game_num = Event.increament_game_num(vals['eventId'])
-        vals['gameNumber'] = game_num
+        if vals.get('gameNumber'):
+            game_num = vals['gameNumber']
+            event = Event.get_one_by_pkey('eventId', vals['eventId'])
+            current_game_num = event.get('gameNumber')
+            if game_num > current_game_num:
+                keys = {'p': {'key': 'eventId', 'val': vals['eventId']}}
+                Event.update(keys, {'gameNumber': game_num})
+        else:
+            game_num = Event.increament_game_num(vals['eventId'])
+            vals['gameNumber'] = game_num
 
         return super().create(vals, uuid_name)

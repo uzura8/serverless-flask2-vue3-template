@@ -86,27 +86,8 @@ def delete_event(event_id):
 @check_user_token
 def post_event_game(event_id):
     get_event(event_id)
-    schema = validation_schema_post_game()
-    vals = validate_req_params(schema, request.json)
-    vals['eventId'] = event_id
-
-    user_id = request.user.get('user_id')
-    if user_id:
-        vals['createdBy'] = user_id
-        vals['createdUserType'] = 'user'
-
-    try:
-        game = Game.create(vals, 'gameId')
-
-    except ModelInvalidParamsException as e:
-        raise InvalidUsage(e.message, 400)
-
-    except Exception as e:
-        print(traceback.format_exc())
-        raise InvalidUsage('Server Error', 500)
-
-    response = Game.to_response(game)
-    return jsonify(response), 201
+    res = create_game(event_id, request.json)
+    return jsonify(res), 201
 
 
 @bp.get('/<string:event_id>/games')
@@ -117,6 +98,34 @@ def get_event_game_list(event_id):
     games = Game.get_all_by_pkey(pkeys, params, 'eventIdIndex')
     response = [Game.to_response(game) for game in games]
     return jsonify(response), 200
+
+
+@bp.get('/<string:event_id>/games/<int:game_num>')
+def get_event_game_detail(event_id, game_num):
+    get_event(event_id)
+    query_keys = {
+        'p': {'key': 'eventId', 'val': event_id},
+        's': {'key': 'gameNumber', 'val': game_num}
+    }
+    game = Game.get_one(query_keys, True, 'eventIdIndex')
+    res = Game.to_response(game)
+    return jsonify(res), 200
+
+
+@bp.put('/<string:event_id>/games/<int:game_num>')
+@check_user_token
+def put_event_game_by_game_num(event_id, game_num):
+    get_event(event_id)
+    query_keys = {
+        'p': {'key': 'eventId', 'val': event_id},
+        's': {'key': 'gameNumber', 'val': game_num}
+    }
+    game = Game.get_one(query_keys, True, 'eventIdIndex')
+    if game:
+        raise InvalidUsage('This. game number is already exists', 409)
+
+    res = create_game(event_id, request.json, game_num)
+    return jsonify(res), 201
 
 
 @bp.get('/<string:event_id>/users')
@@ -132,6 +141,32 @@ def validation_schema_get_event_detail():
     return {
         'eventId': ulid_schema,
     }
+
+
+def create_game(event_id, req_vals, game_num=None):
+    schema = validation_schema_post_game()
+    vals = validate_req_params(schema, req_vals)
+    vals['eventId'] = event_id
+
+    user_id = request.user.get('user_id')
+    if user_id:
+        vals['createdBy'] = user_id
+        vals['createdUserType'] = 'user'
+
+    if game_num:
+        vals['gameNumber'] = game_num
+
+    try:
+        game = Game.create(vals, 'gameId')
+
+    except ModelInvalidParamsException as e:
+        raise InvalidUsage(e.message, 400)
+
+    except Exception as e:
+        print(traceback.format_exc())
+        raise InvalidUsage('Server Error', 500)
+
+    return Game.to_response(game)
 
 
 def validation_schema_post_game():
