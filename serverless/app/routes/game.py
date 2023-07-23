@@ -14,7 +14,7 @@ bp = Blueprint('game', __name__, url_prefix='/games')
 def get_game(game_id):
     params = {'gameId': game_id}
     vals = validate_req_params(validation_schema_get_game_detail(), params)
-    item = Game.get_one({'p': {'key': 'gameId', 'val': game_id}})
+    item = Game.get_one({'gameId': game_id})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -50,8 +50,7 @@ def put_game(game_id):
         vals['createdUserType'] = 'user'
 
     try:
-        keys = {'p': {'key': 'gameId', 'val': game_id}}
-        updated = Game.update(keys, vals, True)
+        updated = Game.update({'gameId': game_id}, vals, True)
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -81,9 +80,8 @@ def delete_game(game_id):
 @bp.get('/<string:game_id>/users')
 def get_game_user_list(game_id):
     get_game(game_id)
-    pkeys = {'key': 'gameId', 'val': game_id}
-    items = UserGame.get_all_by_pkey(pkeys, None, 'gameIdIndex')
-    return jsonify({'items': items}), 200
+    items = UserGame.get_all({'gameId':game_id}, None, 'gameIdIndex')
+    return jsonify(items), 200
 
 
 @bp.post('/<string:game_id>/users')

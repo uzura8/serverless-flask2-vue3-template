@@ -12,7 +12,7 @@ from app.routes.member import bp
 def get_event(event_id):
     params = {'eventId': event_id}
     vals = validate_req_params(validation_schema_get_event_detail(), params)
-    item = Event.get_one({'p': {'key': 'eventId', 'val': event_id}})
+    item = Event.get_one({'eventId': event_id})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -24,9 +24,9 @@ def get_event(event_id):
 def get_member_events():
     # event = get_event(event_id)
     user_id = request.user.get('user_id')
-    pkeys = {'key': 'userId', 'val': user_id}
+    pkeys = {'userId': user_id}
     params = {'order': 'desc'}
-    user_events = UserEvent.get_all_by_pkey(pkeys, params, 'userIdIndex')
+    user_events = UserEvent.get_all(pkeys, params, 'userIdIndex')
     event_ids = [ue.get('eventId') for ue in user_events]
     keys = [{'eventId': eid} for eid in event_ids]
     events = Event.batch_get_items(keys)
@@ -42,12 +42,11 @@ def get_member_event(event_id):
     event = get_event(event_id)
     user_id = request.user.get('user_id')
     user_id_event_id = f'{user_id}#{event_id}'
-    res = UserEvent.get_one(
-        {'p': {'key': 'userIdEventId', 'val': user_id_event_id}})
-    if not res:
+    user_event = UserEvent.get_one({'userIdEventId': user_id_event_id})
+    if not user_event:
         raise InvalidUsage('Not Found', 404)
 
-    return jsonify(UserEvent.to_response(res)), 200
+    return jsonify(user_event), 200
 
 
 @bp.put('/events/<string:event_id>')
@@ -57,8 +56,7 @@ def put_member_event(event_id):
     user_id = request.user.get('user_id')
     user_id_event_id = f'{user_id}#{event_id}'
 
-    res = UserEvent.get_one(
-        {'p': {'key': 'userIdEventId', 'val': user_id_event_id}})
+    res = UserEvent.get_one({'userIdEventId': user_id_event_id})
     if res:
         raise InvalidUsage('Already exists', 400)
 
@@ -84,10 +82,9 @@ def get_member_event_games(event_id):
     user_id = request.user.get('user_id')
     user_id_event_id = f'{user_id}#{event_id}'
 
-    pkeys = {'key': 'userIdEventId', 'val': user_id_event_id}
-    games = UserGame.get_all_by_pkey(pkeys, None, 'userIdEventIdIndex')
-    res = [UserGame.to_response(g) for g in games]
-    return jsonify(res), 200
+    pkeys = {'userIdEventId': user_id_event_id}
+    items = UserGame.get_all(pkeys, None, 'userIdEventIdIndex')
+    return jsonify(items), 200
 
 
 def validation_schema_get_event_detail():

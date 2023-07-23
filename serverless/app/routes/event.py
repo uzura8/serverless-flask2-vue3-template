@@ -14,7 +14,7 @@ bp = Blueprint('event', __name__, url_prefix='/events')
 def get_event(event_id):
     params = {'eventId': event_id}
     vals = validate_req_params(validation_schema_get_event_detail(), params)
-    item = Event.get_one({'p': {'key': 'eventId', 'val': event_id}})
+    item = Event.get_one({'eventId': event_id})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -50,8 +50,7 @@ def put_event(event_id):
         vals['createdUserType'] = 'user'
 
     try:
-        keys = {'p': {'key': 'eventId', 'val': event_id}}
-        updated = Event.update(keys, vals, True)
+        updated = Event.update({'eventId': event_id}, vals, True)
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -94,20 +93,18 @@ def post_event_game(event_id):
 def get_event_game_list(event_id):
     get_event(event_id)
     params = validate_req_params(get_list_schema, request.args)
-    pkeys = {'key': 'eventId', 'val': event_id}
-    games = Game.get_all_by_pkey(pkeys, params, 'eventIdIndex')
-    response = [Game.to_response(game) for game in games]
-    return jsonify(response), 200
+    games = Game.get_all({'eventId': event_id}, params, 'eventIdIndex')
+    return jsonify(games), 200
 
 
 @bp.get('/<string:event_id>/games/<int:game_num>')
 def get_event_game_detail(event_id, game_num):
     get_event(event_id)
     query_keys = {
-        'p': {'key': 'eventId', 'val': event_id},
-        's': {'key': 'gameNumber', 'val': game_num}
+        'eventId': event_id,
+        'gameNumber': game_num
     }
-    game = Game.get_one(query_keys, True, 'eventIdIndex')
+    game = Game.get_one(query_keys, 'eventIdIndex', False, True)
     res = Game.to_response(game)
     return jsonify(res), 200
 
@@ -117,10 +114,10 @@ def get_event_game_detail(event_id, game_num):
 def put_event_game_by_game_num(event_id, game_num):
     get_event(event_id)
     query_keys = {
-        'p': {'key': 'eventId', 'val': event_id},
-        's': {'key': 'gameNumber', 'val': game_num}
+        'eventId': event_id,
+        'gameNumber': game_num
     }
-    game = Game.get_one(query_keys, True, 'eventIdIndex')
+    game = Game.get_one(query_keys, 'eventIdIndex', False, True)
     if game:
         raise InvalidUsage('This. game number is already exists', 409)
 
@@ -131,10 +128,8 @@ def put_event_game_by_game_num(event_id, game_num):
 @bp.get('/<string:event_id>/users')
 def get_event_member_list(event_id):
     get_event(event_id)
-    pkeys = {'key': 'eventId', 'val': event_id}
-    users = UserEvent.get_all_by_pkey(pkeys, None, 'eventIdIndex')
-    res_items = [UserEvent.to_response(user) for user in users]
-    return jsonify({'items': res_items}), 200
+    res = UserEvent.get_all_pager({'eventId':event_id}, None, 'eventIdIndex')
+    return jsonify(res), 200
 
 
 def validation_schema_get_event_detail():

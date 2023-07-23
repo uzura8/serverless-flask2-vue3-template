@@ -41,8 +41,9 @@ class Event(Base):
     def increament_game_num(self, event_id, is_check_exist=False):
         """Increament game number."""
 
+        keys = {'eventId':event_id}
         if is_check_exist:
-            item = self.get_one_by_pkey('eventId', event_id)
+            item = self.get_one(keys)
             if not item:
                 raise Exception('Event not found')
 
@@ -52,5 +53,5 @@ class Event(Base):
             UpdateExpression='ADD gameNumber :incr',
             ExpressionAttributeValues={':incr': 1}
         )
-        item = self.get_one_by_pkey('eventId', event_id)
+        item = self.get_one(keys)
         return item['gameNumber']

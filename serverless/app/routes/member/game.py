@@ -12,7 +12,7 @@ from app.routes.member import bp
 def get_game(game_id):
     params = {'gameId': game_id}
     vals = validate_req_params(validation_schema_get_game_detail(), params)
-    item = Game.get_one({'p': {'key': 'gameId', 'val': game_id}})
+    item = Game.get_one({'gameId':game_id})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -24,9 +24,8 @@ def get_game(game_id):
 def get_member_games():
     # game = get_game(game_id)
     user_id = request.user.get('user_id')
-    pkeys = {'key': 'userId', 'val': user_id}
-    games = Game.get_all_by_pkey(pkeys, None, 'userIdIndex')
-    return jsonify({'items': games}), 200
+    res = Game.get_all({'userId': user_id}, None, 'userIdIndex')
+    return jsonify(res), 200
 
 
 @bp.get('/games/<string:game_id>')
@@ -35,8 +34,7 @@ def get_member_game(game_id):
     game = get_game(game_id)
     user_id = request.user.get('user_id')
     user_id_game_id = f'{user_id}#{game_id}'
-    res = UserGame.get_one(
-        {'p': {'key': 'userIdGameId', 'val': user_id_game_id}})
+    res = UserGame.get_one({'userIdGameId':user_id_game_id})
     if not res:
         raise InvalidUsage('Not Found', 404)
 
@@ -54,16 +52,14 @@ def put_member_game(game_id):
     schema = validation_schema_put_game()
     vals = validate_req_params(schema, request.json)
 
-    res = UserGame.get_one(
-        {'p': {'key': 'userIdGameId', 'val': user_id_game_id}})
+    res = UserGame.get_one({'userIdGameId': user_id_game_id})
     # if res:
     #    raise InvalidUsage('Already exists', 400)
     is_edit = bool(res)
 
     try:
         if is_edit:
-            query_keys = {'p': {'key': 'userIdGameId', 'val': user_id_game_id}}
-            res = UserGame.update(query_keys, vals, True)
+            res = UserGame.update({'userIdGameId': user_id_game_id}, vals, True)
         else:
             event_id = game.get('eventId')
             vals['userIdGameId'] = user_id_game_id

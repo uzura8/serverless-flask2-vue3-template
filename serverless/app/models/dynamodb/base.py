@@ -69,98 +69,89 @@ class Base():
         return res.get('Items', [])
 
     @classmethod
-    def get_all(self, keys, is_desc=False, index_name=None, limit=0, projections=None):
+    def get_all(self, keys, params=None, index=None, is_all_attrs=False, skey_cond_type='eq'):
+        res = self.get_all_pager(
+            keys, params, index, is_all_attrs, skey_cond_type)
+        return res['items']
+
+    @classmethod
+    def get_all_pager(self, keys, params=None, index=None, is_all_attrs=False, skey_cond_type='eq'):
+        """
+        keys = {
+            'pkey': 'pkey_value',
+            'skey': 'skey_value',
+        }
+        params = {
+            'order': 'asc' or 'desc',
+            'count': number,
+        }
+        """
         table = self.get_table()
+
+        is_desc = False
+        limit = 50
+        if params:
+            is_desc = params.get('order', 'asc') == 'desc'
+            limit = params.get('count', 50)
         option = {
             'ScanIndexForward': not is_desc,
         }
         if limit:
             option['Limit'] = limit
 
-        if projections:
-            if isinstance(projections, list):
-                projections = ', '.join(projections)
-            option['ProjectionExpression'] = projections
+        # if projections:
+        #     if isinstance(projections, list):
+        #         projections = ', '.join(projections)
+        #     option['ProjectionExpression'] = projections
 
-        if index_name:
-            option['IndexName'] = index_name
+        if index:
+            option['IndexName'] = index
 
-        if not keys.get('p'):
-            raise ModelInvalidParamsException("'p' is required on keys")
+        if not isinstance(keys, dict) or len(keys) == 0:
+            raise ModelInvalidParamsException("'pkey' is required on keys")
 
+        key_items = list(keys.items())
+        pkey, pval = key_items[0]
         key_cond_exps = ['#pk = :pk']
-        exp_attr_names = {'#pk': keys['p']['key']}
-        exp_attr_vals = {':pk': keys['p']['val']}
+        exp_attr_names = {'#pk': pkey}
+        exp_attr_vals = {':pk': pval}
 
-        if keys.get('s'):
-            exp_attr_names['#sk'] = keys['s']['key']
-            exp_attr_vals[':sk'] = keys['s']['val']
-            key_cond_exps.append('#sk = :sk')
+        if len(key_items) > 1:
+            skey, sval = key_items[1]
+            exp_attr_names['#sk'] = skey
+            exp_attr_vals[':sk'] = sval
+            if skey_cond_type == 'begins_with':
+                key_cond_exps.append('begins_with(#sk, :sk)')
+            else:
+                key_cond_exps.append('#sk = :sk')
 
         option['KeyConditionExpression'] = ' AND '.join(key_cond_exps)
         option['ExpressionAttributeNames'] = exp_attr_names
         option['ExpressionAttributeValues'] = exp_attr_vals
         res = table.query(**option)
-        return res['Items'] if len(res['Items']) > 0 else []
+        items = res.get('Items', [])
+        pager_key = res.get('LastEvaluatedKey')
+
+        if not is_all_attrs:
+            return {
+                'items': [self.to_response(item) for item in items],
+                'pagerKey': pager_key
+            }
+        return {'items': items, 'pagerKey': pager_key}
 
     @classmethod
-    def get_one(self, keys, is_desc=False, index_name=None, projections=None):
-        items = self.get_all(keys, is_desc, index_name, 1, projections)
-        return items[0] if len(items) > 0 else None
-
-    @classmethod
-    def get_all_by_pkey(self, pkeys, params=None, index_name=None, is_all_attr=True):
-        table = self.get_table()
-
-        if params and params.get('order') and not params.get('is_desc'):
-            if params is None:
-                params = {}
-            params['is_desc'] = params.get('order') == 'desc'
-
-        is_forward = False
-        if params and params.get('is_desc', False) is False:
-            is_forward = True
-
-        option = {'ScanIndexForward': is_forward}
-
-        if params and params.get('count'):
-            option['Limit'] = params['count']
-
-        if index_name:
-            option['IndexName'] = index_name
-
-        key_cond_exp = '#pk = :pk'
-        exp_attr_names = {'#pk': pkeys['key']}
-        exp_attr_vals = {':pk': pkeys['val']}
-
-        option['KeyConditionExpression'] = key_cond_exp
-        option['ExpressionAttributeNames'] = exp_attr_names
-        option['ExpressionAttributeValues'] = exp_attr_vals
-        res = table.query(**option)
-        items = res.get('Items')
-        if is_all_attr:
-            return items
-
-        return [self.to_response(item) for item in items]
-
-    @classmethod
-    def get_one_by_pkey(self, hkey_name, hkey_val, is_desc=False, index_name=None):
-        table = self.get_table()
-        option = {
-            'ScanIndexForward': not is_desc,
-            'Limit': 1,
+    def get_one(self, keys, index=None, is_all_attrs=False, is_desc=False):
+        """
+        keys = {
+            'pkey': 'pkey_value',
+            'skey': 'skey_value',
         }
-        if index_name:
-            option['IndexName'] = index_name
-        exp_attr_names = {}
-        exp_attr_vals = {}
-        exp_attr_names['#hk'] = hkey_name
-        exp_attr_vals[':hv'] = hkey_val
-        option['KeyConditionExpression'] = '#hk = :hv'
-        option['ExpressionAttributeNames'] = exp_attr_names
-        option['ExpressionAttributeValues'] = exp_attr_vals
-        res = table.query(**option)
-        return res['Items'][0] if len(res['Items']) > 0 else None
+        """
+        params = {'count': 1}
+        if is_desc:
+            params['order'] = 'desc'
+        items = self.get_all(keys, params, index, is_all_attrs)
+        return items[0] if len(items) > 0 else None
 
     @classmethod
     def delete(self, key_dict):
@@ -222,7 +213,13 @@ class Base():
         return vals
 
     @classmethod
-    def update(self, query_keys, vals, is_update_time=False):
+    def update(self, keys, vals, is_update_time=False):
+        """
+        keys = {
+            'pkey': 'pkey_value',
+            'skey': 'skey_value',
+        }
+        """
         self.check_set_reserved_value(vals)
 
         table = self.get_table()
@@ -234,34 +231,23 @@ class Base():
         for key, val in vals.items():
             update_attrs[key] = {'Value': val}
 
-        update_keys = {}
-        for key_type, key_dict in query_keys.items():
-            key_name = key_dict['key']
-            update_keys[key_name] = key_dict['val']
         res = table.update_item(
-            Key=update_keys,
+            Key=keys,
             AttributeUpdates=update_attrs,
         )
-        items = self.get_one(query_keys)
+        items = self.get_one(keys)
         return items
 
     @classmethod
     def update_pk_value(self, current_keys, update_vals, is_update_time=False):
-        item = self.get_one(current_keys)
+        item = self.get_one(current_keys, None, False)
         for attr, val in update_vals.items():
             item[attr] = val
 
         if is_update_time:
             item['updatedAt'] = utc_iso()
 
-        key_dict = {}
-        pkey = current_keys['p']['key']
-        key_dict[pkey] = current_keys['p']['val']
-        if 's' in current_keys:
-            skey = current_keys['s']['key']
-            key_dict[skey] = current_keys['s']['val']
-
-        self.delete(key_dict)
+        self.delete(current_keys)
         return self.create(item)
 
     @classmethod
@@ -281,6 +267,7 @@ class Base():
 
     @classmethod
     def batch_save(self, items, pkeys=None, is_overwrite=False):
+        # If set overwrite_by_pkeys, the batch_writer will overwrite the item
         table = self.get_table()
         overwrite_by_pkeys = pkeys if is_overwrite and pkeys else []
         with table.batch_writer(overwrite_by_pkeys=overwrite_by_pkeys) as batch:
@@ -318,126 +305,6 @@ class Base():
         with table.batch_writer() as batch:
             for key in delete_keys:
                 batch.delete_item(Key=key)
-
-    @classmethod
-    def query_pager_published(self, pkeys, params, pager_keys_def, index_name=None, filter_conds=None):
-        is_desc = params.get('order', 'asc') == 'desc'
-        limit = params.get('count', 20)
-        start_key = params.get('pagerKey')
-
-        option = {
-            'IndexName': index_name,
-            'ProjectionExpression': self.prj_exps_str(),
-            'ScanIndexForward': not is_desc,
-        }
-        if index_name:
-            option['IndexName'] = index_name
-
-        key_conds = []
-        exp_attr_names = {}
-        exp_attr_vals = {}
-
-        key_conds.append('#pk = :pk')
-        exp_attr_names['#pk'] = pkeys['key']
-        exp_attr_vals[':pk'] = pkeys['val']
-
-        status = 'publish'
-        key_conds.append('begins_with(#sk, :sk)')
-        exp_attr_names['#sk'] = pager_keys_def['index_skey']
-        exp_attr_vals[':sk'] = status
-
-        filter_exps_str = ''
-        if filter_conds:
-            exp_attr_names, exp_attr_vals, filter_exps_str =\
-                self.get_filter_exps_for_pager_published(
-                    exp_attr_names, exp_attr_vals, filter_conds)
-
-        if filter_exps_str:
-            option['FilterExpression'] = filter_exps_str
-
-        option['KeyConditionExpression'] = ' AND '.join(key_conds)
-        option['ExpressionAttributeNames'] = exp_attr_names
-        option['ExpressionAttributeValues'] = exp_attr_vals
-
-        items, pager_key = self.query_loop_for_limit(option, limit, start_key,
-                                                     pager_keys_def, len(filter_exps_str) > 0)
-        return {
-            'items': items,
-            'pagerKey': pager_key
-        }
-
-    @classmethod
-    def get_filter_exps_for_pager_published(self, exp_attr_names, exp_attr_vals, filter_conds):
-        return exp_attr_names, exp_attr_vals, ''
-
-    @classmethod
-    def query_loop_for_limit(self, option, target_count, pager_key, pager_keys, use_cate_filter=False):
-        items_all = []
-        loop_count = 0
-        loop_count_max = 10
-        need_count = target_count
-
-        while loop_count < loop_count_max:
-            adjust_count = self.get_ajust_count(need_count, use_cate_filter)
-            option['Limit'] = need_count + adjust_count
-            if pager_key:
-                option['ExclusiveStartKey'] = pager_key
-
-            items, pager_key = self.exe_query(option)
-
-            is_break = False
-            if len(items) < need_count and pager_key:
-                need_count = need_count - len(items)
-            else:
-                is_break = True
-
-            items_all.extend(items)
-
-            if is_break:
-                break
-
-            loop_count += 1
-
-        if len(items_all) > target_count:
-            items_all = items_all[:target_count]
-            pager_key = self.get_pager_key_from_list(items_all, pager_keys['pkey'],
-                                                     pager_keys['index_pkey'], pager_keys['index_skey'])
-
-        return items_all, pager_key
-
-    @classmethod
-    def exe_query(self, option):
-        table = self.get_table()
-        res = table.query(**option)
-        return res.get('Items', []), res.get('LastEvaluatedKey')
-
-    @staticmethod
-    def get_ajust_count(reqired_count, use_cate_filter=False):
-        if use_cate_filter:
-            if reqired_count < 10:
-                adjust_count = 50
-            elif reqired_count < 50:
-                adjust_count = 100
-            else:
-                adjust_count = 300
-        else:
-            if reqired_count < 10:
-                adjust_count = 20
-            elif reqired_count < 50:
-                adjust_count = 50
-            else:
-                adjust_count = 100
-
-        return adjust_count
-
-    @staticmethod
-    def get_pager_key_from_list(items, pkey, index_pkey, index_skey):
-        item = items[-1]
-        return {
-            pkey: item[pkey],
-            index_pkey: item[index_pkey],
-            index_skey: item[index_skey],
-        }
 
 
 class ModelInvalidParamsException(Exception):

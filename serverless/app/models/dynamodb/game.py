@@ -47,10 +47,10 @@ class Game(Base):
         # TODO: implement transaction
         if vals.get('gameNumber'):
             game_num = vals['gameNumber']
-            event = Event.get_one_by_pkey('eventId', vals['eventId'])
+            keys = {'eventId': vals['eventId']}
+            event = Event.get_one(keys)
             current_game_num = event.get('gameNumber')
             if game_num > current_game_num:
-                keys = {'p': {'key': 'eventId', 'val': vals['eventId']}}
                 Event.update(keys, {'gameNumber': game_num})
         else:
             game_num = Event.increament_game_num(vals['eventId'])
