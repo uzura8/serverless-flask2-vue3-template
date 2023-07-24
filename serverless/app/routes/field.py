@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.firebase import check_user_token
-from app.models.dynamodb import Field, Event, ModelInvalidParamsException
+from app.models.dynamodb import Field, Event, Category, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
@@ -12,7 +12,7 @@ bp = Blueprint('field', __name__, url_prefix='/fields')
 def get_field(field_id):
     params = {'fieldId': field_id}
     vals = validate_req_params(validation_schema_get_field_detail(), params)
-    item = Field.get_one({'p': {'key': 'fieldId', 'val': field_id}})
+    item = Field.get_one({'fieldId': field_id})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -23,6 +23,25 @@ def get_field(field_id):
 def get_field_list():
     items = Field.scan()
     return jsonify({'items': items}), 200
+
+
+@bp.get('/categories/<string:cate_slug>')
+def get_fields_by_cate_slug(cate_slug):
+    cont_div_slug = '#'.join(['region', cate_slug])
+    cate = Category.get_one(
+        {'contentDivSlug': cont_div_slug}, 'ContentDivSlug_idx')
+    if not cate:
+        raise InvalidUsage('Not Found', 404)
+
+    skey_val = '/'.join([cate.get('parentPath'), str(cate.get('cateId'))])
+    keys = {
+        'categoryContentDiv': cate.get('contentDiv'),
+        'categoryRegionPathSlug': skey_val,
+    }
+    res = Field.get_all_pager(
+        keys, None, 'categoryRegionParentPath_idx', False, 'begins_with')
+    res['meta'] = {'category': cate}
+    return jsonify(res), 200
 
 
 @bp.get('/<string:field_id>')
@@ -63,10 +82,9 @@ def post_field_event(field_id):
 @bp.get('/<string:field_id>/events/<string:date>')
 def get_field_detail_event_list(field_id, date):
     field = get_field(field_id)
-    pkeys = {'key': 'fieldIdDate', 'val': f'{field_id}#{date}'}
-    events = Event.get_all_by_pkey(pkeys, None, 'fieldIdDateIndex')
-    events_response = [Event.to_response(event) for event in events]
-    return jsonify(events_response), 200
+    pkeys = {'fieldIdDate': f'{field_id}#{date}'}
+    events = Event.get_all(pkeys, None, 'fieldIdDateIndex')
+    return jsonify(events), 200
 
 
 @bp.route('/<string:field_id>', methods=['HEAD'])

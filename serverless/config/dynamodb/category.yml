@@ -1,22 +1,17 @@
-Type: 'AWS::DynamoDB::Table'
+Type: "AWS::DynamoDB::Table"
 Properties:
   TableName: ${self:custom.prjPrefix}-category
   AttributeDefinitions:
-    -
-      AttributeName: id
+    - AttributeName: cateId
       AttributeType: N
-    -
-      AttributeName: serviceIdSlug
+    - AttributeName: contentDiv
       AttributeType: S
-    -
-      AttributeName: serviceId
+    - AttributeName: parentPath
       AttributeType: S
-    -
-      AttributeName: parentPath
+    - AttributeName: contentDivSlug
       AttributeType: S
   KeySchema:
-    -
-      AttributeName: id
+    - AttributeName: cateId
       KeyType: HASH
 
   BillingMode: ${self:custom.dynamodbConfig.category.billingMode, 'PAY_PER_REQUEST'}
@@ -29,30 +24,17 @@ Properties:
       Value: ${self:custom.dynamoDbBackupTargetTagValue}
 
   GlobalSecondaryIndexes:
-    -
-      IndexName: gsi-list-by-service
+    - IndexName: ContentDivParentPath_idx
       KeySchema:
-      -
-        AttributeName: serviceId
-        KeyType: HASH
-      -
-        AttributeName: parentPath
-        KeyType: RANGE
+        - AttributeName: contentDiv
+          KeyType: HASH
+        - AttributeName: parentPath
+          KeyType: RANGE
       Projection:
         ProjectionType: ALL
-      #BillingMode: PAY_PER_REQUEST
-      #ProvisionedThroughput:
-      #  ReadCapacityUnits: 5
-      #  WriteCapacityUnits: 3
-    -
-      IndexName: gsi-one-by-slug
+    - IndexName: ContentDivSlug_idx
       KeySchema:
-      -
-        AttributeName: serviceIdSlug
-        KeyType: HASH
+        - AttributeName: contentDivSlug
+          KeyType: HASH
       Projection:
         ProjectionType: ALL
-      #BillingMode: PAY_PER_REQUEST
-      #ProvisionedThroughput:
-      #  ReadCapacityUnits: 5
-      #  WriteCapacityUnits: 3

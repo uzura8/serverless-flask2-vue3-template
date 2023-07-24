@@ -7,7 +7,7 @@ from .site_config import SiteConfig
 # from .post_group import PostGroup
 # from .comment import Comment
 # from .comment_count import CommentCount
-# from .category import Category
+from .category import Category
 # from .tag import Tag
 # from .post_tag import PostTag
 # from .file import File
@@ -28,7 +28,7 @@ __all__ = [
     # 'PostGroup',
     # 'Comment',
     # 'CommentCount',
-    # 'Category',
+    'Category',
     # 'Tag',
     # 'PostTag',
     # 'File',

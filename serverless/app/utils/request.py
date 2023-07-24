@@ -29,3 +29,10 @@ def validate_req_params(schema, params=None, accept_keys=None):
         raise InvalidUsage(msg, 400, {'errors': field_errs})
 
     return v.document
+
+
+def validate_params(schema, req_params, add_params=None):
+    req_params = req_params.to_dict()
+    params = {**req_params, **add_params} if add_params else req_params
+    vals = validate_req_params(schema, params)
+    return vals

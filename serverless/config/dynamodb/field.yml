@@ -4,6 +4,12 @@ Properties:
   AttributeDefinitions:
     - AttributeName: fieldId
       AttributeType: S
+    - AttributeName: slug
+      AttributeType: S
+    - AttributeName: categoryContentDiv
+      AttributeType: S
+    - AttributeName: categoryRegionPathSlug
+      AttributeType: S
   KeySchema:
     - AttributeName: fieldId
       KeyType: HASH
@@ -16,3 +22,19 @@ Properties:
   Tags:
     - Key: backup
       Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: slug_idx
+      KeySchema:
+        - AttributeName: slug
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL
+    - IndexName: categoryRegionParentPath_idx
+      KeySchema:
+        - AttributeName: categoryContentDiv
+          KeyType: HASH
+        - AttributeName: categoryRegionPathSlug
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

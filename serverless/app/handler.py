@@ -7,7 +7,7 @@ from app.utils.custom_json_provider import CustomJsonProvider
 from app.routes.root import bp as root_module
 # from app.post import bp as post_module
 # from app.comment import bp as comment_module
-# from app.category import bp as category_module
+from app.routes.category import bp as category_module
 # from app.tag import bp as tag_module
 # from app.admin import bp as admin_module
 from app.routes.field import bp as field_module
@@ -98,7 +98,7 @@ def add_cors_headers(response):
     return response
 
 
-# app.register_blueprint(category_module)
+app.register_blueprint(category_module)
 # app.register_blueprint(tag_module)
 # app.register_blueprint(post_module)
 # app.register_blueprint(comment_module)
