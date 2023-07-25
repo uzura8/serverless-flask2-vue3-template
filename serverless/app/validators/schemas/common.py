@@ -16,6 +16,24 @@ user_id_schema = {
     'regex': r'^[a-zA-Z0-9]{28,32}$',
 }
 
+slug_schema = {
+    'type': 'string',
+    'coerce': (str, NormalizerUtils.trim),
+    'required': True,
+    'empty': False,
+    'maxlength': 128,
+    'regex': r'^[0-9a-z\-]+$',
+}
+
+random_slug_schema = {
+    'type': 'string',
+    'coerce': (str, NormalizerUtils.trim),
+    'required': True,
+    'empty': False,
+    'maxlength': 128,
+    'regex': r'^[0-9a-zA-Z_\-]+$',
+}
+
 get_list_schema = {
     'count': {
         'type': 'integer',

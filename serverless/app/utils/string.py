@@ -11,13 +11,12 @@ class MLStripper(HTMLParser):
     def __init__(self):
         self.reset()
         self.strict = False
-        self.convert_charrefs= True
+        self.convert_charrefs = True
         self.fed = []
 
     def handle_data(self, d):
         # Add codes hear if you need
         self.fed.append(d)
-
 
     def get_data(self):
         return ''.join(self.fed)
@@ -84,11 +83,23 @@ def new_uuid(fmt='ulid'):
 
 def validate_uuid(val, fmt='ulid'):
     if fmt == 'ulid':
-        pattern = '^[0-9a-z]{26}$'
-    elif fmt == 'uuidv4':
-        pattern = '^[0-9a-f]{36}$'
+        pattern = r'^0[0-2][0-9a-hjkmnp-tv-z]{24}$'
 
-    return re.match(pattern, val)
+    elif fmt == 'uuidv4':
+        pattern = r'^[0-9a-f]{12}4[0-9a-f]{3}[89ab][0-9a-f]{15}$'
+
+    else:
+        raise ValueError('Invalid format')
+
+    return re.match(pattern, val) is not None
+
+
+def validate_slug(val, is_random_generated=False, maxlen=128):
+    if is_random_generated:
+        pattern = r'^[0-9a-zA-Z_\-]{1,' + str(maxlen) + '}$'
+    else:
+        pattern = r'^[0-9a-z\-]{1,' + str(maxlen) + '}$'
+    return re.match(pattern, val) is not None
 
 
 def validate_email(email):
@@ -97,7 +108,7 @@ def validate_email(email):
         return False
 
     pattern = '^([_a-z0-9-]+(\.[_a-z0-9-]+)*)' +\
-             '@([a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))$'
+        '@([a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))$'
     return re.findall(pattern, email)
 
 

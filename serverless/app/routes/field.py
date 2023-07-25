@@ -4,15 +4,23 @@ from app.firebase import check_user_token
 from app.models.dynamodb import Field, Event, Category, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
+from app.utils.string import validate_uuid, validate_slug
 from app.validators import NormalizerUtils
 
 bp = Blueprint('field', __name__, url_prefix='/fields')
 
 
-def get_field(field_id):
-    params = {'fieldId': field_id}
-    vals = validate_req_params(validation_schema_get_field_detail(), params)
-    item = Field.get_one({'fieldId': field_id})
+def get_field(identifier):
+    if validate_uuid(identifier):
+        keys = {'fieldId': identifier}
+        index = None
+    elif validate_slug(identifier):
+        keys = {'slug': identifier}
+        index = 'slug_idx'
+    else:
+        raise InvalidUsage('Invalid Identifier', 400)
+
+    item = Field.get_one(keys, index)
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -79,12 +87,14 @@ def post_field_event(field_id):
     return jsonify(event_response), 201
 
 
-@bp.get('/<string:field_id>/events/<string:date>')
-def get_field_detail_event_list(field_id, date):
-    field = get_field(field_id)
+@bp.get('/<string:identifier>/events/<string:date>')
+def get_field_detail_event_list(identifier, date):
+    field = get_field(identifier)
+    field_id = field.get('fieldId')
     pkeys = {'fieldIdDate': f'{field_id}#{date}'}
-    events = Event.get_all(pkeys, None, 'fieldIdDateIndex')
-    return jsonify(events), 200
+    res = Event.get_all_pager(pkeys, None, 'fieldIdDateIndex')
+    res['meta'] = {'field': field}
+    return jsonify(res), 200
 
 
 @bp.route('/<string:field_id>', methods=['HEAD'])
