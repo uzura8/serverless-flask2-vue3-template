@@ -91,10 +91,11 @@ def post_event_game(event_id):
 
 @bp.get('/<string:event_id>/games')
 def get_event_game_list(event_id):
-    get_event(event_id)
+    event = get_event(event_id)
     params = validate_req_params(get_list_schema, request.args)
-    games = Game.get_all({'eventId': event_id}, params, 'eventIdIndex')
-    return jsonify(games), 200
+    res = Game.get_all_pager({'eventId': event_id}, params, 'eventIdIndex')
+    res['meta'] = {'event': event}
+    return jsonify(res), 200
 
 
 @bp.get('/<string:event_id>/games/<int:game_num>')
@@ -128,7 +129,7 @@ def put_event_game_by_game_num(event_id, game_num):
 @bp.get('/<string:event_id>/users')
 def get_event_member_list(event_id):
     get_event(event_id)
-    res = UserEvent.get_all_pager({'eventId':event_id}, None, 'eventIdIndex')
+    res = UserEvent.get_all_pager({'eventId': event_id}, None, 'eventIdIndex')
     return jsonify(res), 200
 
 
