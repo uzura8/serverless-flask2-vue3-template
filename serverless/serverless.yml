@@ -35,10 +35,10 @@ custom:
   customDomain:
     domainName: ${file(${self:custom.stageConfigFileName}):domainName}
     stage: ${self:provider.stage}
-    basePath: 'api'
+    basePath: "api"
     certificateName: ${self:custom.customDomain.domainName}
     createRoute53Record: true
-    endpointType: 'regional'
+    endpointType: "regional"
     securityPolicy: tls_1_2
 
   dynamodb:
@@ -125,17 +125,17 @@ provider:
 
 package:
   patterns:
-    - '!node_modules/**'
-    - '!config/stages-sample/**'
-    - '!config-bkup_*'
-    - '!.venv/**'
-    - '!__pycache__'
-    - '!package-lock.json'
-    - '!.dynamodb/**'
-    - '!tags'
-    - '!.DS_Store'
-    - '!develop/**'
-    - '!app/bin/**'
+    - "!node_modules/**"
+    - "!config/stages-sample/**"
+    - "!config-bkup_*"
+    - "!.venv/**"
+    - "!__pycache__"
+    - "!package-lock.json"
+    - "!.dynamodb/**"
+    - "!tags"
+    - "!.DS_Store"
+    - "!develop/**"
+    - "!app/bin/**"
 
 functions:
   app:
@@ -144,7 +144,7 @@ functions:
     memorySize: ${file(${self:custom.stageConfigFileName}):appConf.memorySize}
     events:
       - http: ANY /
-      - http: 'ANY /{proxy+}'
+      - http: "ANY /{proxy+}"
     timeout: ${file(${self:custom.stageConfigFileName}):appConf.timeout}
     provisionedConcurrency: ${file(${self:custom.stageConfigFileName}):appConf.provisionedConcurrency}
 
