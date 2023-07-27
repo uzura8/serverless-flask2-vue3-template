@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.firebase import check_user_token
-from app.models.dynamodb import Event, Game, UserEvent, ModelInvalidParamsException
+from app.models.dynamodb import Event, Game, Field, UserEvent, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_req_params
 from app.validators import NormalizerUtils
@@ -14,7 +14,7 @@ bp = Blueprint('event', __name__, url_prefix='/events')
 def get_event(event_id):
     params = {'eventId': event_id}
     vals = validate_req_params(validation_schema_get_event_detail(), params)
-    item = Event.get_one({'eventId': event_id})
+    item = Event.get_one({'eventId': vals.get('eventId')})
     if not item:
         raise InvalidUsage('Not Found', 404)
 
@@ -29,8 +29,8 @@ def get_event_list():
 
 @bp.get('/<string:event_id>')
 def get_event_detail(event_id):
-    item = get_event(event_id)
-    return jsonify(Event.to_response(item)), 200
+    event = get_event(event_id)
+    return jsonify(event), 200
 
 
 @bp.route('/<string:event_id>', methods=['HEAD'])
