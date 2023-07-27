@@ -1,0 +1,28 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-maker
+  AttributeDefinitions:
+    - AttributeName: makerId
+      AttributeType: S
+    - AttributeName: slug
+      AttributeType: S
+  KeySchema:
+    - AttributeName: makerId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.maker.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.maker.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.maker.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: slug_idx
+      KeySchema:
+        - AttributeName: slug
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL

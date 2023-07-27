@@ -1,0 +1,18 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-gun
+  AttributeDefinitions:
+    - AttributeName: gunId
+      AttributeType: S
+  KeySchema:
+    - AttributeName: gunId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.gun.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.gun.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.gun.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}

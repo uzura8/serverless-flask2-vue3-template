@@ -16,6 +16,8 @@ from .event import Event
 from .game import Game
 from .user_game import UserGame
 from .user_event import UserEvent
+from .maker import Maker
+from .gun import Gun
 
 __all__ = [
     'Base',
@@ -37,4 +39,6 @@ __all__ = [
     'Game',
     'UserGame',
     'UserEvent',
+    'Maker',
+    'Gun',
 ]
