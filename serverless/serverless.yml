@@ -167,5 +167,5 @@ resources:
     GameDynamoDBTable: ${file(./config/dynamodb/game.yml)}
     UserEventDynamoDBTable: ${file(./config/dynamodb/user-event.yml)}
     UserGamerDynamoDBTable: ${file(./config/dynamodb/user-game.yml)}
-    UserGamerDynamoDBTable: ${file(./config/dynamodb/maker.yml)}
-    UserGamerDynamoDBTable: ${file(./config/dynamodb/gun.yml)}
+    MakerDynamoDBTable: ${file(./config/dynamodb/maker.yml)}
+    GunDynamoDBTable: ${file(./config/dynamodb/gun.yml)}
