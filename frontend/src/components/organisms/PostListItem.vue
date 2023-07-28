@@ -2,6 +2,7 @@
 import type { PostPublic } from '@/types/Post.d'
 import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
+import { substr } from '@/utils/str'
 import MediaImg from '@/components/atoms/MediaImg.vue'
 
 export default defineComponent({
@@ -14,6 +15,12 @@ export default defineComponent({
       type: Object as PropType<PostPublic>,
       required: true
     }
+  },
+
+  setup() {
+    return {
+      substr
+    }
   }
 })
 </script>
@@ -25,7 +32,7 @@ export default defineComponent({
       class="relative col-span-2 md:col-span-1"
     >
       <MediaImg
-        :service-id="post.serviceId"
+        :prefix="post.serviceId"
         :file-id="post.images[0].fileId"
         :mime-type="post.images[0].mimeType"
         size="1200x800xc"
@@ -40,7 +47,7 @@ export default defineComponent({
         >
       </h3>
       <p class="text-gray-500 leading-relaxed mb-4">
-        {{ $filters.substr(post.bodyText, 300) }}
+        {{ substr(post.bodyText, 300) }}
       </p>
       <RouterLink
         :to="`/posts/${post.slug}`"

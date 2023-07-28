@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{vue,js,ts,jsx,tsx}',
+    'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
+    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}'
+  ],
   theme: {
     extend: {
       colors: {
@@ -53,7 +58,13 @@ module.exports = {
         'Segoe UI Symbol',
         'Noto Color Emoji'
       ]
+    },
+    minWidth: {
+      100: '100px',
+      150: '150px',
+      200: '200px',
+      300: '300px'
     }
   },
-  plugins: []
+  plugins: [require('flowbite/plugin')]
 }

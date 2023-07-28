@@ -12,6 +12,11 @@ export const useAdminUserStore = defineStore('adminUser', () => {
     return adminUser.value.getSignInUserSession()
   })
 
+  const username = computed((): string | null => {
+    if (!adminUser.value) return null
+    return adminUser.value.getUsername()
+  })
+
   const isAuthenticated = computed((): boolean => {
     return !!session.value
   })
@@ -25,6 +30,7 @@ export const useAdminUserStore = defineStore('adminUser', () => {
     adminUser,
     session,
     isAuthenticated,
+    username,
     setUser
   }
 })

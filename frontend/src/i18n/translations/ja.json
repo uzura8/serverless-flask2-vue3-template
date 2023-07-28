@@ -1,6 +1,8 @@
 {
   "common": {
     "top": "トップ",
+    "yes": "はい",
+    "no": "いいえ",
     "toNext": "次へ",
     "toPrev": "前へ",
     "toFirst": "最初へ",
@@ -32,12 +34,15 @@
     "create": "作成",
     "createNew": "新規作成",
     "createOf": "{label}の作成",
+    "update": "更新する",
     "register": "登録する",
     "delete": "削除",
     "cancel": "キャンセル",
     "add": "追加",
-    "addFor": "{target} を追加",
+    "addFor": "{target} を追加する",
     "addTo": "{target} に追加",
+    "input": "入力する",
+    "inputTo": "{target} を入力する",
     "publish": "公開する",
     "published": "公開済",
     "unpublish": "非公開にする",
@@ -98,6 +103,14 @@
     "equalTo": "次と等しい",
     "contains": "次を含む",
     "undo": "元に戻す",
+    "today": "本日",
+    "dateOn": "{date}の{label}",
+    "show": "表示する",
+    "hide": "非表示にする",
+    "showFor": "{target} を表示する",
+    "hideFor": "{target} を非表示にする",
+    "showDetailItems": "詳細項目を表示する",
+    "hideDetailItems": "詳細項目を非表示にする",
     "more": "もっと見る"
   },
   "msg": {
@@ -191,7 +204,7 @@
     "404": "ページが見つかりません"
   },
   "form": {
-    "required": "必須入力",
+    "required": "必須",
     "usedForsignin": "ログインに使用されます",
     "signInWithGoogle": "Google でログイン",
     "currentPassword": "現在のパスワード",
@@ -254,6 +267,7 @@
   "page": {
     "top": "トップ",
     "siteTop": "サイトトップ",
+    "home": "ホーム",
     "adminTop": "管理画面トップ",
     "adminSignIn": "管理画面ログイン",
     "emailVerification": "メールアドレスの確認",
@@ -277,17 +291,5 @@
   },
   "site": {
     "name": "サンプルサイト"
-  },
-  "sl": {
-    "term": {
-      "field": "フィールド",
-      "fields": "フィールド一覧",
-      "fieldsShort": "フィールド",
-      "fieldType": "フィールド種別",
-      "event": "イベント",
-      "eventOnDate": "{date}のイベント",
-      "airsoft": "サバゲー",
-      "airsoftFull": "サバイバルゲーム"
-    }
   }
 }

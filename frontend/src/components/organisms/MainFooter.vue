@@ -14,7 +14,10 @@ export default defineComponent({
   <footer class="mt-auto w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
     <div class="text-center">
       <div class="mt-3">
-        <p class="text-gray-500">{{ footerRight }}</p>
+        <p
+          class="text-gray-500"
+          v-html="footerRight"
+        ></p>
       </div>
     </div>
   </footer>

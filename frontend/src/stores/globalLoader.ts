@@ -10,7 +10,7 @@ interface LoadingItem {
 export const useGlobalLoaderStore = defineStore('globalLoader', () => {
   // state
   const loadingItems = ref<LoadingItem[]>([])
-  const loadingTimerId = ref<number>(0)
+  const loadingTimerId = ref<any>(null)
 
   // getter
   const isLoading = computed(() => loadingItems.value.length > 0)
@@ -39,7 +39,7 @@ export const useGlobalLoaderStore = defineStore('globalLoader', () => {
 
     if (isStart) {
       if (!loadingTimerId.value) {
-        loadingTimerId.value = window.setTimeout(() => {
+        loadingTimerId.value = setTimeout(() => {
           resetLoading()
         }, config.common.loadingTimeoutThreshold)
       }

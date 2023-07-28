@@ -1,6 +1,8 @@
 {
   "common": {
     "top": "Top",
+    "yes": "はい",
+    "no": "いいえ",
     "toNext": "Next",
     "toPrev": "Previous",
     "toFirst": "To First",
@@ -32,12 +34,15 @@
     "create": "Create",
     "createNew": "Create New",
     "createOf": "Create {label}",
+    "update": "Update",
     "register": "Register",
     "delete": "Delete",
     "cancel": "Cancel",
     "add": "Add",
     "addFor": "Add {target}",
     "addTo": "Add to {target}",
+    "input": "Input",
+    "inputTo": "Input {target}",
     "publish": "Publish",
     "published": "Published",
     "unpublished": "Unpublished",
@@ -98,8 +103,11 @@
     "contains": "Contains",
     "undo": "Undo",
     "today": "Today",
-    "showDetailItems": "Show Detail Items",
-    "hideDetailItems": "Hide Detail Items",
+    "dateOn": "{label} on {date}",
+    "show": "Show",
+    "hide": "Hide",
+    "showFor": "Show {target}",
+    "hideFor": "Hide {target}",
     "more": "More"
   },
   "msg": {
@@ -193,7 +201,7 @@
     "404": "Not Found"
   },
   "form": {
-    "required": "input required",
+    "required": "Required",
     "usedForSignIn": "Used for Sign In",
     "signInWithGoogle": "Sign In with Google",
     "currentPassword": "Current Password",
@@ -256,6 +264,7 @@
   "page": {
     "top": "Top",
     "siteTop": "Site top",
+    "home": "Home",
     "adminTop": "Admin Top",
     "adminSignIn": "Admin Sign In",
     "emailVerification": "Email Verification",
@@ -279,16 +288,5 @@
   },
   "site": {
     "name": "Sample Site"
-  },
-  "sl": {
-    "term": {
-      "field": "Field",
-      "fields": "Fields",
-      "fieldsShort": "Fields",
-      "event": "Event",
-      "eventOnDate": "Event on {date}",
-      "airsoft": "Airsoft",
-      "airsoftFull": "Airsoft"
-    }
   }
 }

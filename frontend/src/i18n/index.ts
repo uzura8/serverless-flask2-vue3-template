@@ -4,6 +4,7 @@ import trsEn from './translations/en.json'
 import trsJa from './translations/ja.json'
 
 const locale = window.navigator.language
+
 const messages = {
   en: trsEn,
   ja: trsJa
@@ -11,7 +12,7 @@ const messages = {
 
 const i18nOptions: I18nOptions = {
   legacy: false,
-  locale,
+  locale: locale,
   fallbackLocale: 'en',
   messages
 }

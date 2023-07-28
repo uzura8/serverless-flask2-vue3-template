@@ -13,17 +13,30 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/TopPage.vue')
       },
       {
-        path: 'about',
+        path: '/home',
+        name: 'HomePage',
+        component: () => import('@/views/HomePage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/signin',
+        name: 'SignInPage',
+        component: () => import('@/views/SignInPage.vue')
+      },
+      {
+        path: '/about',
         name: 'AboutPage',
         component: () => import('@/views/AboutPage.vue')
       },
       {
-        path: 'posts',
+        path: '/posts',
         name: 'PostListPage',
         component: () => import('@/views/PostListPage.vue')
       },
       {
-        path: 'posts/:slug',
+        path: '/posts/:slug',
         name: 'PostDetailPage',
         component: () => import('@/views/PostDetailPage.vue')
       }
@@ -34,26 +47,24 @@ const routes: RouteRecordRaw[] = [
     component: AdminLayout,
     children: [
       {
-        path: '',
-        name: 'AdminTopPage',
-        component: () => import('@/views/AdminTopPage.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresRoleAdmin: true
-        }
-      },
-      {
-        path: 'sign-in',
-        name: 'AdminSignInPage',
+        path: '/admin/signin',
+        name: 'AdminSignIn',
         component: () => import('@/views/AdminSignInPage.vue')
       },
       {
-        path: 'fields',
-        name: 'AdminFieldListPage',
-        component: () => import('@/views/AdminFieldListPage.vue'),
+        path: '/admin/about',
+        name: 'AdminAboutPage',
+        component: () => import('@/views/AdminAboutPage.vue'),
         meta: {
-          requiresAuth: true,
-          requiresRoleAdmin: true
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/admin',
+        name: 'AdminTopPage',
+        component: () => import('@/views/AdminTopPage.vue'),
+        meta: {
+          requiresAuth: true
         }
       }
     ]

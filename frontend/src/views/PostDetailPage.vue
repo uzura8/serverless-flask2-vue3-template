@@ -3,8 +3,9 @@ import type { PostPublic } from '@/types/Post.d'
 import { defineComponent, computed, ref, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
+import { useDate } from '@/composables/useDate'
 import { config } from '@/configs'
-import { obj, date } from '@/utils'
+import { hasKey } from '@/utils/obj'
 import { PostApi } from '@/apis'
 import PostBody from '@/components/atoms/PostBody.vue'
 
@@ -18,6 +19,7 @@ export default defineComponent({
 
     const serviceId = config.post.serviceId
     const globalLoader = useGlobalLoaderStore()
+    const { localeDate } = useDate()
 
     const slug = computed(() => {
       return route.params.slug ? (route.params.slug as string) : ''
@@ -47,8 +49,8 @@ export default defineComponent({
     return {
       post,
       serviceId,
-      dateFomat: date.formatDate,
-      hasKey: obj.hasKey,
+      localeDate,
+      hasKey,
       setPost
     }
   }
@@ -73,9 +75,10 @@ export default defineComponent({
       <div class="">
         <time
           itemprop="datepublished"
-          :datetime="dateFomat(post.publishAt)"
-          >{{ dateFomat(post.publishAt) }}</time
+          :datetime="localeDate(post.publishAt)"
         >
+          {{ localeDate(post.publishAt) }}
+        </time>
       </div>
 
       <ul v-if="hasKey(post, 'tags', true)">

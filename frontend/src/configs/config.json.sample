@@ -1,10 +1,13 @@
 {
   "site": {
-    "name": "Your SiteName",
-    "footerRight": "©Your Organization. 2023. All rights reserved."
+    "name": "Sample Site",
+    "footerRight": "&copy;Your Organization. 2023. All rights reserved."
+  },
+  "common": {
+    "loadingTimeoutThreshold": 10000
   },
   "api": {
-    "origin": "https://example.com",
+    "origin": "https://api.example.com",
     "basePath": "/api"
   },
   "media": {

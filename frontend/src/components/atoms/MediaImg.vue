@@ -2,7 +2,7 @@
 //import type { MimeTypeImage } from '@/types/Media.d'
 import type { PropType } from 'vue'
 import { defineComponent, computed } from 'vue'
-import useMedia from '@/commons/useMedia'
+import { mediaUrl, assetUrl } from '@/utils/site'
 
 //interface Props {
 //  fileId: string
@@ -18,7 +18,7 @@ import useMedia from '@/commons/useMedia'
 
 export default defineComponent({
   props: {
-    serviceId: {
+    prefix: {
       type: String as PropType<string>,
       default: ''
     },
@@ -61,11 +61,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { mediaUrl, assetUrl } = useMedia()
-
     const imageUrl = computed((): string => {
       if (props.src) return props.src
-      return mediaUrl(props.serviceId, 'image', props.fileId, props.mimeType, props.size)
+      return mediaUrl(props.prefix, 'image', props.fileId, props.mimeType, props.size)
     })
 
     const noImageUrl = (event: any): void => {

@@ -1,11 +1,6 @@
+import type { File } from './Common'
 import type { CategoryPublic } from './Category'
 import type { Tag } from './Tag'
-
-export interface PostFile {
-  fileId: string
-  mimeType: string
-  caption: string
-}
 
 export interface PostLink {
   url: string
@@ -30,8 +25,8 @@ export interface PostPublic {
   statusPublishAt: string
   categorySlug: string
   category: CategoryPublic
-  images: PostFile[]
-  files: PostFile[]
+  images: File[]
+  files: File[]
   links: PostLink[]
   tags?: Tag[]
 }

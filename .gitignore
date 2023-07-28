@@ -1,5 +1,6 @@
 # OS file
 *~
+*.bak
 .DS_Store
 Thumbs.db
 
@@ -35,30 +36,8 @@ nbproject/
 *.local
 *.ntvs*
 *.njsproj
+*.sw?
 tags
-
-# npm
-node_modules
-package-lock.json
-.env
-.yarn
-dist
-dist-ssr
-
-# Logs
-yarn-error.log
-npm-debug.log
-lerna-debug.log
-
-# Istanbul coverage
-coverage/
-
-# cypress
-cypress/screenshots
-cypress/videos
-
-.vercel
-.now
 
 # For this project
 /public

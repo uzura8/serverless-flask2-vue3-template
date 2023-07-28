@@ -6,6 +6,6 @@ export default defineComponent({})
 
 <template>
   <div>
-    <h1 class="text-2xl font-extrabold dark:text-white">{{ $t('page.adminTop') }}</h1>
+    <h1 class="">Admin {{ $t('page.top') }}</h1>
   </div>
 </template>
