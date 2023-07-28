@@ -12,7 +12,7 @@ class Gun(Base):
         'gunId',
         'labels',
         'makerId',
-        'gunGenre',
+        'gunType',
         'poweredType',
         'asin',
         'createdAt',

@@ -1,3 +1,6 @@
+from collections.abc import MutableMapping
+
+
 def get_striped(vals, key,  def_val=''):
     val = vals.get(key, '').strip()
     if len(val) == 0:
@@ -24,3 +27,15 @@ def conv_flat_dict_to_nested(original_dict, delimiter='.'):
         else:
             new_dict[k] = v
     return new_dict
+
+
+def flatten_dict(d, parent_key='', sep='.'):
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, MutableMapping):
+            items.extend(flatten_dict(
+                v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
