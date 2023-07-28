@@ -11,14 +11,6 @@ from .category import Category
 # from .tag import Tag
 # from .post_tag import PostTag
 # from .file import File
-from .field import Field
-from .event import Event
-from .game import Game
-from .user_game import UserGame
-from .user_event import UserEvent
-from .maker import Maker
-from .gun import Gun
-from .user_gun import UserGun
 
 __all__ = [
     'Base',
@@ -35,12 +27,4 @@ __all__ = [
     # 'Tag',
     # 'PostTag',
     # 'File',
-    'Field',
-    'Event',
-    'Game',
-    'UserGame',
-    'UserEvent',
-    'Maker',
-    'Gun',
-    'UserGun',
 ]

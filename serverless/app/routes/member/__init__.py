@@ -11,5 +11,4 @@ def site_before_request(f):
     return wrapper
 
 
-from . import event
-from . import game
+# from . import hoge

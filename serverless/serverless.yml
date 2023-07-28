@@ -162,11 +162,3 @@ resources:
     # TagDynamoDBTable: ${file(./config/dynamodb/tag.yml)}
     # PostTagDynamoDBTable: ${file(./config/dynamodb/post-tag.yml)}
     FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
-    FieldDynamoDBTable: ${file(./config/dynamodb/field.yml)}
-    EventDynamoDBTable: ${file(./config/dynamodb/event.yml)}
-    GameDynamoDBTable: ${file(./config/dynamodb/game.yml)}
-    UserEventDynamoDBTable: ${file(./config/dynamodb/user-event.yml)}
-    UserGamerDynamoDBTable: ${file(./config/dynamodb/user-game.yml)}
-    MakerDynamoDBTable: ${file(./config/dynamodb/maker.yml)}
-    GunDynamoDBTable: ${file(./config/dynamodb/gun.yml)}
-    UserGunDynamoDBTable: ${file(./config/dynamodb/user-gun.yml)}

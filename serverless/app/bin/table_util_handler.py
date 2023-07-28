@@ -1,4 +1,4 @@
-from app.models.dynamodb import Field, Event, SiteConfig, Game, UserEvent, UserGame, Category, Maker, Gun
+from app.models.dynamodb import SiteConfig, Category
 import os
 import sys
 import argparse
@@ -11,8 +11,7 @@ parent_dir = os.path.dirname(os.path.dirname(
 sys.path.append(parent_dir)
 
 
-allowed_tables = ['field', 'event', 'game', 'category',
-                  'site_config', 'user_event', 'user_game', 'maker', 'gun']
+allowed_tables = ['site_config', 'category']
 
 
 class TableUtilHandler:

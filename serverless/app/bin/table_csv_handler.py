@@ -2,7 +2,7 @@ import argparse
 import csv
 import os
 import sys
-from app.models.dynamodb import Category, Field, Maker, Gun
+from app.models.dynamodb import Category
 from app.utils.dict import conv_flat_dict_to_nested, flatten_dict
 from app.utils.string import to_pascal_case
 # from pprint import pprint
@@ -19,24 +19,6 @@ TARGET_TABLES = [
         'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
                   'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
         'int_attrs': ['cateId', 'orderNo', 'parentId'],
-    },
-    {
-        'name': 'field',
-        'pkey': 'fieldId',
-        'attrs': ['fieldId', 'name', 'fieldType', 'address', 'website'],
-        'int_attrs': [],
-    },
-    {
-        'name': 'maker',
-        'pkey': 'makerId',
-        'attrs': ['makerId', 'slug', 'labels.ja', 'labels.en', 'categoryRegionSlug', 'website', 'description'],
-        'int_attrs': [],
-    },
-    {
-        'name': 'gun',
-        'pkey': 'gunId',
-        'attrs': ['gunId', 'labels.ja', 'labels.en', 'makerId', 'gunType', 'poweredType', 'asin'],
-        'int_attrs': [],
     },
 ]
 ALLOWED_TABLES = [table['name'] for table in TARGET_TABLES]
