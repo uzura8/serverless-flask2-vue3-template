@@ -2,7 +2,7 @@ import argparse
 import csv
 import os
 import sys
-from app.models.dynamodb import Category
+from app.models.dynamodb import Category, Server
 from app.utils.dict import conv_flat_dict_to_nested, flatten_dict, split_dict_values, join_dict_values
 from app.utils.string import to_pascal_case
 # from pprint import pprint
@@ -20,6 +20,12 @@ TARGET_TABLES = [
         'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
                   'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
         'int_attrs': ['cateId', 'orderNo', 'parentId'],
+    },
+    {
+        'name': 'server',
+        'pkey': 'domain',
+        'attrs': ['domain', 'availableNodeVersions'],
+        'int_attrs': [],
     },
 ]
 ALLOWED_TABLES = [table['name'] for table in TARGET_TABLES]
