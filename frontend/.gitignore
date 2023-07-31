@@ -25,3 +25,4 @@ coverage
 /src/configs/config.json
 /src/configs/config-*.json
 /src/configs/firebase-app-sdk-config.json
+/src/configs/cognito-client-config.json
