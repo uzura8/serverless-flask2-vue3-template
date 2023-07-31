@@ -9,3 +9,6 @@ domain_static_site_prd = "your-domain-static-site.example.com"
 domain_static_site_dev = "your-domain-static-site-dev.example.com"
 domain_media_site_prd = "your-domain-media.example.com"
 domain_media_site_dev = "your-domain-media-dev.example.com"
+
+# VPC
+vpc_availability_zones = ["ap-northeast-1c", "ap-northeast-1d"]

@@ -4,6 +4,10 @@ notificationEmail: admin@example.com
 
 debugLogEnabled: true
 
+vpc:
+  securityGroupIds: your-security-group-id
+  subnetIds: your-subnet-id
+
 logRetentionInDays: 14
 
 logsRestApi:

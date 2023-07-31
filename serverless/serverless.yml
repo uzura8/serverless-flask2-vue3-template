@@ -98,6 +98,11 @@ provider:
   deploymentBucket:
     name: ${file(./config/stages/common.yml):deploymentBucketName}
     serverSideEncryption: AES256
+  vpc:
+    securityGroupIds:
+      - ${file(${self:custom.stageConfigFileName}):vpc.securityGroupIds}
+    subnetIds:
+      - ${file(${self:custom.stageConfigFileName}):vpc.subnetIds}
   logs:
     restApi:
       accessLogging: ${file(${self:custom.stageConfigFileName}):logsRestApi.accessLogging}
