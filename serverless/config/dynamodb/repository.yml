@@ -1,0 +1,30 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-repository
+  AttributeDefinitions:
+    - AttributeName: repoId
+      AttributeType: S
+    - AttributeName: serverDomain
+      AttributeType: S
+  KeySchema:
+    - AttributeName: repoId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.repository.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.repository.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.repository.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: serverDomain_idx
+      KeySchema:
+        - AttributeName: serverDomain
+          KeyType: HASH
+        - AttributeName: repoId
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

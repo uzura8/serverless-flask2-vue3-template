@@ -4,6 +4,8 @@ from .site_config import SiteConfig
 from .category import Category
 # from .file import File
 from .server import Server
+from .repository import Repository
+from .deployment import Deployment
 
 __all__ = [
     'Base',
@@ -13,4 +15,6 @@ __all__ = [
     'Category',
     # 'File',
     'Server',
+    'Repository',
+    'Deployment',
 ]

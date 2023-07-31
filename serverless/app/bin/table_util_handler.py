@@ -1,4 +1,4 @@
-from app.models.dynamodb import SiteConfig, Category
+from app.models.dynamodb import SiteConfig, Category, Server, Repository, Deployment
 import os
 import sys
 import argparse
@@ -11,7 +11,8 @@ parent_dir = os.path.dirname(os.path.dirname(
 sys.path.append(parent_dir)
 
 
-allowed_tables = ['site_config', 'category']
+allowed_tables = ['site_config', 'category',
+                  'server', 'repository', 'deployment']
 
 
 class TableUtilHandler:

@@ -1,0 +1,32 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-deployment
+  AttributeDefinitions:
+    - AttributeName: deployId
+      AttributeType: S
+    - AttributeName: serverDomain
+      AttributeType: S
+    - AttributeName: createdAt
+      AttributeType: S
+  KeySchema:
+    - AttributeName: deployId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.deployment.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.deployment.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.deployment.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: createdAt_idx
+      KeySchema:
+        - AttributeName: serverDomain
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
