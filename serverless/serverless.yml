@@ -159,3 +159,4 @@ resources:
     AdminUserConfigDynamoDBTable: ${file(./config/dynamodb/admin-user-config.yml)}
     CategoryDynamoDBTable: ${file(./config/dynamodb/category.yml)}
     FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
+    ServerDynamoDBTable: ${file(./config/dynamodb/server.yml)}

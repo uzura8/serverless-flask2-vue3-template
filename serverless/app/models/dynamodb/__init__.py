@@ -3,6 +3,7 @@ from .site_config import SiteConfig
 # from .admin_user_config import AdminUserConfig
 from .category import Category
 # from .file import File
+from .server import Server
 
 __all__ = [
     'Base',
@@ -11,4 +12,5 @@ __all__ = [
     # 'AdminUserConfig',
     'Category',
     # 'File',
+    'Server',
 ]

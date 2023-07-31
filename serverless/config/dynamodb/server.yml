@@ -1,0 +1,18 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-server
+  AttributeDefinitions:
+    - AttributeName: domain
+      AttributeType: S
+  KeySchema:
+    - AttributeName: domain
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.server.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.server.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.server.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
