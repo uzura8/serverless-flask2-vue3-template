@@ -39,3 +39,45 @@ def flatten_dict(d, parent_key='', sep='.'):
         else:
             items.append((new_key, v))
     return dict(items)
+
+
+def split_dict_values(input_dict):
+    """
+    Split a dict's values into a list if they contain a comma.
+
+    :param input_dict: dict
+    :return: dict with values split into lists if they contain a comma.
+    :rtype: dict
+
+    Example:
+        >>> split_dict_values({'a': '1,2,3', 'b': '4'})
+        {'a': ['1', '2', '3'], 'b': '4'}
+    """
+    output_dict = {}
+    for key, value in input_dict.items():
+        if ',' in value:
+            output_dict[key] = value.split(',')
+        else:
+            output_dict[key] = value
+    return output_dict
+
+
+def join_dict_values(input_dict):
+    """
+    Join a dict's values into a string if they are a list.
+
+    :param input_dict: dict
+    :return: dict with values joined into strings if they are a list.
+    :rtype: dict
+
+    Example:
+        >>> join_dict_values({'a': ['1', '2', '3'], 'b': '4'})
+        {'a': '1,2,3', 'b': '4'}
+    """
+    output_dict = {}
+    for key, value in input_dict.items():
+        if isinstance(value, list):
+            output_dict[key] = ','.join(value)
+        else:
+            output_dict[key] = value
+    return output_dict
