@@ -3,7 +3,7 @@ import csv
 import os
 import sys
 from app.models.dynamodb import Category
-from app.utils.dict import conv_flat_dict_to_nested, flatten_dict
+from app.utils.dict import conv_flat_dict_to_nested, flatten_dict, split_dict_values, join_dict_values
 from app.utils.string import to_pascal_case
 # from pprint import pprint
 
@@ -12,6 +12,7 @@ parent_dir = os.path.dirname(os.path.dirname(
 sys.path.append(parent_dir)
 
 CSV_DIR_REL_PATH = '../../develop/var/'
+CSV_FILE_PREFIX = ''
 TARGET_TABLES = [
     {
         'name': 'category',
@@ -35,7 +36,8 @@ class TableCsvHandler:
 
         self.table_info = results[0]
         self.model = globals()[to_pascal_case(table_name)]
-        self.csv_file_path = self.get_file_path(table_name, CSV_DIR_REL_PATH)
+        self.csv_file_path = self.get_file_path(
+            table_name, CSV_DIR_REL_PATH, CSV_FILE_PREFIX)
         self.csv_file = None
         self.reader = None
         self.pkey_name = pkey_name if pkey_name else f'{table_name}Id'
@@ -58,6 +60,7 @@ class TableCsvHandler:
         formatted_data = []
         for item in data_to_write:
             formatted_item = flatten_dict(item)
+            formatted_item = join_dict_values(formatted_item)
             formatted_data.append(
                 {key: formatted_item[key] for key in field_names})
         self.csv_file = open(self.csv_file_path, 'w',
@@ -71,6 +74,7 @@ class TableCsvHandler:
         for attr in self.table_info['int_attrs']:
             vals[attr] = int(vals[attr])
         vals = conv_flat_dict_to_nested(vals)
+        vals = split_dict_values(vals)
         pkey_value = vals.get(self.pkey_name)
         query_key = {self.pkey_name: pkey_value}
         if pkey_value:
@@ -84,9 +88,9 @@ class TableCsvHandler:
             self.model.create(vals, self.pkey_name)
 
     @staticmethod
-    def get_file_path(table_name, rel_path):
+    def get_file_path(table_name, rel_path, file_prefix):
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        rel_path = f'{rel_path}sl_{table_name}.csv'
+        rel_path = f'{rel_path}{file_prefix}{table_name}.csv'
         abs_path = os.path.join(current_dir, rel_path)
         return os.path.normpath(abs_path)
 
