@@ -1,5 +1,5 @@
 domainName: your-project-api.example.com
-corsAcceptOrigins: 'https://prod.example.com,https://stg.example.com'
+corsAcceptOrigins: "https://prod.example.com,https://stg.example.com"
 notificationEmail: admin@example.com
 
 debugLogEnabled: true
@@ -37,16 +37,16 @@ media:
 
 # For Admin Console
 cognito:
-  region: 'ap-northeast-1'
-  userpoolId: 'ap-northeast-1_*********'
-  appClientId: '**************************'
+  region: "ap-northeast-1"
+  userpoolId: "ap-northeast-1_*********"
+  appClientId: "**************************"
   checkTokenExpiration: True # If set Falsae, disable token expiration checking for testing purposes
 
-dynamoDbBackupTargetTagValue: 'aws-backup' # 'aws-backup':backup target / other value: not target
+dynamoDbBackupTargetTagValue: "aws-backup" # 'aws-backup':backup target / other value: not target
 
 dynamodbConfig:
   sampleTable:
-    billingMode: 'PAY_PER_REQUEST' # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
+    billingMode: "PAY_PER_REQUEST" # Select 'PAY_PER_REQUEST' or 'PROVISIONED'
     provisionedThroughput:
       readCapacityUnits: 0
       writeCapacityUnits: 0
