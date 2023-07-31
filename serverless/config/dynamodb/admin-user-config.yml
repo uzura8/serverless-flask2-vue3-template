@@ -14,8 +14,8 @@ Properties:
 
   BillingMode: ${self:custom.dynamodbConfig.adminUserConfig.billingMode, 'PAY_PER_REQUEST'}
   ProvisionedThroughput:
-    ReadCapacityUnits: ${self:custom.dynamodbConfig.postGroup.provisionedThroughput.readCapacityUnits, 0}
-    WriteCapacityUnits: ${self:custom.dynamodbConfig.postGroup.provisionedThroughput.writeCapacityUnits, 0}
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.adminUserConfig.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.adminUserConfig.provisionedThroughput.writeCapacityUnits, 0}
 
   Tags:
     - Key: backup
