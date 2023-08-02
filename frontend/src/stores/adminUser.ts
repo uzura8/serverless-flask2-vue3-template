@@ -12,6 +12,11 @@ export const useAdminUserStore = defineStore('adminUser', () => {
     return adminUser.value.getSignInUserSession()
   })
 
+  const idToken = computed((): string | null => {
+    if (!session.value) return null
+    return session.value.getIdToken().getJwtToken()
+  })
+
   const username = computed((): string | null => {
     if (!adminUser.value) return null
     return adminUser.value.getUsername()
@@ -29,6 +34,7 @@ export const useAdminUserStore = defineStore('adminUser', () => {
   return {
     adminUser,
     session,
+    idToken,
     isAuthenticated,
     username,
     setUser
