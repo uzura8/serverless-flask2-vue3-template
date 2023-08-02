@@ -17,6 +17,11 @@ export function substr(text: string, len: number, truncation = ''): string {
   return text
 }
 
+export function checkUrl(text: string): boolean {
+  const regexp = /^https?:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+$/
+  return regexp.test(text)
+}
+
 export function checkEmail(text: string): boolean {
   // eslint-disable-next-line no-useless-escape
   const regexp =

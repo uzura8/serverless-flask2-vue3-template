@@ -24,6 +24,10 @@ export default defineComponent({
       type: String,
       default: ''
     },
+    helperText: {
+      type: String,
+      default: ''
+    },
     isRequired: {
       type: Boolean,
       default: false
@@ -100,7 +104,7 @@ export default defineComponent({
       v-model="inputValue"
       @blur="$emit('blur', inputValue)"
       :rows="textAreaRows"
-      class="block p-2.5 w-full text-lg text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      class="block p-2.5 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       :class="{
         'border-gray-300': !errorText,
         'bg-red-50 border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500 dark:text-red-500 dark:placeholder-red-500 dark:border-red-500':
@@ -113,7 +117,7 @@ export default defineComponent({
       v-model="inputValue"
       @blur="$emit('blur', inputValue)"
       type="text"
-      class="bg-gray-50 border text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      class="block text-base p-2 bg-gray-50 border text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
       :class="inputClassStr"
     />
     <p
@@ -121,6 +125,9 @@ export default defineComponent({
       class="mt-2 text-sm text-red-600 dark:text-red-500"
     >
       {{ errorText }}
+    </p>
+    <p class="mt-2 text-sm text-gray-600 dark:text-white">
+      {{ helperText }}
     </p>
   </div>
 </template>
