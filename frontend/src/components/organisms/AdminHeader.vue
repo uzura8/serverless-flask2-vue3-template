@@ -4,9 +4,9 @@ import { useRoute, useRouter } from 'vue-router'
 import config from '@/configs/config.json'
 //import { storeToRefs } from 'pinia'
 import { useGlobalHeaderStore } from '@/stores/globalHeader'
-import { useGlobalLoaderStore } from '@/stores/globalLoader'
-import { AdminAuthApi } from '@/apis'
+import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
 import { useAdminUserStore } from '@/stores/adminUser'
+import { AdminAuthApi } from '@/apis'
 import AdminHeaderUserDropdown from '@/components/molecules/AdminHeaderUserDropdown.vue'
 
 export default defineComponent({
@@ -168,11 +168,11 @@ export default defineComponent({
             </li>
             <li>
               <RouterLink
-                to="/admin/about"
+                to="/admin/repositories"
                 class="block py-4 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
                 exact-active-class="bg-transparent text-primary-700"
               >
-                {{ $t('page.about') }}
+                {{ $t('pgit.term.repositories') }}
               </RouterLink>
             </li>
           </ul>

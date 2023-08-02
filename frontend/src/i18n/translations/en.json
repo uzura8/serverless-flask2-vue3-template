@@ -108,6 +108,7 @@
     "hide": "Hide",
     "showFor": "Show {target}",
     "hideFor": "Hide {target}",
+    "generatedOf": "Generated {label}",
     "more": "More"
   },
   "msg": {
@@ -288,5 +289,42 @@
   },
   "site": {
     "name": "Sample Site"
+  },
+  "pgit": {
+    "term": {
+      "server": "Server",
+      "servers": "Servers",
+      "serverList": "Servers",
+      "repository": "Repository",
+      "repositories": "Repositories",
+      "repositoryList": "Repositories",
+      "branch": "Branch"
+    },
+    "form": {
+      "repository": {
+        "repoInfo": "Repository Information",
+        "repoUrl": "Repository URL",
+        "serviceDomain": "Domain",
+        "serviceSegment": "Segment",
+        "repoName": "Repository Name",
+        "inputByUrl": "Input by URL",
+        "inputEachItems": "Input each items",
+        "serviceSegmentHelpText": "Please specify the project ID for Backlog and the user/organization identifier for Github",
+        "serverDomain": "Server Domain",
+        "buildInfo": "Build Information",
+        "isBuildRequired": "Build Required",
+        "nodeJSVersion": "NodeJS Version",
+        "buildType": "Build Type",
+        "buildTargetDirPath": "Build Target Directory Path",
+        "buildHelpText": "On files in Build Target Directory changed , the following command is executed",
+        "mailNoticeType": "Mail Notification"
+      },
+      "mailNoticeType": {
+        "none": "None",
+        "completed": "Completed only",
+        "failed": "Failed only",
+        "all": "All"
+      }
+    }
   }
 }

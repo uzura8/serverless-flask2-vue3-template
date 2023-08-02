@@ -38,7 +38,7 @@
     "register": "登録する",
     "delete": "削除",
     "cancel": "キャンセル",
-    "add": "追加",
+    "add": "追加する",
     "addFor": "{target} を追加する",
     "addTo": "{target} に追加",
     "input": "入力する",
@@ -111,6 +111,7 @@
     "hideFor": "{target} を非表示にする",
     "showDetailItems": "詳細項目を表示する",
     "hideDetailItems": "詳細項目を非表示にする",
+    "generatedOf": "生成された{label}",
     "more": "もっと見る"
   },
   "msg": {
@@ -291,5 +292,42 @@
   },
   "site": {
     "name": "サンプルサイト"
+  },
+  "pgit": {
+    "term": {
+      "server": "サーバ",
+      "servers": "サーバ",
+      "serverList": "サーバ一覧",
+      "repository": "リポジトリ",
+      "repositories": "リポジトリ",
+      "repositoryList": "リポジトリ一覧",
+      "branch": "ブランチ"
+    },
+    "form": {
+      "repository": {
+        "repoInfo": "リポジトリ情報",
+        "repoUrl": "リポジトリURL",
+        "serviceDomain": "ドメイン",
+        "serviceSegment": "区分",
+        "repoName": "リポジトリ名",
+        "inputByUrl": "URLから入力",
+        "inputEachItems": "各項目を入力",
+        "serviceSegmentHelpText": "Backlogの場合はプロジェクトID、Githubの場合はユーザ・組織IDを指定してください",
+        "serverDomain": "サーバドメイン",
+        "buildInfo": "ビルド情報",
+        "isBuildRequired": "ビルドが必要か",
+        "nodeJSVersion": "NodeJS バージョン",
+        "buildType": "ビルドタイプ",
+        "buildTargetDirPath": "ビルド対象ディレクトリ",
+        "buildHelpText": "ビルド対象ディレクトリに変更があった場合に、以下のコマンドを実行します",
+        "mailNoticeType": "メール通知"
+      },
+      "mailNoticeType": {
+        "none": "なし",
+        "completed": "成功時のみ",
+        "failed": "失敗時のみ",
+        "all": "両方"
+      }
+    }
   }
 }

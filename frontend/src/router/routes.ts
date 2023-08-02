@@ -47,6 +47,14 @@ const routes: RouteRecordRaw[] = [
     component: AdminLayout,
     children: [
       {
+        path: '/admin',
+        name: 'AdminTopPage',
+        component: () => import('@/views/AdminTopPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: '/admin/signin',
         name: 'AdminSignIn',
         component: () => import('@/views/AdminSignInPage.vue')
@@ -60,9 +68,17 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
-        path: '/admin',
-        name: 'AdminTopPage',
-        component: () => import('@/views/AdminTopPage.vue'),
+        path: '/admin/repositories',
+        name: 'AdminRepoListPage',
+        component: () => import('@/views/AdminRepoListPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/admin/repositories/create',
+        name: 'AdminRepoCreatePage',
+        component: () => import('@/views/AdminRepoCreatePage.vue'),
         meta: {
           requiresAuth: true
         }
