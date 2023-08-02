@@ -2,7 +2,11 @@
 import type { PropType } from 'vue'
 import { defineComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { capitalize } from '@/utils/str'
+
+interface OptionObj {
+  value: string
+  label: string
+}
 
 export default defineComponent({
   props: {
@@ -13,13 +17,19 @@ export default defineComponent({
     },
     options: {
       type: Array as PropType<string[]>,
-      required: true
+      required: false
+    },
+    optionObjs: {
+      type: Array as PropType<OptionObj[]>,
+      required: false
     },
     defaultOptionText: {
-      type: String
+      type: String,
+      required: false
     },
     errorText: {
       type: String,
+      required: false,
       default: ''
     },
     optionsLabelTransKey: {
@@ -28,17 +38,19 @@ export default defineComponent({
     },
     isWidthFull: {
       type: Boolean,
+      required: false,
       default: true
     },
     isRequired: {
       type: Boolean,
+      required: false,
       default: false
     },
-    isInline: {
-      type: Boolean,
-      default: false
-    },
-    modelValue: String
+    modelValue: {
+      type: String,
+      required: false,
+      default: ''
+    }
   },
 
   setup(props, context) {
@@ -59,10 +71,8 @@ export default defineComponent({
     })
 
     const optionText = (key: string) => {
-      if (props.optionsLabelTransKey) {
-        return t(`${props.optionsLabelTransKey}.${key}`)
-      }
-      return capitalize(key)
+      if (!props.optionsLabelTransKey) return key
+      return t(`${props.optionsLabelTransKey}.${key}`)
     }
 
     return {
@@ -74,15 +84,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="{ 'flex items-center space-x-4': isInline }">
+  <div>
     <label
       v-if="labelText"
-      class="mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      :class="{
-        'text-red-700': errorText,
-        'dark:text-red-500': errorText,
-        block: !isInline
-      }"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+      :class="{ 'text-red-700': errorText, 'dark:text-red-500': errorText }"
     >
       <span>{{ labelText }}</span>
       <span
@@ -110,6 +116,14 @@ export default defineComponent({
         {{ defaultOptionText }}
       </option>
       <option
+        v-if="optionObjs"
+        v-for="optionObj in optionObjs"
+        :value="optionObj.value"
+        :selected="optionObj.value === selectedValue"
+        v-text="optionObj.label"
+      ></option>
+      <option
+        v-else
         v-for="optionValue in options"
         :key="optionValue"
         :value="optionValue"
