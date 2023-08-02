@@ -13,5 +13,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1 class="text-2xl font-extrabold dark:text-white">{{ $t('page.about') }}</h1>
+  <h1 class="mb-12 text-2xl font-extrabold dark:text-white">{{ $t('page.about') }}</h1>
 </template>
