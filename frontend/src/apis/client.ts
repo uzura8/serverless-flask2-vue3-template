@@ -17,7 +17,8 @@ const getRequestOption = (
   url: string,
   method: string,
   params: ApiParams | null = null,
-  token: string | null = null
+  token: string | null = null,
+  isAdmin: boolean = false
 ) => {
   const params_cloned = { ...params }
   const options: AxiosRequestConfig = {
@@ -25,7 +26,14 @@ const getRequestOption = (
     method: method.toUpperCase(),
     params: params_cloned
   }
-  if (token) options.headers = { Authorization: token }
+  if (token) {
+    const headerName = isAdmin ? config.api.authHeader.admin.name : config.api.authHeader.user.name
+    const tokenPrefix = isAdmin
+      ? config.api.authHeader.admin.tokenPrefix
+      : config.api.authHeader.user.tokenPrefix
+    const headerValue = [tokenPrefix, token].join(' ')
+    options.headers = { [headerName]: headerValue }
+  }
   return options
 }
 
