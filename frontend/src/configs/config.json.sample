@@ -8,7 +8,17 @@
   },
   "api": {
     "origin": "https://api.example.com",
-    "basePath": "/api"
+    "basePath": "/api",
+    "authHeader": {
+      "user": {
+        "name": "Authorization",
+        "tokenPrefix": ""
+      },
+      "admin": {
+        "name": "Authorization",
+        "tokenPrefix": "Bearer"
+      }
+    }
   },
   "media": {
     "url": "https://media.example.com"

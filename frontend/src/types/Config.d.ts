@@ -9,34 +9,24 @@ interface Common {
   loadingMaxDuration: number
 }
 
+interface AuthHeaderItem {
+  name: string
+  tokenPrefix: string
+}
+
+interface AuthHeader {
+  user: AuthHeaderItem
+  admin: AuthHeaderItem
+}
+
 interface Api {
   origin: string
   basePath: string
+  authHeader: AuthHeader
 }
 
 interface Post {
   serviceId: string
-}
-
-interface Temperature {
-  defaultUnit: string
-  defaultValue: number
-}
-
-interface EventConfig {
-  temperature: Temperature
-}
-
-interface GameConfig {
-  defaultGameType: GameType
-  defaultDefaultResultType: MatchResultType
-  defaultDurationUnit: DurationUnit
-  defaultDurationValue: number
-}
-
-interface SurvaLogConfig {
-  event: EventConfig
-  game: GameConfig
 }
 
 export interface Config {
@@ -44,8 +34,6 @@ export interface Config {
   common: Common
   api: Api
   post: Post
-  sl: SurvaLogConfig
-  game: Game
 }
 
 declare module '@/configs/config.json' {
