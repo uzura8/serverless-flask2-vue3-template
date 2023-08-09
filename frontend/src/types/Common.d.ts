@@ -11,6 +11,11 @@ export interface ApiParams {
   [key: string]: string | number | boolean
 }
 
+export interface FormSelectFieldOptionObj {
+  value: string
+  label: string
+}
+
 export type DateTimeFormat =
   | 'DATE_SHORT'
   | 'DATE_MED'
