@@ -1,12 +1,8 @@
 <script lang="ts">
+import type { FormSelectFieldOptionObj } from '@/types/Common'
 import type { PropType } from 'vue'
 import { defineComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-
-interface OptionObj {
-  value: string
-  label: string
-}
 
 export default defineComponent({
   props: {
@@ -20,7 +16,7 @@ export default defineComponent({
       required: false
     },
     optionObjs: {
-      type: Array as PropType<OptionObj[]>,
+      type: Array as PropType<FormSelectFieldOptionObj[]>,
       required: false
     },
     defaultOptionText: {
