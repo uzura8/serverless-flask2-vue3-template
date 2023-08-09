@@ -1,10 +1,12 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faArrowUpRightFromSquare,
   faBars,
   faCircleUser,
   faXmark,
   faEye,
   faEdit,
+  faEllipsis,
   faEyeSlash,
   faChevronLeft,
   faPlus,
@@ -26,11 +28,13 @@ import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(
+  faArrowUpRightFromSquare,
   faBars,
   faCircleUser,
   faXmark,
   faEye,
   faEdit,
+  faEllipsis,
   faEyeSlash,
   faChevronLeft,
   faPlus,
