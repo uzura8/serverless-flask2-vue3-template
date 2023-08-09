@@ -9,7 +9,7 @@ from app.routes.root import bp as root_module
 # from app.comment import bp as comment_module
 from app.routes.category import bp as category_module
 # from app.tag import bp as tag_module
-# from app.admin import bp as admin_module
+from app.routes.admin import bp as admin_module
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
 CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(
@@ -98,6 +98,6 @@ app.register_blueprint(category_module)
 # app.register_blueprint(tag_module)
 # app.register_blueprint(post_module)
 # app.register_blueprint(comment_module)
-# app.register_blueprint(admin_module)
+app.register_blueprint(admin_module)
 # app.register_blueprint(member_module)
 app.register_blueprint(root_module)
