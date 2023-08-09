@@ -25,6 +25,19 @@ interface Api {
   authHeader: AuthHeader
 }
 
+interface RepositoryService {
+  label: string
+  domain: string
+}
+
+interface Repository {
+  services: RepositoryService[]
+}
+
+interface Pgit {
+  repository: Repository
+}
+
 interface Post {
   serviceId: string
 }
@@ -33,6 +46,7 @@ export interface Config {
   site: Site
   common: Common
   api: Api
+  pgit: Pgit
   post: Post
 }
 

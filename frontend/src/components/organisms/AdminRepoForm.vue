@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { FormSelectFieldOptionObj } from '@/types/Common'
 import type { RepositoryFormVals, Repository } from '@/types/Repository'
 import { defineComponent, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -6,9 +7,8 @@ import { useI18n } from 'vue-i18n'
 import { useAdminUserStore } from '@/stores/adminUser'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
 import { checkUrl } from '@/utils/str'
-// import { transformKey } from '@/utils/array'
 import { AdminRepositoryApi } from '@/apis'
-// import config from '@/configs/config.json'
+import config from '@/configs/config.json'
 import FormInputField from '@/components/molecules/FormInputField.vue'
 import FormSelectField from '@/components/molecules/FormSelectField.vue'
 import FormCheckBoxToggleField from '@/components/molecules/FormCheckBoxToggleField.vue'
@@ -119,17 +119,13 @@ export default defineComponent({
       }
     }
 
-    // const serviceDomainOptionObjs = transformKey(config.repository.services, 'domain', 'value')
-    const serviceDomainOptionObjs = [
-      {
-        label: 'Backlog',
-        value: 'coopnext.backlog.jp/git'
-      },
-      {
-        label: 'GitHub',
-        value: 'github.com'
-      }
-    ]
+    const serviceDomainOptionObjs: FormSelectFieldOptionObj[] = []
+    config.pgit.repository.services.map((item) => {
+      serviceDomainOptionObjs.push({
+        label: item.label,
+        value: item.domain
+      })
+    })
     const serviceDomainOptionVals = serviceDomainOptionObjs.map((item) => item.value)
 
     const validateServiceDomain = () => {

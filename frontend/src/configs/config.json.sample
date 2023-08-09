@@ -23,6 +23,20 @@
   "media": {
     "url": "https://media.example.com"
   },
+  "pgit": {
+    "repository": {
+      "services": [
+        {
+          "label": "Backlog",
+          "domain": "coopnext.backlog.jp/git"
+        },
+        {
+          "label": "Github",
+          "domain": "github.com"
+        }
+      ]
+    }
+  },
   "post": {
     "serviceId": "your-serviceId"
   }
