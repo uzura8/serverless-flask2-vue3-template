@@ -11,6 +11,7 @@ export interface RepositoryFormVals {
 
 export interface Repository extends RepositoryFormVals {
   repoId: string
+  deployStatus: string
   createdAt: string
   updatedAt?: string
 }

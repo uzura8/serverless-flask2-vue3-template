@@ -5,7 +5,7 @@ import { client, getRequestOption } from '@/apis/client'
 class AdminRepositoryApi {
   getList(params: any | null = null, token: string | null = null): Promise<RepositoryApiResult> {
     const uri = 'admin/repositories'
-    const options = getRequestOption(uri, 'get', params, token)
+    const options = getRequestOption(uri, 'get', params, token, true)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<RepositoryApiResult>) => {
@@ -19,7 +19,7 @@ class AdminRepositoryApi {
 
   getOne(repoId: string, token: string | null = null): Promise<Repository> {
     const uri = `admin/repositories/${repoId}`
-    const options = getRequestOption(uri, 'get', null, token)
+    const options = getRequestOption(uri, 'get', null, token, true)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<Repository>) => {
@@ -33,7 +33,7 @@ class AdminRepositoryApi {
 
   create(vals: RepositoryFormVals, token: string | null = null): Promise<Repository> {
     const uri = 'admin/repositories'
-    const options = getRequestOption(uri, 'post', null, token)
+    const options = getRequestOption(uri, 'post', null, token, true)
     return new Promise((resolve, reject) => {
       client
         .post(uri, vals, options)

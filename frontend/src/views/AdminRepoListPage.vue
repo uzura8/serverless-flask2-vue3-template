@@ -1,8 +1,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import AdminRepoList from '@/components/organisms/AdminRepoList.vue'
 
 export default defineComponent({
-  components: {},
+  components: {
+    AdminRepoList
+  },
 
   props: {},
 
@@ -26,5 +29,7 @@ export default defineComponent({
       />
       {{ $t('common.addFor', { target: $t('pgit.term.repository') }) }}
     </RouterLink>
+
+    <AdminRepoList class="mt-12" />
   </div>
 </template>

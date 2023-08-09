@@ -298,12 +298,20 @@
       "repository": "Repository",
       "repositories": "Repositories",
       "repositoryList": "Repositories",
-      "branch": "Branch"
+      "branch": "Branch",
+      "deployStatus": "Status",
+      "deployStatuses": {
+        "waiting": "Waiting",
+        "running": "Deploying",
+        "done": "Done",
+        "failed": "Failed"
+      }
     },
     "form": {
       "repository": {
         "repoInfo": "Repository Information",
         "repoUrl": "Repository URL",
+        "service": "Service",
         "serviceDomain": "Domain",
         "serviceSegment": "Segment",
         "repoName": "Repository Name",

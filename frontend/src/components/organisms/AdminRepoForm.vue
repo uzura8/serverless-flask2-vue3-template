@@ -6,7 +6,9 @@ import { useI18n } from 'vue-i18n'
 import { useAdminUserStore } from '@/stores/adminUser'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
 import { checkUrl } from '@/utils/str'
+// import { transformKey } from '@/utils/array'
 import { AdminRepositoryApi } from '@/apis'
+// import config from '@/configs/config.json'
 import FormInputField from '@/components/molecules/FormInputField.vue'
 import FormSelectField from '@/components/molecules/FormSelectField.vue'
 import FormCheckBoxToggleField from '@/components/molecules/FormCheckBoxToggleField.vue'
@@ -117,6 +119,7 @@ export default defineComponent({
       }
     }
 
+    // const serviceDomainOptionObjs = transformKey(config.repository.services, 'domain', 'value')
     const serviceDomainOptionObjs = [
       {
         label: 'Backlog',
@@ -273,7 +276,7 @@ export default defineComponent({
         }
 
         globalLoader.updateLoading(false)
-        router.push(`/admin/repositories/${res.repoId}`)
+        router.push('/admin/repositories')
       } catch (error) {
         console.error(error)
         globalLoader.updateLoading(false)
@@ -375,7 +378,7 @@ export default defineComponent({
           :errorText="errors.serviceDomain"
           :optionObjs="serviceDomainOptionObjs"
           :default-option-text="$t('msg.pleaseSelect')"
-          :label-text="$t('pgit.form.repository.serviceDomain')"
+          :label-text="$t('pgit.form.repository.service')"
           @change="validateServiceDomain"
         />
         <FormInputField
@@ -469,13 +472,19 @@ export default defineComponent({
           <div class="mt-2 p-4 text-gray-600 bg-gray-50 rounded italic">
             <div v-if="buildType === 'npm'">
               npm install
-              <span class="text-gray-400"> // package.json に変更があった場合のみ </span><br />
+              <span class="text-gray-400"> // package.json に変更があった場合のみ実施</span><br />
               npm run build
+              <span class="text-gray-400">
+                // ビルド対象ディレクトリに変更があった場合のみ実施</span
+              >
             </div>
             <div v-if="buildType === 'yarn'">
               yarn install
-              <span class="text-gray-400"> // package.json に変更があった場合のみ </span><br />
+              <span class="text-gray-400"> // package.json に変更があった場合のみ実施</span><br />
               yarn build
+              <span class="text-gray-400">
+                // ビルド対象ディレクトリに変更があった場合のみ実施
+              </span>
             </div>
           </div>
         </div>

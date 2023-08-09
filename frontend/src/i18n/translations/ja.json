@@ -301,13 +301,21 @@
       "repository": "リポジトリ",
       "repositories": "リポジトリ",
       "repositoryList": "リポジトリ一覧",
-      "branch": "ブランチ"
+      "branch": "ブランチ",
+      "deployStatus": "状態",
+      "deployStatuses": {
+        "waiting": "待機中",
+        "running": "実行中",
+        "done": "完了",
+        "failed": "失敗"
+      }
     },
     "form": {
       "repository": {
         "repoInfo": "リポジトリ情報",
         "repoUrl": "リポジトリURL",
-        "serviceDomain": "ドメイン",
+        "service": "サービス",
+        "serviceDomain": "サービスドメイン",
         "serviceSegment": "区分",
         "repoName": "リポジトリ名",
         "inputByUrl": "URLから入力",
