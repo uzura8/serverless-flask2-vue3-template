@@ -5,6 +5,8 @@ import { initFlowbite } from 'flowbite'
 export default defineComponent({
   components: {},
 
+  emits: ['sign-out'],
+
   props: {
     username: {
       type: String,
