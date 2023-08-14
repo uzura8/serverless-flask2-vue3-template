@@ -297,6 +297,7 @@
     "term": {
       "server": "サーバ",
       "servers": "サーバ",
+      "domain": "ドメイン",
       "serverList": "サーバ一覧",
       "repository": "リポジトリ",
       "repositories": "リポジトリ",

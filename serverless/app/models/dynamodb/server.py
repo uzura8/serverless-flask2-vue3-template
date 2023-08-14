@@ -7,7 +7,6 @@ class Server(Base):
     public_attrs = [
         'domain',
         'isExecuting',
-        'availableNodeVersions',
         'createdAt',
         'updatedAt',
     ]
@@ -16,3 +15,7 @@ class Server(Base):
     private_attrs = [
     ]
     all_attrs = public_attrs + private_attrs
+
+    allowed_vals = {
+        'isExecuting': ['0', '1'],
+    }

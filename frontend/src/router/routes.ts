@@ -68,6 +68,14 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/admin/servers',
+        name: 'AdminServerListPage',
+        component: () => import('@/views/AdminServerListPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: '/admin/repositories',
         name: 'AdminRepoListPage',
         component: () => import('@/views/AdminRepoListPage.vue'),

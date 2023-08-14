@@ -295,6 +295,7 @@
       "server": "Server",
       "servers": "Servers",
       "serverList": "Servers",
+      "domain": "Domain",
       "repository": "Repository",
       "repositories": "Repositories",
       "repositoryList": "Repositories",
