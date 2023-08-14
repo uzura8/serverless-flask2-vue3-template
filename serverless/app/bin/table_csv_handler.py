@@ -11,7 +11,7 @@ parent_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(parent_dir)
 
-CSV_DIR_REL_PATH = '../../develop/var/'
+CSV_DIR_REL_PATH = '../../develop/fixtures/'
 CSV_FILE_PREFIX = ''
 TARGET_TABLES = [
     {

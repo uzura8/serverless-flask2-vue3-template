@@ -35,3 +35,4 @@ requirements-tmp*
 
 /develop/env.sh
 /develop/var/*
+/develop/fixtures/*
