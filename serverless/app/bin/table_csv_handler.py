@@ -11,13 +11,14 @@ parent_dir = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(parent_dir)
 
-CSV_DIR_REL_PATH = '../../develop/var/'
+CSV_DIR_REL_PATH = '../../develop/fixtures/'
 CSV_FILE_PREFIX = ''
 TARGET_TABLES = [
     {
         'name': 'category',
         'pkey': 'cateId',
         'is_pkey_is_uuid_format': False,
+        'is_add_update_info': False,
         'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
                   'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
         'int_attrs': ['cateId', 'orderNo', 'parentId'],
@@ -26,6 +27,7 @@ TARGET_TABLES = [
         'name': 'server',
         'pkey': 'domain',
         'is_pkey_is_uuid_format': False,
+        'is_add_update_info': True,
         'attrs': ['domain'],
         'int_attrs': [],
     },
@@ -50,6 +52,7 @@ class TableCsvHandler:
         self.reader = None
         self.pkey_name = self.table_info['pkey'] if self.table_info['pkey'] else f'{table_name}Id'
         self.create_uuid_name = self.pkey_name if self.table_info['is_pkey_is_uuid_format'] else None
+        self.is_add_update_info = True if self.table_info['is_add_update_info'] else False
         self.int_attrs = []
 
     def __del__(self):
@@ -89,12 +92,12 @@ class TableCsvHandler:
         if pkey_value:
             item = self.model.get_one(query_key)
             if not item:
-                self.model.create(vals, self.create_uuid_name)
+                self.model.create(vals, self.create_uuid_name, self.is_add_update_info)
             elif vals != item:
                 del vals[self.pkey_name]
                 self.model.update(query_key, vals, True)
         else:
-            self.model.create(vals, self.create_uuid_name)
+            self.model.create(vals, self.create_uuid_name, self.is_add_update_info)
 
     @staticmethod
     def get_file_path(table_name, rel_path, file_prefix):
