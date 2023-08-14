@@ -5,7 +5,7 @@ import sys
 from app.models.dynamodb import Category, Server
 from app.utils.dict import conv_flat_dict_to_nested, flatten_dict, split_dict_values, join_dict_values
 from app.utils.string import to_pascal_case
-from .table_csv_config import TARGET_TABLES, CSV_FILE_PREFIX
+from app.bin.table_csv_config import TARGET_TABLES, CSV_FILE_PREFIX
 # from pprint import pprint
 
 parent_dir = os.path.dirname(os.path.dirname(
