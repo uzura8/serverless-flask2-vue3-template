@@ -304,10 +304,14 @@
       "branch": "ブランチ",
       "deployStatus": "状態",
       "deployStatuses": {
-        "waiting": "待機中",
-        "running": "実行中",
-        "done": "完了",
-        "failed": "失敗"
+        "pending": "待機中",
+        "inProgress": "進行中",
+        "completed": "完了",
+        "failed": "失敗",
+        "cancelled": "キャンセル",
+        "onHold": "保留",
+        "retryPending": "リトライ待機中",
+        "retryInProgress": "リトライ進行中"
       }
     },
     "form": {

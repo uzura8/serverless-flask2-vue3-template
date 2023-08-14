@@ -301,10 +301,14 @@
       "branch": "Branch",
       "deployStatus": "Status",
       "deployStatuses": {
-        "waiting": "Waiting",
-        "running": "Deploying",
-        "done": "Done",
-        "failed": "Failed"
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "onHold": "On Hold",
+        "retryPending": "Retry Pending",
+        "retryInProgress": "Retry In Progress"
       }
     },
     "form": {

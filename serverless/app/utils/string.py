@@ -81,6 +81,10 @@ def new_uuid(fmt='ulid'):
     return str(uuid.uuid4()).replace('-', '').lower()
 
 
+def sanitize_domain_str(string):
+    return re.sub(r'[/_.@# ]', '-', string).lower()
+
+
 def validate_uuid(val, fmt='ulid'):
     if fmt == 'ulid':
         pattern = r'^0[0-2][0-9a-hjkmnp-tv-z]{24}$'

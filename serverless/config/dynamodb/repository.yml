@@ -6,6 +6,8 @@ Properties:
       AttributeType: S
     - AttributeName: serverDomain
       AttributeType: S
+    - AttributeName: deployStatusUpdatedAt
+      AttributeType: S
   KeySchema:
     - AttributeName: repoId
       KeyType: HASH
@@ -24,7 +26,7 @@ Properties:
       KeySchema:
         - AttributeName: serverDomain
           KeyType: HASH
-        - AttributeName: repoId
+        - AttributeName: deployStatusUpdatedAt
           KeyType: RANGE
       Projection:
         ProjectionType: ALL

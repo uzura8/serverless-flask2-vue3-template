@@ -190,7 +190,7 @@ export default defineComponent({
       errors.value.isBuildRequired = ''
     }
 
-    const buildType = ref<string>('npm')
+    const buildType = ref<string>('')
     const buildTypeOptions = ['npm', 'yarn']
     const validateBuildType = () => {
       errors.value.buildType = ''
@@ -264,13 +264,11 @@ export default defineComponent({
         if (buildTargetDirPath.value) vals.buildTargetDirPath = buildTargetDirPath.value
         if (nodeJSVersion.value) vals.nodeJSVersion = nodeJSVersion.value
 
-        let res
         if (isEdit.value && props.repository) {
-          res = await AdminRepositoryApi.update(props.repository.repoId, vals, adminUser.idToken)
+          await AdminRepositoryApi.update(props.repository.repoId, vals, adminUser.idToken)
         } else {
-          res = await AdminRepositoryApi.create(vals, adminUser.idToken)
+          await AdminRepositoryApi.create(vals, adminUser.idToken)
         }
-
         globalLoader.updateLoading(false)
         router.push('/admin/repositories')
       } catch (error) {

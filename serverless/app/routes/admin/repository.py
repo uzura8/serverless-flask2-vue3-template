@@ -4,6 +4,8 @@ from flask_cognito import cognito_auth_required, current_cognito_jwt
 from app.models.dynamodb import Repository, ModelInvalidParamsException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
+from app.utils.date import utc_iso
+from app.utils.string import sanitize_domain_str
 from app.validators import NormalizerUtils
 from app.validators.schemas.common import get_list_schema
 from app.routes.admin import bp, site_before_request, admin_role_editor_required
@@ -37,13 +39,24 @@ def get_repo_list():
 @admin_role_editor_required
 def create_repo():
     vals = validate_params(schema_post(), request.json)
-    vals['deployStatus'] = 'waiting'
+    vals['repoId'] = generate_repo_id(
+        vals['serviceDomain'], vals['serviceSegment'], vals['repoName'])
+    exists = Repository.get_one({'repoId': vals['repoId']})
+    if exists:
+        raise InvalidUsage('Already exists', 400)
+
+    status = 'pending'
+    vals['deployStatus'] = status
     created_by = current_cognito_jwt.get('cognito:username', '')
     if created_by:
         vals['createdBy'] = created_by
 
+    add_datetime = utc_iso()
+    vals['updatedAt'] = add_datetime
+    vals['deployStatusUpdatedAt'] = '#'.join([status, add_datetime])
+
     try:
-        repo = Repository.create(vals, 'repoId')
+        repo = Repository.create(vals, None, True)
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)
@@ -107,6 +120,17 @@ def get_repo_by_repo_id(repo_id):
         raise InvalidUsage('Not Found', 404)
 
     return repo
+
+
+def generate_repo_id(service_domain, service_segment, repo_name):
+    services = Repository.services
+    name = next((service['name']
+                for service in services if service['domain'] == service_domain), None)
+    if not name:
+        raise InvalidUsage('Invalid service domain', 400)
+    suffix = '-'.join([sanitize_domain_str(service_segment),
+                       sanitize_domain_str(repo_name)])
+    return f'{name}.{suffix}'
 
 
 def schema_post():
