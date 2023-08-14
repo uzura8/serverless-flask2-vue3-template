@@ -17,6 +17,7 @@ TARGET_TABLES = [
     {
         'name': 'category',
         'pkey': 'cateId',
+        'is_pkey_is_uuid_format': False,
         'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
                   'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
         'int_attrs': ['cateId', 'orderNo', 'parentId'],
@@ -24,7 +25,8 @@ TARGET_TABLES = [
     {
         'name': 'server',
         'pkey': 'domain',
-        'attrs': ['domain', 'availableNodeVersions'],
+        'is_pkey_is_uuid_format': False,
+        'attrs': ['domain'],
         'int_attrs': [],
     },
 ]
@@ -32,7 +34,7 @@ ALLOWED_TABLES = [table['name'] for table in TARGET_TABLES]
 
 
 class TableCsvHandler:
-    def __init__(self, table_name, pkey_name=''):
+    def __init__(self, table_name):
         print('== START ==')
 
         results = [t for t in TARGET_TABLES if t['name'] == table_name]
@@ -46,7 +48,8 @@ class TableCsvHandler:
             table_name, CSV_DIR_REL_PATH, CSV_FILE_PREFIX)
         self.csv_file = None
         self.reader = None
-        self.pkey_name = pkey_name if pkey_name else f'{table_name}Id'
+        self.pkey_name = self.table_info['pkey'] if self.table_info['pkey'] else f'{table_name}Id'
+        self.create_uuid_name = self.pkey_name if self.table_info['is_pkey_is_uuid_format'] else None
         self.int_attrs = []
 
     def __del__(self):
@@ -86,12 +89,12 @@ class TableCsvHandler:
         if pkey_value:
             item = self.model.get_one(query_key)
             if not item:
-                self.model.create(vals, self.pkey_name)
+                self.model.create(vals, self.create_uuid_name)
             elif vals != item:
                 del vals[self.pkey_name]
                 self.model.update(query_key, vals, True)
         else:
-            self.model.create(vals, self.pkey_name)
+            self.model.create(vals, self.create_uuid_name)
 
     @staticmethod
     def get_file_path(table_name, rel_path, file_prefix):
