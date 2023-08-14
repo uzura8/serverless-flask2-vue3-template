@@ -1,4 +1,4 @@
-from .base import Base, ModelInvalidParamsException
+from .base import Base, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from .site_config import SiteConfig
 # from .admin_user_config import AdminUserConfig
 from .category import Category
@@ -7,6 +7,7 @@ from .category import Category
 __all__ = [
     'Base',
     'ModelInvalidParamsException',
+    'ModelConditionalCheckFailedException',
     'SiteConfig',
     # 'AdminUserConfig',
     'Category',

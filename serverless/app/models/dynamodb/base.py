@@ -10,16 +10,20 @@ class Base():
     IS_LOCAL = os.getenv('IS_LOCAL', 'False').lower() == 'true'
     PRJ_PREFIX = os.environ['PRJ_PREFIX']
 
+    dynamodb = None
     reserved_values = None
 
     @classmethod
     def connect_dynamodb(self):
+        if self.dynamodb:
+            return self.dynamodb
+
         if self.IS_LOCAL:
-            dynamodb = boto3.resource(
+            self.dynamodb = boto3.resource(
                 'dynamodb', endpoint_url='http://localhost:8000')
         else:
-            dynamodb = boto3.resource('dynamodb')
-        return dynamodb
+            self.dynamodb = boto3.resource('dynamodb')
+        return self.dynamodb
 
     @classmethod
     def get_table(self, table_name=None):
@@ -196,12 +200,18 @@ class Base():
         return False
 
     @classmethod
-    def create(self, vals, uuid_name=None):
+    def create(self, vals, uuid_name=None, is_add_update_info=False):
         if not vals.get('createdAt'):
             if vals.get('updatedAt'):
                 vals['createdAt'] = vals['updatedAt']
             else:
                 vals['createdAt'] = utc_iso()
+
+        if is_add_update_info:
+            if not vals.get('updatedAt'):
+                vals['updatedAt'] = vals['createdAt']
+            if not vals.get('updatedBy') and vals.get('createdBy'):
+                vals['updatedBy'] = vals['createdBy']
 
         self.check_set_reserved_value(vals)
 
@@ -221,7 +231,6 @@ class Base():
         }
         """
         self.check_set_reserved_value(vals)
-
         table = self.get_table()
 
         if is_update_time:
@@ -237,6 +246,43 @@ class Base():
         )
         items = self.get_one(keys)
         return items
+
+    @classmethod
+    def update_by_conds(self, keys, upd_vals, cond_vals, is_update_time=False):
+        self.check_set_reserved_value(upd_vals)
+        table = self.get_table()
+
+        if is_update_time:
+            upd_vals['updatedAt'] = utc_iso()
+
+        upd_exps = []
+        exp_vals = {}
+        for idx, (k, v) in enumerate(upd_vals.items()):
+            upd_exps.append(f"{k} = :upd_val{idx}")
+            exp_vals[f":upd_val{idx}"] = v
+
+        upd_exps_str = "SET " + ", ".join(upd_exps)
+
+        # set ConditionExpression
+        cond_exps = []
+        for idx, (k, v) in enumerate(cond_vals.items(), start=len(upd_vals)):
+            cond_exps.append(f"{k} = :cond_val{idx}")
+            exp_vals[f":cond_val{idx}"] = v
+
+        cond_exps_str = " AND ".join(cond_exps)
+
+        try:
+            res = table.update_item(
+                Key=keys,
+                UpdateExpression=upd_exps_str,
+                ConditionExpression=cond_exps_str,
+                ExpressionAttributeValues=exp_vals
+            )
+            return self.get_one(keys)
+
+        except self.dynamodb.meta.client.exceptions.ConditionalCheckFailedException:
+            raise ModelConditionalCheckFailedException(
+                "Condition not met, no action taken.")
 
     @classmethod
     def update_pk_value(self, current_keys, update_vals, is_update_time=False):
@@ -308,6 +354,14 @@ class Base():
 
 
 class ModelInvalidParamsException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class ModelConditionalCheckFailedException(Exception):
     def __init__(self, message):
         self.message = message
 
