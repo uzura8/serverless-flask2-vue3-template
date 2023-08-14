@@ -1,0 +1,12 @@
+CSV_FILE_PREFIX = ''
+TARGET_TABLES = [
+    {
+        'name': 'category',
+        'pkey': 'cateId',
+        'is_pkey_is_uuid_format': False,
+        'is_add_update_info': False,
+        'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
+                  'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
+        'int_attrs': ['cateId', 'orderNo', 'parentId'],
+    },
+]

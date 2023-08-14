@@ -36,3 +36,5 @@ requirements-tmp*
 /develop/env.sh
 /develop/var/*
 /develop/fixtures/*
+
+/app/bin/table_csv_config.py

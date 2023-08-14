@@ -5,6 +5,7 @@ import sys
 from app.models.dynamodb import Category, Server
 from app.utils.dict import conv_flat_dict_to_nested, flatten_dict, split_dict_values, join_dict_values
 from app.utils.string import to_pascal_case
+from .table_csv_config import TARGET_TABLES, CSV_FILE_PREFIX
 # from pprint import pprint
 
 parent_dir = os.path.dirname(os.path.dirname(
@@ -12,26 +13,6 @@ parent_dir = os.path.dirname(os.path.dirname(
 sys.path.append(parent_dir)
 
 CSV_DIR_REL_PATH = '../../develop/fixtures/'
-CSV_FILE_PREFIX = ''
-TARGET_TABLES = [
-    {
-        'name': 'category',
-        'pkey': 'cateId',
-        'is_pkey_is_uuid_format': False,
-        'is_add_update_info': False,
-        'attrs': ['contentDiv', 'cateId', 'parentId', 'parentPath', 'orderNo',
-                  'slug', 'labels.en', 'labels.ja', 'contentDivSlug'],
-        'int_attrs': ['cateId', 'orderNo', 'parentId'],
-    },
-    {
-        'name': 'server',
-        'pkey': 'domain',
-        'is_pkey_is_uuid_format': False,
-        'is_add_update_info': True,
-        'attrs': ['domain'],
-        'int_attrs': [],
-    },
-]
 ALLOWED_TABLES = [table['name'] for table in TARGET_TABLES]
 
 
