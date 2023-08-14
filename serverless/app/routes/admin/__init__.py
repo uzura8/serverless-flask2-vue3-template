@@ -6,10 +6,6 @@ from app.utils.error import InvalidUsage
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-from pprint import pprint  # !!!!!!!!!!!!!!!!
-pprint((os.getenv('COGNITO_REGION'), os.getenv('COGNITO_USERPOOL_ID'), os.getenv('COGNITO_APP_CLIENT_ID'), os.getenv(
-    'COGNITO_JWT_HEADER_NAME'), os.getenv('COGNITO_CHECK_TOKEN_EXPIRATION'), os.getenv('COGNITO_JWT_HEADER_PREFIX')))  # !!!!!!!!!!!!!!!!
-
 
 def site_before_request(f):
     def wrapper(*args, **kwargs):
@@ -67,9 +63,8 @@ def check_admin_role(accept_roles='admin'):
     # return item
 
 
-print(2222)
+from app.routes.admin import server
 from app.routes.admin import repository
-print(33333)
 # from . import account
 # from . import file
 # from . import tag
