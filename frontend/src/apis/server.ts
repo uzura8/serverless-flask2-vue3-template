@@ -2,10 +2,10 @@ import type { AxiosResponse, AxiosError } from 'axios'
 import type { Server, ServersApiResult, ServerDeployStatusForRequest } from '@/types/Server'
 import { client, getRequestOption } from '@/apis/client'
 
-class AdminServerApi {
+class ServerApi {
   getList(params: any | null = null, token: string | null = null): Promise<ServersApiResult> {
-    const uri = 'admin/servers'
-    const options = getRequestOption(uri, 'get', params, token, true)
+    const uri = 'servers'
+    const options = getRequestOption(uri, 'get', params, token)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<ServersApiResult>) => {
@@ -18,8 +18,8 @@ class AdminServerApi {
   }
 
   getOne(domain: string, token: string | null = null): Promise<Server> {
-    const uri = `admin/servers/${domain}`
-    const options = getRequestOption(uri, 'get', null, token, true)
+    const uri = `servers/${domain}`
+    const options = getRequestOption(uri, 'get', null, token)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<Server>) => {
@@ -36,7 +36,7 @@ class AdminServerApi {
     status: ServerDeployStatusForRequest,
     token: string | null = null
   ): Promise<Server> {
-    const uri = `admin/servers/${domain}/deploy/${status}`
+    const uri = `servers/${domain}/deploy/${status}`
     const options = getRequestOption(uri, 'put', null, token)
     return new Promise((resolve, reject) => {
       client
@@ -47,4 +47,4 @@ class AdminServerApi {
   }
 }
 
-export default new AdminServerApi()
+export default new ServerApi()

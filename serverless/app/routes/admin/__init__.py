@@ -63,8 +63,6 @@ def check_admin_role(accept_roles='admin'):
     # return item
 
 
-from app.routes.admin import server
-from app.routes.admin import repository
 # from . import account
 # from . import file
 # from . import tag

@@ -1,23 +1,26 @@
 <script lang="ts">
 import type { Repository } from '@/types/Repository'
 import { defineComponent, ref, onBeforeMount } from 'vue'
-import { useAdminUserStore } from '@/stores/adminUser'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { AdminRepositoryApi } from '@/apis'
-import AdminRepoListItem from '@/components/molecules/AdminRepoListItem.vue'
+import { RepositoryApi } from '@/apis'
+import RepoListItem from '@/components/molecules/RepoListItem.vue'
 
 export default defineComponent({
-  components: { AdminRepoListItem },
+  components: { RepoListItem },
 
   setup() {
-    const adminUser = useAdminUserStore()
     const globalLoader = useGlobalLoaderStore()
+
+    const userStore = useUserStore()
+    const { idToken } = storeToRefs(userStore)
 
     const repos = ref<Repository[]>([])
     const setRepos = async () => {
       try {
         globalLoader.updateLoading(true)
-        const res = await AdminRepositoryApi.getList(null, adminUser.idToken)
+        const res = await RepositoryApi.getList(null, idToken.value)
         repos.value = res.items
         globalLoader.updateLoading(false)
       } catch (error) {
@@ -96,7 +99,7 @@ export default defineComponent({
           </tr>
         </thead>
         <tbody>
-          <AdminRepoListItem
+          <RepoListItem
             v-for="repo in repos"
             :key="repo.repoId"
             :repo="repo"

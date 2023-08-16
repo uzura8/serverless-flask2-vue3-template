@@ -2,10 +2,10 @@ import type { AxiosResponse, AxiosError } from 'axios'
 import type { RepositoryApiResult, Repository, RepositoryFormVals } from '@/types/Repository'
 import { client, getRequestOption } from '@/apis/client'
 
-class AdminRepositoryApi {
+class RepositoryApi {
   getList(params: any | null = null, token: string | null = null): Promise<RepositoryApiResult> {
-    const uri = 'admin/repositories'
-    const options = getRequestOption(uri, 'get', params, token, true)
+    const uri = 'repositories'
+    const options = getRequestOption(uri, 'get', params, token)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<RepositoryApiResult>) => {
@@ -18,8 +18,8 @@ class AdminRepositoryApi {
   }
 
   getOne(repoId: string, token: string | null = null): Promise<Repository> {
-    const uri = `admin/repositories/${repoId}`
-    const options = getRequestOption(uri, 'get', null, token, true)
+    const uri = `repositories/${repoId}`
+    const options = getRequestOption(uri, 'get', null, token)
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<Repository>) => {
@@ -32,8 +32,8 @@ class AdminRepositoryApi {
   }
 
   create(vals: RepositoryFormVals, token: string | null = null): Promise<Repository> {
-    const uri = 'admin/repositories'
-    const options = getRequestOption(uri, 'post', null, token, true)
+    const uri = 'repositories'
+    const options = getRequestOption(uri, 'post', null, token)
     return new Promise((resolve, reject) => {
       client
         .post(uri, vals, options)
@@ -47,7 +47,7 @@ class AdminRepositoryApi {
     vals: RepositoryFormVals,
     token: string | null = null
   ): Promise<Repository> {
-    const uri = `admin/repositories/${repoId}`
+    const uri = `repositories/${repoId}`
     const options = getRequestOption(uri, 'post', null, token)
     return new Promise((resolve, reject) => {
       client
@@ -58,4 +58,4 @@ class AdminRepositoryApi {
   }
 }
 
-export default new AdminRepositoryApi()
+export default new RepositoryApi()

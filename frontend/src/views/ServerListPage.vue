@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AdminServerList from '@/components/organisms/AdminServerList.vue'
+import ServerList from '@/components/organisms/ServerList.vue'
 
 export default defineComponent({
   components: {
-    AdminServerList
+    ServerList
   },
 
   props: {},
@@ -17,5 +17,5 @@ export default defineComponent({
 
 <template>
   <h1 class="mb-12 text-2xl font-extrabold dark:text-white">{{ $t('pgit.term.serverList') }}</h1>
-  <AdminServerList class="mt-12" />
+  <ServerList class="mt-12" />
 </template>

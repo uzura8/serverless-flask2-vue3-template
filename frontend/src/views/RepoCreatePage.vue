@@ -1,9 +1,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AdminRepoForm from '@/components/organisms/AdminRepoForm.vue'
+import RepoForm from '@/components/organisms/RepoForm.vue'
 
 export default defineComponent({
-  components: { AdminRepoForm },
+  components: { RepoForm },
 
   props: {},
 
@@ -18,5 +18,5 @@ export default defineComponent({
     {{ $t('common.addFor', { target: $t('pgit.term.repository') }) }}
   </h1>
 
-  <AdminRepoForm />
+  <RepoForm />
 </template>

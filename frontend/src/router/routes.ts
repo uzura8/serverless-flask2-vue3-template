@@ -31,14 +31,28 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/AboutPage.vue')
       },
       {
-        path: '/posts',
-        name: 'PostListPage',
-        component: () => import('@/views/PostListPage.vue')
+        path: '/servers',
+        name: 'ServerListPage',
+        component: () => import('@/views/ServerListPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
       },
       {
-        path: '/posts/:slug',
-        name: 'PostDetailPage',
-        component: () => import('@/views/PostDetailPage.vue')
+        path: '/repositories',
+        name: 'RepoListPage',
+        component: () => import('@/views/RepoListPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/repositories/create',
+        name: 'RepoCreatePage',
+        component: () => import('@/views/RepoCreatePage.vue'),
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   },
@@ -63,30 +77,6 @@ const routes: RouteRecordRaw[] = [
         path: '/admin/about',
         name: 'AdminAboutPage',
         component: () => import('@/views/AdminAboutPage.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/admin/servers',
-        name: 'AdminServerListPage',
-        component: () => import('@/views/AdminServerListPage.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/admin/repositories',
-        name: 'AdminRepoListPage',
-        component: () => import('@/views/AdminRepoListPage.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: '/admin/repositories/create',
-        name: 'AdminRepoCreatePage',
-        component: () => import('@/views/AdminRepoCreatePage.vue'),
         meta: {
           requiresAuth: true
         }

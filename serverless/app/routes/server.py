@@ -1,6 +1,6 @@
 import traceback
-from flask import jsonify, request
-from flask_cognito import cognito_auth_required, current_cognito_jwt
+from flask import Blueprint, jsonify, request
+from app.routes import check_firebase_auth_or_pgit_client_ip
 from app.models.dynamodb import Server, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
@@ -8,18 +8,18 @@ from app.utils.date import utc_iso
 from app.utils.string import sanitize_domain_str
 from app.validators import NormalizerUtils
 from app.validators.schemas.common import get_list_schema
-from app.routes.admin import bp, site_before_request, admin_role_editor_required
+
+bp = Blueprint('server', __name__, url_prefix='/servers')
 
 
-@bp.before_request
-@site_before_request
-def before_request():
-    pass
+# @bp.before_request
+# @site_before_request
+# def before_request():
+#     pass
 
 
-@bp.get('/servers')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.get('/')
+@check_firebase_auth_or_pgit_client_ip
 def get_server_list():
     vals = validate_params(get_list_schema, request.args.to_dict())
     res = {}
@@ -28,17 +28,15 @@ def get_server_list():
     return jsonify(res), 200
 
 
-@bp.get('/servers/<string:domain>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.get('/<string:domain>')
+@check_firebase_auth_or_pgit_client_ip
 def get_server(domain):
     server = get_server_by_domain(domain)
     return jsonify(server), 200
 
 
-@bp.put('/servers/<string:domain>/deploy/<string:status>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.put('/<string:domain>/deploy/<string:status>')
+@check_firebase_auth_or_pgit_client_ip
 def check_and_update_server_status(domain, status):
     if status not in ['start', 'finish']:
         raise InvalidUsage('Invalid status', 400)
@@ -73,9 +71,8 @@ def check_and_update_server_status(domain, status):
     return jsonify(server), 200
 
 
-@bp.delete('/servers/<string:domain>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.delete('/<string:domain>')
+@check_firebase_auth_or_pgit_client_ip
 def delete_server(domain):
     pass
 

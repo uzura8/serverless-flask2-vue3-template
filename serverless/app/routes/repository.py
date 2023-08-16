@@ -1,25 +1,19 @@
 import traceback
-from flask import jsonify, request
-from flask_cognito import cognito_auth_required, current_cognito_jwt
-from app.models.dynamodb import Repository, ModelInvalidParamsException
+from flask import Blueprint, jsonify, request
+from app.routes import check_user_token, check_firebase_auth_or_pgit_client_ip
+from app.models.dynamodb import Repository, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
 from app.utils.date import utc_iso
 from app.utils.string import sanitize_domain_str
 from app.validators import NormalizerUtils
 from app.validators.schemas.common import get_list_schema
-from app.routes.admin import bp, site_before_request, admin_role_editor_required
+
+bp = Blueprint('repository', __name__, url_prefix='/repositories')
 
 
-@bp.before_request
-@site_before_request
-def before_request():
-    pass
-
-
-@bp.get('/repositories')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.get('/')
+@check_firebase_auth_or_pgit_client_ip
 def get_repo_list():
     vals = validate_params(get_list_schema, request.args.to_dict())
     res = {}
@@ -34,9 +28,8 @@ def get_repo_list():
     return jsonify(res), 200
 
 
-@bp.post('/repositories')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.post('/')
+@check_user_token
 def create_repo():
     vals = validate_params(schema_post(), request.json)
     vals['repoId'] = generate_repo_id(
@@ -47,9 +40,7 @@ def create_repo():
 
     status = 'pending'
     vals['deployStatus'] = status
-    created_by = current_cognito_jwt.get('cognito:username', '')
-    if created_by:
-        vals['createdBy'] = created_by
+    vals['createdBy'] = request.user.get('user_id', '')
 
     add_datetime = utc_iso()
     vals['updatedAt'] = add_datetime
@@ -68,21 +59,19 @@ def create_repo():
     return jsonify(repo), 201
 
 
-@bp.get('/repositories/<string:repo_id>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.get('/<string:repo_id>')
+@check_user_token
 def get_repo(repo_id):
     repo = get_repo_by_repo_id(repo_id)
     return jsonify(repo), 200
 
 
-@bp.put('/repositories/<string:repo_id>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.put('/<string:repo_id>')
+@check_user_token
 def update_repo(repo_id):
     repo = get_repo_by_repo_id(repo_id)
     vals = validate_params(schema_post(), request.json)
-    vals['updatedBy'] = current_cognito_jwt.get('cognito:username', '')
+    vals['updatedBy'] = request.user.get('user_id', '')
     try:
         repo = Repository.update({'repoId': repo_id}, vals, True)
 
@@ -96,9 +85,8 @@ def update_repo(repo_id):
     return jsonify(repo), 200
 
 
-@bp.delete('/repositories/<string:repo_id>')
-@cognito_auth_required
-@admin_role_editor_required
+@bp.delete('/<string:repo_id>')
+@check_user_token
 def delete_repo(repo_id):
     get_repo_by_repo_id(repo_id)
     try:

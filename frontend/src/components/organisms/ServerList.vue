@@ -1,23 +1,26 @@
 <script lang="ts">
 import type { Server } from '@/types/Server'
 import { defineComponent, ref, onBeforeMount } from 'vue'
-import { useAdminUserStore } from '@/stores/adminUser'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { AdminServerApi } from '@/apis'
-import AdminServerListItem from '@/components/molecules/AdminServerListItem.vue'
+import { ServerApi } from '@/apis'
+import ServerListItem from '@/components/molecules/ServerListItem.vue'
 
 export default defineComponent({
-  components: { AdminServerListItem },
+  components: { ServerListItem },
 
   setup() {
-    const adminUser = useAdminUserStore()
     const globalLoader = useGlobalLoaderStore()
+
+    const userStore = useUserStore()
+    const { idToken } = storeToRefs(userStore)
 
     const servers = ref<Server[]>([])
     const setServers = async () => {
       try {
         globalLoader.updateLoading(true)
-        const res = await AdminServerApi.getList(null, adminUser.idToken)
+        const res = await ServerApi.getList(null, idToken.value)
         servers.value = res.items
         globalLoader.updateLoading(false)
       } catch (error) {
@@ -72,7 +75,7 @@ export default defineComponent({
           </tr>
         </thead>
         <tbody>
-          <AdminServerListItem
+          <ServerListItem
             v-for="server in servers"
             :key="server.domain"
             :server="server"

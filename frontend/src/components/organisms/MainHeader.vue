@@ -155,20 +155,21 @@ export default defineComponent({
           </RouterLink>
           <RouterLink
             v-if="isAuth"
-            to="/home"
+            to="/servers"
             exact
-            :aria-current="current === '/home' ? 'page' : null"
+            :aria-current="current === '/servers' ? 'page' : null"
             class="font-medium text-gray-600"
           >
-            {{ $t('page.home') }}
+            {{ $t('pgit.term.servers') }}
           </RouterLink>
           <RouterLink
-            to="/about"
+            v-if="isAuth"
+            to="/repositories"
             exact
-            :aria-current="current === '/about' ? 'page' : null"
+            :aria-current="current === '/repositories' ? 'page' : null"
             class="font-medium text-gray-600"
           >
-            {{ $t('page.about') }}
+            {{ $t('pgit.term.repositories') }}
           </RouterLink>
           <RouterLink
             v-if="!isAuth"

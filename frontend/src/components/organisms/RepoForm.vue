@@ -4,10 +4,11 @@ import type { RepositoryFormVals, Repository } from '@/types/Repository'
 import { defineComponent, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useAdminUserStore } from '@/stores/adminUser'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
 import { checkUrl } from '@/utils/str'
-import { AdminRepositoryApi } from '@/apis'
+import { RepositoryApi } from '@/apis'
 import config from '@/configs/config.json'
 import FormInputField from '@/components/molecules/FormInputField.vue'
 import FormSelectField from '@/components/molecules/FormSelectField.vue'
@@ -44,8 +45,9 @@ export default defineComponent({
   setup(props) {
     const router = useRouter()
     const { t } = useI18n()
-    const adminUser = useAdminUserStore()
     const globalLoader = useGlobalLoaderStore()
+    const userStore = useUserStore()
+    const { idToken } = storeToRefs(userStore)
 
     const errors = ref<FieldErrors>({
       repoUrl: '',
@@ -265,12 +267,12 @@ export default defineComponent({
         if (nodeJSVersion.value) vals.nodeJSVersion = nodeJSVersion.value
 
         if (isEdit.value && props.repository) {
-          await AdminRepositoryApi.update(props.repository.repoId, vals, adminUser.idToken)
+          await RepositoryApi.update(props.repository.repoId, vals, idToken.value)
         } else {
-          await AdminRepositoryApi.create(vals, adminUser.idToken)
+          await RepositoryApi.create(vals, idToken.value)
         }
         globalLoader.updateLoading(false)
-        router.push('/admin/repositories')
+        router.push('/repositories')
       } catch (error) {
         console.error(error)
         globalLoader.updateLoading(false)

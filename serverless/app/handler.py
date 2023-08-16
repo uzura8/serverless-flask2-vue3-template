@@ -9,7 +9,12 @@ from app.routes.root import bp as root_module
 # from app.comment import bp as comment_module
 from app.routes.category import bp as category_module
 # from app.tag import bp as tag_module
+from app.routes.server import bp as server_module
+from app.routes.repository import bp as repository_module
 from app.routes.admin import bp as admin_module
+
+import firebase_admin
+firebase_admin.initialize_app()
 
 cors_accept_origins_str = os.environ.get('CORS_ACCEPT_ORIGINS', '')
 CORS_ACCEPT_ORIGINS = cors_accept_origins_str.split(
@@ -94,6 +99,8 @@ def add_cors_headers(response):
     return response
 
 
+app.register_blueprint(server_module)
+app.register_blueprint(repository_module)
 app.register_blueprint(category_module)
 # app.register_blueprint(tag_module)
 # app.register_blueprint(post_module)
