@@ -39,6 +39,14 @@ export default defineComponent({
     <td class="px-4 py-3">{{ statusLabel }}</td>
     <td class="px-4 py-3">{{ server.domain }}</td>
     <td class="px-4 py-3">
+      <RouterLink
+        :to="`/servers/${server.domain}/repositories`"
+        class="text-blue-600 dark:text-blue-500 hover:underline"
+      >
+        {{ $t('common.list') }}
+      </RouterLink>
+    </td>
+    <td class="px-4 py-3">
       <time
         itemprop="lastmodified"
         :datetime="localeDate(server.updatedAt)"

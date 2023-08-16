@@ -70,6 +70,12 @@ export default defineComponent({
               scope="col"
               class="px-4 py-3"
             >
+              {{ $t('pgit.term.repositories') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
               {{ $t('common.lastUpdatedAt') }}
             </th>
           </tr>

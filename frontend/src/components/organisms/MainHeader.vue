@@ -159,6 +159,7 @@ export default defineComponent({
             exact
             :aria-current="current === '/servers' ? 'page' : null"
             class="font-medium text-gray-600"
+            :class="{ 'router-link-exact-active': current.startsWith('/servers') }"
           >
             {{ $t('pgit.term.servers') }}
           </RouterLink>
@@ -168,6 +169,7 @@ export default defineComponent({
             exact
             :aria-current="current === '/repositories' ? 'page' : null"
             class="font-medium text-gray-600"
+            :class="{ 'router-link-exact-active': current.startsWith('/repositories') }"
           >
             {{ $t('pgit.term.repositories') }}
           </RouterLink>

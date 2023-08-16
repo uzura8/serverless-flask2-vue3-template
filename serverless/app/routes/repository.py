@@ -73,7 +73,7 @@ def update_repo(repo_id):
     vals = validate_params(schema_post(), request.json)
     vals['updatedBy'] = request.user.get('user_id', '')
     try:
-        repo = Repository.update({'repoId': repo_id}, vals, True)
+        repo = Repository.update({'repoId': repo_id}, vals)
 
     except ModelInvalidParamsException as e:
         raise InvalidUsage(e.message, 400)

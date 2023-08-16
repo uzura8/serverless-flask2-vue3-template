@@ -4,13 +4,20 @@ import { defineComponent, ref, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { RepositoryApi } from '@/apis'
+import { RepositoryApi, ServerApi } from '@/apis'
 import RepoListItem from '@/components/molecules/RepoListItem.vue'
 
 export default defineComponent({
   components: { RepoListItem },
 
-  setup() {
+  props: {
+    serverDomain: {
+      type: String as () => string | null,
+      required: false
+    }
+  },
+
+  setup(props) {
     const globalLoader = useGlobalLoaderStore()
 
     const userStore = useUserStore()
@@ -20,7 +27,12 @@ export default defineComponent({
     const setRepos = async () => {
       try {
         globalLoader.updateLoading(true)
-        const res = await RepositoryApi.getList(null, idToken.value)
+        let res
+        if (props.serverDomain) {
+          res = await ServerApi.getRepos(props.serverDomain, null, idToken.value)
+        } else {
+          res = await RepositoryApi.getList(null, idToken.value)
+        }
         repos.value = res.items
         globalLoader.updateLoading(false)
       } catch (error) {

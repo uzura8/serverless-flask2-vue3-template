@@ -8,9 +8,13 @@ class Repository(Base):
         'repoId',
         'serviceDomain',
         'serverDomain',
+        'serviceSegment',
+        'repoName',
         'repoUrl',
         'sendMailType',
+        'isBuildRequired',
         'buildType',
+        'nodeJSVersion',
         'nodeVersion',
         'deployStatus',
         'createdAt',
@@ -19,6 +23,8 @@ class Repository(Base):
     response_attrs = public_attrs + [
     ]
     private_attrs = [
+        'deployStatusUpdatedAt'
+        'createdBy',
     ]
     all_attrs = public_attrs + private_attrs
 

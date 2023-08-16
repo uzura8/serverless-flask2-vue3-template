@@ -1,5 +1,6 @@
 import type { AxiosResponse, AxiosError } from 'axios'
 import type { Server, ServersApiResult, ServerDeployStatusForRequest } from '@/types/Server'
+import type { RepositoryApiResult } from '@/types/Repository'
 import { client, getRequestOption } from '@/apis/client'
 
 class ServerApi {
@@ -43,6 +44,24 @@ class ServerApi {
         .put(uri, null, options)
         .then((res) => resolve(res.data))
         .catch((err) => reject(err))
+    })
+  }
+
+  getRepos(
+    serverDomain: string,
+    params: any | null = null,
+    token: string | null = null
+  ): Promise<RepositoryApiResult> {
+    const uri = `servers/${serverDomain}/repositories`
+    const options = getRequestOption(uri, 'get', params, token)
+    return new Promise((resolve, reject) => {
+      client(options)
+        .then((res: AxiosResponse<RepositoryApiResult>) => {
+          resolve(res.data)
+        })
+        .catch((err: AxiosError<{ error: string }>) => {
+          reject(err)
+        })
     })
   }
 }

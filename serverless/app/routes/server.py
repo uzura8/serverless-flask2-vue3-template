@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.routes import check_firebase_auth_or_pgit_client_ip
-from app.models.dynamodb import Server, ModelInvalidParamsException, ModelConditionalCheckFailedException
+from app.models.dynamodb import Server, Repository, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
 from app.utils.date import utc_iso
@@ -77,8 +77,39 @@ def delete_server(domain):
     pass
 
 
+@bp.get('/<string:domain>/repositories')
+@check_firebase_auth_or_pgit_client_ip
+def get_repo_list(domain):
+    server = get_server_by_domain(domain)
+    vals = validate_params(schema_get_reps(), request.args.to_dict())
+
+    keys = {'serverDomain': domain}
+    skey_cond_type = 'eq'
+    if vals.get('status'):
+        keys['deployStatusUpdatedAt'] = vals['status']
+        skey_cond_type = 'begins_with'
+    res = Repository.get_all_pager(
+        keys, vals, 'serverDomain_idx', False, skey_cond_type)
+    return jsonify(res), 200
+
+
 def get_server_by_domain(domain):
     server = Server.get_one({'domain': domain})
     if not server:
         raise InvalidUsage('Not Found', 404)
     return server
+
+
+def schema_get_reps():
+    base = get_list_schema
+    schema = {
+        'status': {
+            'type': 'string',
+            'coerce': (NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': Repository.allowed_vals['deployStatus'],
+        },
+    }
+    return base | schema
