@@ -1,3 +1,4 @@
+import ipaddress
 from app.utils.error import InvalidUsage
 from app.validators import ValidatorExtended
 
@@ -36,3 +37,15 @@ def validate_params(schema, req_params, add_params=None):
     params = {**req_params, **add_params} if add_params else req_params
     vals = validate_req_params(schema, params)
     return vals
+
+
+def is_valid_ip(ip, valid_ips):
+    for valid_ip in valid_ips:
+        if '/' in valid_ip:  # for CIDR format
+            network = ipaddress.ip_network(valid_ip, strict=False)
+            if ipaddress.ip_address(ip) in network:
+                return True
+        else:
+            if ip == valid_ip:
+                return True
+    return False
