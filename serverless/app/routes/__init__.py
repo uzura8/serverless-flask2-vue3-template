@@ -3,7 +3,10 @@ from functools import wraps
 from flask import request
 from firebase_admin import auth
 from utils.request import is_valid_ip
-from routes.allowed_ips import ALLOWED_IPS
+# from routes.allowed_ips import ALLOWED_IPS
+from config_loader import config
+
+# ALLOWED_IPS = config['ips']
 
 
 def check_user_token(f):
@@ -32,7 +35,7 @@ def check_firebase_auth_or_pgit_client_ip(f):
                 return {'message': 'Invalid token provided.'}, 400
         else:
             client_ip = request.remote_addr  # Get ip address of client
-            allowed_ips = ALLOWED_IPS['pgitClient']
+            allowed_ips = [i['ip'] for i in config['pgitClients']]
             if client_ip not in allowed_ips:
                 return {'message': 'Requested IP is invalid'}, 400
             request.authType = 'ip-address'
@@ -46,9 +49,9 @@ def check_webhook_client_ip(f):
         client_ip = request.remote_addr  # Get ip address of client
 
         is_allowed = False
-        if client_ip in ALLOWED_IPS['backlog']:
+        if client_ip in config['services']['backlog']['ips']:
             is_allowed = True
-        elif is_valid_ip(client_ip, ALLOWED_IPS['github']):
+        elif is_valid_ip(client_ip, config['services']['github']['ips']):
             is_allowed = True
 
         if not is_allowed:
