@@ -32,6 +32,7 @@ requirements-tmp*
 /.dynamodb
 /config/stages/*
 /config/templates/*
+/config/service-config.yml
 
 /develop/env.sh
 /develop/var/*
