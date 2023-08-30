@@ -1,21 +1,23 @@
 from boto3.dynamodb.conditions import Key
 from app.models.dynamodb import Base
+from app.config_loader import config
 
 
 class Repository(Base):
     table_name = 'repository'
     public_attrs = [
-        'repoId',
-        'serviceDomain',
+        'repoId',  # unique
+        'repoCode',  # not unique
         'serverDomain',
+        'serviceDomain',
         'serviceSegment',
         'repoName',
-        'repoUrl',
+        # 'repoUrl',
         'sendMailType',
         'isBuildRequired',
         'buildType',
+        'buildTargetDirPath'
         'nodeJSVersion',
-        'nodeVersion',
         'deployStatus',
         'createdAt',
         'updatedAt',
@@ -25,20 +27,17 @@ class Repository(Base):
     private_attrs = [
         'deployStatusUpdatedAt'
         'createdBy',
+        'updatedBy',
     ]
     all_attrs = public_attrs + private_attrs
 
-    services = [
-        {'name': 'backlog', 'domain': 'coopnext.backlog.jp/git'},
-        {'name': 'github', 'domain': 'github.com'},
-    ]
-
     allowed_vals = {
-        'serviceDomain': [i['domain'] for i in services],
-        'serverDomain': ['pgit.me', 'pgit.be'],
+        'serviceDomain': [i['domain'] for i in config['services']],
+        'serverDomain': [i['domain'] for i in config['pgitClients']],
         'sendMailType': ['completed', 'failed', 'always', 'none'],
         'nodeJSVersion': ['18.X', '16.X', '14.X'],
         'buildType': ['npm', 'yarn'],
-        'deployStatus': ['pending', 'inProgress', 'completed', 'failed', 'cancelled',
-                         'onHold', 'retryPending', 'retryInProgress'],
+        'deployStatus': ['pending', 'inProgress', 'completed', 'failed'],
+        # 'deployStatus': ['pending', 'inProgress', 'completed', 'failed', 'canceled',
+        #                  'onHold', 'retryPending', 'retryInProgress'],
     }

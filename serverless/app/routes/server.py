@@ -1,7 +1,8 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.routes import check_firebase_auth_or_pgit_client_ip
-from app.models.dynamodb import Server, Repository, ModelInvalidParamsException, ModelConditionalCheckFailedException
+from app.models.dynamodb import Server, Repository, Job,\
+    ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
 from app.utils.date import utc_iso
@@ -38,18 +39,18 @@ def get_server(domain):
 @bp.put('/<string:domain>/deploy/<string:status>')
 @check_firebase_auth_or_pgit_client_ip
 def check_and_update_server_status(domain, status):
-    if status not in ['start', 'finish']:
+    if status not in ['start', 'completed']:
         raise InvalidUsage('Invalid status', 400)
 
     server = get_server_by_domain(domain)
     if status == 'start':
-        if server['isExecuting'] == '1':
+        if server.get('isExecuting', '0') == '1':
             raise InvalidUsage('Locked', 423)
         upd_vals = {'isExecuting': '1'}
         cond_vals = {'isExecuting': '0'}
 
-    elif status == 'finish':
-        if server['isExecuting'] == '0':
+    elif status == 'completed':
+        if server.get('isExecuting', '0') == '0':
             raise InvalidUsage('Not Locked', 400)
         upd_vals = {'isExecuting': '0'}
         cond_vals = {'isExecuting': '1'}
@@ -89,7 +90,22 @@ def get_repo_list(domain):
         keys['deployStatusUpdatedAt'] = vals['status']
         skey_cond_type = 'begins_with'
     res = Repository.get_all_pager(
-        keys, vals, 'serverDomain_idx', False, skey_cond_type)
+        keys, vals, 'server_status_idx', False, skey_cond_type)
+    return jsonify(res), 200
+
+
+@bp.get('/<string:domain>/jobs')
+@check_firebase_auth_or_pgit_client_ip
+def get_job_list(domain):
+    server = get_server_by_domain(domain)
+    vals = validate_params(schema_get_jobs(), request.args.to_dict())
+    keys = {'serverDomain': domain}
+    skey_cond_type = 'eq'
+    if vals.get('status'):
+        keys['deployStatusCreatedAt'] = vals['status']
+        skey_cond_type = 'begins_with'
+    res = Job.get_all_pager(
+        keys, vals, 'server_status_idx', False, skey_cond_type)
     return jsonify(res), 200
 
 
@@ -110,6 +126,21 @@ def schema_get_reps():
             'empty': True,
             'nullable': True,
             'allowed': Repository.allowed_vals['deployStatus'],
+        },
+    }
+    return base | schema
+
+
+def schema_get_jobs():
+    base = get_list_schema
+    schema = {
+        'status': {
+            'type': 'string',
+            'coerce': (NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': Job.allowed_vals['deployStatus'],
         },
     }
     return base | schema

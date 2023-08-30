@@ -8,6 +8,8 @@ Properties:
       AttributeType: S
     - AttributeName: deployStatusUpdatedAt
       AttributeType: S
+    - AttributeName: repoCode
+      AttributeType: S
   KeySchema:
     - AttributeName: repoId
       KeyType: HASH
@@ -22,11 +24,19 @@ Properties:
       Value: ${self:custom.dynamoDbBackupTargetTagValue}
 
   GlobalSecondaryIndexes:
-    - IndexName: serverDomain_idx
+    - IndexName: server_status_idx
       KeySchema:
         - AttributeName: serverDomain
           KeyType: HASH
         - AttributeName: deployStatusUpdatedAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: server_repoCode_idx
+      KeySchema:
+        - AttributeName: serverDomain
+          KeyType: HASH
+        - AttributeName: repoCode
           KeyType: RANGE
       Projection:
         ProjectionType: ALL
