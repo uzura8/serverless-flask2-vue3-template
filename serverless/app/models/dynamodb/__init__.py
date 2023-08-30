@@ -5,7 +5,7 @@ from .category import Category
 # from .file import File
 from .server import Server
 from .repository import Repository
-from .deployment import Deployment
+from .job import Job
 
 __all__ = [
     'Base',
@@ -17,5 +17,5 @@ __all__ = [
     # 'File',
     'Server',
     'Repository',
-    'Deployment',
+    'Job',
 ]

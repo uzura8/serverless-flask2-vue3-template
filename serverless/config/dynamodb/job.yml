@@ -1,0 +1,32 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-job
+  AttributeDefinitions:
+    - AttributeName: jobId
+      AttributeType: S
+    - AttributeName: serverDomain
+      AttributeType: S
+    - AttributeName: deployStatusCreatedAt
+      AttributeType: S
+  KeySchema:
+    - AttributeName: jobId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.job.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.job.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.job.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: server_status_idx
+      KeySchema:
+        - AttributeName: serverDomain
+          KeyType: HASH
+        - AttributeName: deployStatusCreatedAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

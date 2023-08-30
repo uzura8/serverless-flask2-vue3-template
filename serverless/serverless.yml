@@ -161,4 +161,4 @@ resources:
     FileDynamoDBTable: ${file(./config/dynamodb/file.yml)}
     ServerDynamoDBTable: ${file(./config/dynamodb/server.yml)}
     RepositoryDynamoDBTable: ${file(./config/dynamodb/repository.yml)}
-    DeploymentDynamoDBTable: ${file(./config/dynamodb/deployment.yml)}
+    JobDynamoDBTable: ${file(./config/dynamodb/job.yml)}
