@@ -249,6 +249,14 @@ cognito:
  ...
 ```
 
+Copy and Edit config file for repository services
+
+```bash
+cd (project_root/)serverless
+cp config/service-config.yml.sample config/service-config.yml
+vi config/service-config.yml
+```
+
 ### Create Domains for API
 
 Execute below command
