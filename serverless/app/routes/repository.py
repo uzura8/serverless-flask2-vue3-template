@@ -42,7 +42,7 @@ def create_repo():
     keys = {'serverDomain': vals['serverDomain'], 'repoCode': repo_code}
     exists = Repository.get_one(keys, 'server_repoCode_idx')
     if exists:
-        raise InvalidUsage('Already exists', 400)
+        raise InvalidUsage('Already exists', 409)
 
     vals['repoCode'] = repo_code
 
@@ -223,6 +223,14 @@ allowed_schema_on_update = {
         'empty': True,
         'nullable': True,
         'allowed': Repository.allowed_vals['buildType'],
+    },
+    'buildTargetDirPath': {
+        'type': 'string',
+        'coerce': (NormalizerUtils.trim),
+        'required': False,
+        'empty': True,
+        'nullable': True,
+        'default': 'src',
     },
     'nodeJSVersion': {
         'type': 'string',

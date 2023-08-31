@@ -16,7 +16,7 @@ class Repository(Base):
         'sendMailType',
         'isBuildRequired',
         'buildType',
-        'buildTargetDirPath'
+        'buildTargetDirPath',
         'nodeJSVersion',
         'deployStatus',
         'createdAt',
