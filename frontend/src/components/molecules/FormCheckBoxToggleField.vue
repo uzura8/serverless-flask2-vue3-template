@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 
 export default defineComponent({
   props: {
@@ -32,8 +32,19 @@ export default defineComponent({
 
     const toggle = () => {
       inputValue.value = !inputValue.value
-      context.emit('update:modelValue', inputValue.value)
+      //context.emit('update:modelValue', inputValue.value)
     }
+
+    watch(
+      () => props.modelValue,
+      (value) => {
+        inputValue.value = value
+      }
+    )
+
+    watch(inputValue, (value) => {
+      context.emit('update:modelValue', value)
+    })
 
     return {
       inputValue,
@@ -62,7 +73,7 @@ export default defineComponent({
     <label class="relative inline-flex items-center cursor-pointer">
       <input
         type="checkbox"
-        :value="inputValue"
+        v-model="inputValue"
         class="sr-only peer"
         @input="toggle"
       />
@@ -87,4 +98,3 @@ export default defineComponent({
     </p>
   </div>
 </template>
-    
