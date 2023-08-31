@@ -1,6 +1,7 @@
 import type { AxiosResponse, AxiosError } from 'axios'
 import type { Server, ServersApiResult, ServerDeployStatusForRequest } from '@/types/Server'
-import type { RepositoryApiResult } from '@/types/Repository'
+import type { RepositoriesApiResult } from '@/types/Repository'
+import type { JobsApiResult } from '@/types/Job'
 import { client, getRequestOption } from '@/apis/client'
 
 class ServerApi {
@@ -51,12 +52,30 @@ class ServerApi {
     serverDomain: string,
     params: any | null = null,
     token: string | null = null
-  ): Promise<RepositoryApiResult> {
+  ): Promise<RepositoriesApiResult> {
     const uri = `servers/${serverDomain}/repositories`
     const options = getRequestOption(uri, 'get', params, token)
     return new Promise((resolve, reject) => {
       client(options)
-        .then((res: AxiosResponse<RepositoryApiResult>) => {
+        .then((res: AxiosResponse<RepositoriesApiResult>) => {
+          resolve(res.data)
+        })
+        .catch((err: AxiosError<{ error: string }>) => {
+          reject(err)
+        })
+    })
+  }
+
+  getJobs(
+    serverDomain: string,
+    params: any | null = null,
+    token: string | null = null
+  ): Promise<JobsApiResult> {
+    const uri = `servers/${serverDomain}/jobs`
+    const options = getRequestOption(uri, 'get', params, token)
+    return new Promise((resolve, reject) => {
+      client(options)
+        .then((res: AxiosResponse<JobsApiResult>) => {
           resolve(res.data)
         })
         .catch((err: AxiosError<{ error: string }>) => {

@@ -1,27 +1,40 @@
 <script lang="ts">
-import type { Server } from '@/types/Server'
+import type { Job } from '@/types/Job'
 import { defineComponent, ref, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { ServerApi } from '@/apis'
-import ServerListItem from '@/components/molecules/ServerListItem.vue'
+import { JobApi, ServerApi } from '@/apis'
+import JobListItem from '@/components/molecules/JobListItem.vue'
 
 export default defineComponent({
-  components: { ServerListItem },
+  components: { JobListItem },
 
-  setup() {
+  props: {
+    serverDomain: {
+      type: String as () => string | null,
+      required: false
+    }
+  },
+
+  setup(props) {
     const globalLoader = useGlobalLoaderStore()
 
     const userStore = useUserStore()
     const { idToken } = storeToRefs(userStore)
 
-    const servers = ref<Server[]>([])
-    const setServers = async () => {
+    const jobs = ref<Job[]>([])
+    const setJobs = async () => {
       try {
         globalLoader.updateLoading(true)
-        const res = await ServerApi.getList(null, idToken.value)
-        servers.value = res.items
+        const params = { order: 'desc' }
+        let res
+        if (props.serverDomain) {
+          res = await ServerApi.getJobs(props.serverDomain, params, idToken.value)
+        } else {
+          res = await JobApi.getList(params, idToken.value)
+        }
+        jobs.value = res.items
         globalLoader.updateLoading(false)
       } catch (error) {
         console.error(error)
@@ -30,11 +43,11 @@ export default defineComponent({
     }
 
     onBeforeMount(async () => {
-      await setServers()
+      await setJobs()
     })
 
     return {
-      servers
+      jobs
     }
   }
 })
@@ -42,7 +55,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <p v-if="servers.length === 0">
+    <p v-if="jobs.length === 0">
       {{ $t('msg.dataIsEmpty') }}
     </p>
     <div
@@ -64,33 +77,57 @@ export default defineComponent({
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.term.domain') }}
+              {{ $t('pgit.term.server') }}
             </th>
             <th
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.term.repositories') }}
+              {{ $t('pgit.form.repository.service') }}
             </th>
             <th
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.term.jobs') }}
+              {{ $t('pgit.form.repository.serviceSegment') }}
             </th>
             <th
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('common.lastUpdatedAt') }}
+              {{ $t('pgit.form.repository.repoName') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
+              {{ $t('pgit.term.branch') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
+              {{ $t('pgit.term.deployType') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
+              {{ $t('pgit.form.repository.buildType') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
+              {{ $t('common.createdAt') }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <ServerListItem
-            v-for="server in servers"
-            :key="server.domain"
-            :server="server"
+          <JobListItem
+            v-for="job in jobs"
+            :key="job.jobId"
+            :job="job"
           />
         </tbody>
       </table>

@@ -1,14 +1,20 @@
 import type { AxiosResponse, AxiosError } from 'axios'
-import type { RepositoryApiResult, Repository, RepositoryFormVals } from '@/types/Repository'
+import type {
+  RepositoriesApiResult,
+  Repository,
+  RepositoryFormVals,
+  RepositoryUpdateFormVals
+} from '@/types/Repository'
+import type { JobsApiResult } from '@/types/Job'
 import { client, getRequestOption } from '@/apis/client'
 
 class RepositoryApi {
-  getList(params: any | null = null, token: string | null = null): Promise<RepositoryApiResult> {
+  getList(params: any | null = null, token: string | null = null): Promise<RepositoriesApiResult> {
     const uri = 'repositories'
     const options = getRequestOption(uri, 'get', params, token)
     return new Promise((resolve, reject) => {
       client(options)
-        .then((res: AxiosResponse<RepositoryApiResult>) => {
+        .then((res: AxiosResponse<RepositoriesApiResult>) => {
           resolve(res.data)
         })
         .catch((err: AxiosError<{ error: string }>) => {
@@ -44,7 +50,7 @@ class RepositoryApi {
 
   update(
     repoId: string,
-    vals: RepositoryFormVals,
+    vals: RepositoryUpdateFormVals,
     token: string | null = null
   ): Promise<Repository> {
     const uri = `repositories/${repoId}`
@@ -54,6 +60,24 @@ class RepositoryApi {
         .put(uri, vals, options)
         .then((res) => resolve(res.data))
         .catch((err) => reject(err))
+    })
+  }
+
+  getJobs(
+    repoId: string,
+    params: any | null = null,
+    token: string | null = null
+  ): Promise<JobsApiResult> {
+    const uri = `repositories/${repoId}/jobs`
+    const options = getRequestOption(uri, 'get', params, token)
+    return new Promise((resolve, reject) => {
+      client(options)
+        .then((res: AxiosResponse<JobsApiResult>) => {
+          resolve(res.data)
+        })
+        .catch((err: AxiosError<{ error: string }>) => {
+          reject(err)
+        })
     })
   }
 }

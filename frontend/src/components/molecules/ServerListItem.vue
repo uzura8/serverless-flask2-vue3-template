@@ -3,9 +3,12 @@ import type { Server } from '@/types/Server'
 import { defineComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDate } from '@/composables/useDate'
+import PgDeployStatusUnit from '@/components/atoms/PgDeployStatusUnit.vue'
 
 export default defineComponent({
-  components: {},
+  components: {
+    PgDeployStatusUnit
+  },
 
   props: {
     server: {
@@ -36,12 +39,22 @@ export default defineComponent({
 
 <template>
   <tr class="border-b dark:border-gray-700">
-    <td class="px-4 py-3">{{ statusLabel }}</td>
+    <td class="px-4 py-3">
+      <PgDeployStatusUnit :status="server.isExecuting === '1' ? 'inProgress' : 'completed'" />
+    </td>
     <td class="px-4 py-3">{{ server.domain }}</td>
     <td class="px-4 py-3">
       <RouterLink
         :to="`/servers/${server.domain}/repositories`"
-        class="text-blue-600 dark:text-blue-500 hover:underline"
+        class="text-primary-600 dark:text-primary-500 hover:underline"
+      >
+        {{ $t('common.list') }}
+      </RouterLink>
+    </td>
+    <td class="px-4 py-3">
+      <RouterLink
+        :to="`/servers/${server.domain}/jobs`"
+        class="text-primary-600 dark:text-primary-500 hover:underline"
       >
         {{ $t('common.list') }}
       </RouterLink>

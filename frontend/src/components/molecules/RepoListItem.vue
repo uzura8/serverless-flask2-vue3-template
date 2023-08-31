@@ -1,11 +1,15 @@
 <script lang="ts">
 import type { Repository } from '@/types/Repository'
 import { defineComponent, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import config from '@/configs/config.json'
 import { initFlowbite } from 'flowbite'
+import PgDeployStatusUnit from '@/components/atoms/PgDeployStatusUnit.vue'
 
 export default defineComponent({
-  components: {},
+  components: {
+    PgDeployStatusUnit
+  },
 
   props: {
     repo: {
@@ -15,6 +19,14 @@ export default defineComponent({
   },
 
   setup(props) {
+    const route = useRoute()
+    const isServerPath = computed(() => {
+      return route.path.startsWith('/servers')
+    })
+    const editPageUrlPathPrefix = computed(() => {
+      return isServerPath.value ? `/servers/${props.repo.serverDomain}` : ''
+    })
+
     const repoServices = computed(() => config.pgit.repository.services)
     const serviceLabel = computed(() => {
       const service = repoServices.value.find((s) => s.domain === props.repo.serviceDomain)
@@ -34,7 +46,8 @@ export default defineComponent({
 
     return {
       serviceLabel,
-      repoUrl
+      repoUrl,
+      editPageUrlPathPrefix
     }
   }
 })
@@ -42,7 +55,9 @@ export default defineComponent({
 
 <template>
   <tr class="border-b dark:border-gray-700">
-    <td class="px-4 py-3">{{ $t(`pgit.term.deployStatuses.${repo.deployStatus}`) }}</td>
+    <td class="px-4 py-3">
+      <PgDeployStatusUnit :status="repo.deployStatus" />
+    </td>
     <td class="px-4 py-3">{{ repo.serverDomain }}</td>
     <td class="px-4 py-3">
       <a
@@ -65,8 +80,8 @@ export default defineComponent({
     </td>
     <td class="px-4 py-3 flex items-center justify-end">
       <button
-        id="apple-imac-27-dropdown-button"
-        data-dropdown-toggle="apple-imac-27-dropdown"
+        :id="`repos-item-dropdown-button-${repo.repoId}`"
+        :data-dropdown-toggle="`repos-item-dropdown-${repo.repoId}`"
         class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
         type="button"
       >
@@ -76,7 +91,7 @@ export default defineComponent({
         />
       </button>
       <div
-        id="apple-imac-27-dropdown"
+        :id="`repos-item-dropdown-${repo.repoId}`"
         class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
       >
         <ul
@@ -84,25 +99,19 @@ export default defineComponent({
           aria-labelledby="apple-imac-27-dropdown-button"
         >
           <li>
-            <a
-              href="#"
+            <RouterLink
+              :to="`${editPageUrlPathPrefix}/repositories/${repo.repoId}/edit`"
               class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >Show</a
             >
-          </li>
-          <li>
-            <a
-              href="#"
-              class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >Edit</a
-            >
+              {{ $t('common.edit') }}
+            </RouterLink>
           </li>
         </ul>
         <div class="py-1">
           <a
             href="#"
             class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-            >Delete</a
+            >{{ $t('common.delete') }}</a
           >
         </div>
       </div>

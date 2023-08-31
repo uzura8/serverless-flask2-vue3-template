@@ -1,7 +1,8 @@
 <script lang="ts">
+import type { AxiosError } from 'axios'
 import type { FormSelectFieldOptionObj } from '@/types/Common'
-import type { RepositoryFormVals, Repository } from '@/types/Repository'
-import { defineComponent, ref, computed, watch } from 'vue'
+import type { RepositoryFormVals, RepositoryUpdateFormVals } from '@/types/Repository'
+import { defineComponent, ref, computed, watch, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -36,8 +37,13 @@ export default defineComponent({
   },
 
   props: {
-    repository: {
-      type: Object as () => Repository,
+    repoId: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    serverDomain: {
+      type: String,
       required: false
     }
   },
@@ -49,6 +55,7 @@ export default defineComponent({
     const userStore = useUserStore()
     const { idToken } = storeToRefs(userStore)
 
+    const globalErrorMsg = ref<string>('')
     const errors = ref<FieldErrors>({
       repoUrl: '',
       serviceDomain: '',
@@ -61,10 +68,21 @@ export default defineComponent({
       nodeJSVersion: ''
     })
     const hasErrors = computed<boolean>(() => {
-      return Object.values(errors.value).some((error) => error)
+      const hoge = Object.values(errors.value).some((error) => error)
+      const fuga = !!globalErrorMsg.value
+      return hoge || fuga
     })
 
     const repoInfoInputMode = ref<'url' | 'items'>('url')
+    watch(repoInfoInputMode, (val) => {
+      if (val === 'items') {
+        errors.value.repoUrl = ''
+      } else {
+        errors.value.serviceDomain = ''
+        errors.value.serviceSegment = ''
+        errors.value.repoName = ''
+      }
+    })
 
     const repoUrl = ref<string>('')
     const serviceDomain = ref<string>('')
@@ -72,8 +90,13 @@ export default defineComponent({
     const repoName = ref<string>('')
 
     const validateRepoUrl = () => {
+      globalErrorMsg.value = ''
       errors.value.repoUrl = ''
-      if (!repoUrl.value) {
+      errors.value.serviceDomain = ''
+      errors.value.serviceSegment = ''
+      errors.value.repoName = ''
+      if (repoInfoInputMode.value == 'url' && !repoUrl.value) {
+        errors.value.repoUrl = t('msg.inputRequired')
         return
       }
       if (!checkUrl(repoUrl.value)) {
@@ -130,27 +153,39 @@ export default defineComponent({
     })
     const serviceDomainOptionVals = serviceDomainOptionObjs.map((item) => item.value)
 
-    const validateServiceDomain = () => {
+    const validateServiceDomain = (isPost = false) => {
+      globalErrorMsg.value = ''
       errors.value.serviceDomain = ''
       if (!serviceDomain.value) {
+        if (isPost) {
+          errors.value.serviceDomain = t('msg.inputRequired')
+        }
         return
       }
       if (serviceDomainOptionVals.includes(serviceDomain.value) === false) {
         errors.value.serviceDomain = t('msg.inputInvalid')
       }
     }
-    const validateServiceSegment = () => {
+    const validateServiceSegment = (isPost = false) => {
+      globalErrorMsg.value = ''
       errors.value.serviceSegment = ''
       if (!serviceSegment.value) {
+        if (isPost) {
+          errors.value.serviceSegment = t('msg.inputRequired')
+        }
         return
       }
       if (/^[a-zA-Z0-9\-_]+$/.test(serviceSegment.value) === false) {
         errors.value.serviceSegment = t('msg.inputInvalid')
       }
     }
-    const validateRepoName = () => {
+    const validateRepoName = (isPost = false) => {
+      globalErrorMsg.value = ''
       errors.value.repoName = ''
       if (!repoName.value) {
+        if (isPost) {
+          errors.value.repoName = t('msg.inputRequired')
+        }
         return
       }
       if (/^[a-zA-Z0-9\-_]+$/.test(repoName.value) === false) {
@@ -174,9 +209,10 @@ export default defineComponent({
       }
     })
 
-    const serverDomain = ref<string>('')
+    const serverDomain = ref<string>(props.serverDomain || '')
     const serverDomainOptions = ['pgit.me', 'pgit.be']
     const validateServerDomain = () => {
+      globalErrorMsg.value = ''
       errors.value.serverDomain = ''
       if (!serverDomain.value) {
         errors.value.serverDomain = t('msg.inputRequired')
@@ -186,15 +222,20 @@ export default defineComponent({
         errors.value.serverDomain = t('msg.inputInvalid')
       }
     }
+    const isSetServerDomain = computed<boolean>(() => {
+      return !!props.serverDomain
+    })
 
     const isBuildRequired = ref<boolean>(false)
     const validateIsBuildRequired = () => {
+      globalErrorMsg.value = ''
       errors.value.isBuildRequired = ''
     }
 
     const buildType = ref<string>('')
     const buildTypeOptions = ['npm', 'yarn']
     const validateBuildType = () => {
+      globalErrorMsg.value = ''
       errors.value.buildType = ''
       if (!isBuildRequired.value) {
         return
@@ -210,6 +251,7 @@ export default defineComponent({
 
     const buildTargetDirPath = ref<string>('src')
     const validateBuildTargetDirPath = () => {
+      globalErrorMsg.value = ''
       errors.value.buildTargetDirPath = ''
       if (!isBuildRequired.value) {
         return
@@ -222,6 +264,7 @@ export default defineComponent({
     const nodeJSVersion = ref<string>('')
     const nodeJSVersionOptions = ['18.X', '16.X', '14.X']
     const validateNodeJSVersion = () => {
+      globalErrorMsg.value = ''
       errors.value.nodeJSVersion = ''
       if (!isBuildRequired.value) {
         return
@@ -229,19 +272,23 @@ export default defineComponent({
       if (!nodeJSVersion.value) {
         errors.value.nodeJSVersion = t('msg.inputRequired')
       }
-      if (buildTypeOptions.includes(buildType.value) === false) {
-        errors.value.buildType = t('msg.inputInvalid')
+      if (nodeJSVersionOptions.includes(nodeJSVersion.value) === false) {
+        errors.value.nodeJSVersion = t('msg.inputInvalid')
       }
     }
 
     const isEdit = computed<boolean>(() => {
-      return !!props.repository
+      return props.repoId !== ''
     })
 
     const validateAll = () => {
-      validateServiceDomain()
-      validateServiceSegment()
-      validateRepoName()
+      globalErrorMsg.value = ''
+      if (repoInfoInputMode.value === 'url') {
+        validateRepoUrl()
+      }
+      validateServiceDomain(true)
+      validateServiceSegment(true)
+      validateRepoName(true)
       validateServerDomain()
       validateIsBuildRequired()
       validateBuildType()
@@ -249,39 +296,80 @@ export default defineComponent({
       validateNodeJSVersion()
     }
 
-    const saveRepository = async () => {
+    const saveRepository = async (): Promise<void> => {
       validateAll()
       if (hasErrors.value) return
 
       try {
         globalLoader.updateLoading(true)
-        let vals: RepositoryFormVals = {
-          serviceDomain: serviceDomain.value,
-          serviceSegment: serviceSegment.value,
-          repoName: repoName.value,
-          serverDomain: serverDomain.value,
-          isBuildRequired: isBuildRequired.value
+        if (!isBuildRequired.value) {
+          buildType.value = ''
+          buildTargetDirPath.value = 'src'
+          nodeJSVersion.value = ''
         }
-        if (buildType.value) vals.buildType = buildType.value
-        if (buildTargetDirPath.value) vals.buildTargetDirPath = buildTargetDirPath.value
-        if (nodeJSVersion.value) vals.nodeJSVersion = nodeJSVersion.value
-
-        if (isEdit.value && props.repository) {
-          await RepositoryApi.update(props.repository.repoId, vals, idToken.value)
+        let updateVals: RepositoryUpdateFormVals = {
+          isBuildRequired: isBuildRequired.value,
+          buildType: buildType.value,
+          buildTargetDirPath: buildTargetDirPath.value,
+          nodeJSVersion: nodeJSVersion.value
+        }
+        if (isEdit.value && props.repoId) {
+          await RepositoryApi.update(props.repoId, updateVals, idToken.value)
         } else {
-          await RepositoryApi.create(vals, idToken.value)
+          let createVals: RepositoryFormVals = {
+            ...{
+              serviceDomain: serviceDomain.value,
+              serviceSegment: serviceSegment.value,
+              repoName: repoName.value,
+              serverDomain: serverDomain.value
+            },
+            ...updateVals
+          }
+          await RepositoryApi.create(createVals, idToken.value)
         }
         globalLoader.updateLoading(false)
         router.push('/repositories')
+      } catch (error) {
+        const apiError = error as AxiosError
+        if (apiError.response?.status === 409) {
+          globalErrorMsg.value = t('msg.alreadyRegistered')
+        } else {
+          console.error(error)
+        }
+        globalLoader.updateLoading(false)
+      }
+    }
+
+    const setRepository = async () => {
+      try {
+        if (!props.repoId) return
+        globalLoader.updateLoading(true)
+        const repo = await RepositoryApi.getOne(props.repoId, idToken.value)
+        serviceDomain.value = repo.serviceDomain
+        serviceSegment.value = repo.serviceSegment
+        repoName.value = repo.repoName
+        serverDomain.value = repo.serverDomain
+        isBuildRequired.value = repo.isBuildRequired
+        buildType.value = repo.buildType ? repo.buildType : ''
+        buildTargetDirPath.value = repo.buildTargetDirPath ? repo.buildTargetDirPath : ''
+        nodeJSVersion.value = repo.nodeJSVersion ? repo.nodeJSVersion : ''
+        globalLoader.updateLoading(false)
       } catch (error) {
         console.error(error)
         globalLoader.updateLoading(false)
       }
     }
 
+    onBeforeMount(async () => {
+      if (isEdit.value) {
+        await setRepository()
+      }
+    })
+
     return {
       isEdit,
       saveRepository,
+      globalErrorMsg,
       errors,
       hasErrors,
       repoUrl,
@@ -299,6 +387,7 @@ export default defineComponent({
       serverDomain,
       serverDomainOptions,
       validateServerDomain,
+      isSetServerDomain,
       isBuildRequired,
       validateIsBuildRequired,
       buildType,
@@ -321,6 +410,7 @@ export default defineComponent({
         <span>{{ $t('pgit.form.repository.repoInfo') }}</span>
       </h3>
       <ul
+        v-if="!isEdit"
         class="my-6 flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400"
       >
         <li class="mr-2">
@@ -354,57 +444,59 @@ export default defineComponent({
         </li>
       </ul>
 
-      <div v-if="repoInfoInputMode === 'url'">
-        <FormInputField
-          v-model="repoUrl"
-          :errorText="errors.repoUrl"
-          :label-text="$t('pgit.form.repository.repoUrl')"
-          @blur="validateRepoUrl"
-        />
-        <div
-          v-if="repoUrl && !errors['repoUrl']"
-          class="mt-4 p-4 bg-gray-50 rounded"
-        >
-          <KeyValueList :items="repoUrlItems" />
+      <div v-if="!isEdit">
+        <div v-if="repoInfoInputMode === 'url'">
+          <FormInputField
+            v-model="repoUrl"
+            :errorText="errors.repoUrl"
+            :label-text="$t('pgit.form.repository.repoUrl')"
+            @blur="validateRepoUrl"
+          />
+          <div
+            v-if="repoUrl && !errors['repoUrl']"
+            class="mt-4 p-4 bg-gray-50 rounded"
+          >
+            <KeyValueList :items="repoUrlItems" />
+          </div>
+        </div>
+        <div v-else>
+          <FormSelectField
+            v-model="serviceDomain"
+            :errorText="errors.serviceDomain"
+            :optionObjs="serviceDomainOptionObjs"
+            :default-option-text="$t('msg.pleaseSelect')"
+            :label-text="$t('pgit.form.repository.service')"
+            @change="validateServiceDomain"
+          />
+          <FormInputField
+            v-model="serviceSegment"
+            @blur="validateServiceSegment"
+            :label-text="$t('pgit.form.repository.serviceSegment')"
+            :errorText="errors.serviceSegment"
+            :helper-text="$t('pgit.form.repository.serviceSegmentHelpText')"
+            class="mt-6"
+          />
+          <FormInputField
+            v-model="repoName"
+            :errorText="errors.repoName"
+            :label-text="$t('pgit.form.repository.repoName')"
+            @blur="validateRepoName"
+            class="mt-6"
+          />
         </div>
       </div>
-      <div v-else>
-        <FormSelectField
-          v-model="serviceDomain"
-          :errorText="errors.serviceDomain"
-          :optionObjs="serviceDomainOptionObjs"
-          :default-option-text="$t('msg.pleaseSelect')"
-          :label-text="$t('pgit.form.repository.service')"
-          @change="validateServiceDomain"
-        />
-        <FormInputField
-          v-model="serviceSegment"
-          @blur="validateServiceSegment"
-          :label-text="$t('pgit.form.repository.serviceSegment')"
-          :errorText="errors.serviceSegment"
-          :helper-text="$t('pgit.form.repository.serviceSegmentHelpText')"
-          class="mt-6"
-        />
-        <FormInputField
-          v-model="repoName"
-          :errorText="errors.repoName"
-          :label-text="$t('pgit.form.repository.repoName')"
-          @blur="validateRepoName"
-          class="mt-6"
-        />
-
-        <div
-          v-if="generatedRepoUrl"
-          class="mt-8"
-        >
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            <span>{{
-              $t('common.generatedOf', { label: $t('pgit.form.repository.repoUrl') })
-            }}</span>
-          </label>
-          <div class="p-4 bg-gray-50 rounded italic text-gray-700">
-            {{ generatedRepoUrl }}
-          </div>
+      <div
+        v-if="generatedRepoUrl"
+        class="mt-8"
+      >
+        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+          <span v-if="isEdit">{{ $t('pgit.form.repository.repoUrl') }}</span>
+          <span v-else>{{
+            $t('common.generatedOf', { label: $t('pgit.form.repository.repoUrl') })
+          }}</span>
+        </label>
+        <div class="p-4 bg-gray-50 rounded italic text-gray-700">
+          {{ generatedRepoUrl }}
         </div>
       </div>
     </div>
@@ -412,12 +504,19 @@ export default defineComponent({
       <h3 class="text-lg font-medium dark:text-white">
         <span>{{ $t('pgit.term.server') }}</span>
       </h3>
+      <span
+        v-if="isSetServerDomain || isEdit"
+        class="mt-4"
+      >
+        {{ serverDomain }}
+      </span>
       <FormSelectField
+        v-else
         v-model="serverDomain"
         :errorText="errors.serverDomain"
         :options="serverDomainOptions"
         :default-option-text="$t('msg.pleaseSelect')"
-        :label-text="$t('pgit.form.repository.serviceDomain')"
+        :label-text="$t('pgit.form.repository.serverDomain')"
         @change="validateServerDomain"
         class="mt-4"
       />
@@ -486,20 +585,33 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="text-center">
-      <button
-        @click="saveRepository"
-        type="button"
-        :disabled="hasErrors"
-        class="w-full max-w-md mt-6 font-medium text-center focus:ring-4 focus:outline-none rounded-lg focus:ring-blue-300"
-        :class="{
-          'px-3 py-2 text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800':
-            !isEdit,
-          'text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 text-sm px-5 py-2.5 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800':
-            isEdit
-        }"
-        v-text="isEdit ? $t('common.update') : $t('common.add')"
-      ></button>
+    <div>
+      <div
+        v-if="globalErrorMsg || hasErrors"
+        class="text-red-600 dark:text-red-500"
+      >
+        <p v-if="globalErrorMsg">
+          {{ globalErrorMsg }}
+        </p>
+        <p v-else-if="hasErrors">
+          {{ $t('msg.errorsExist') }}
+        </p>
+      </div>
+      <div class="text-center">
+        <button
+          @click="saveRepository"
+          type="button"
+          :disabled="hasErrors"
+          class="w-full max-w-md mt-8 font-medium text-center focus:ring-4 focus:outline-none rounded-lg focus:ring-blue-300"
+          :class="{
+            'px-3 py-2 text-white bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800':
+              !isEdit,
+            'text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 text-sm px-5 py-2.5 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800':
+              isEdit
+          }"
+          v-text="isEdit ? $t('common.update') : $t('common.add')"
+        ></button>
+      </div>
     </div>
   </div>
 </template>

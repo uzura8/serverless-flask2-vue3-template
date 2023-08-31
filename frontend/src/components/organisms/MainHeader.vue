@@ -174,6 +174,16 @@ export default defineComponent({
             {{ $t('pgit.term.repositories') }}
           </RouterLink>
           <RouterLink
+            v-if="isAuth"
+            to="/jobs"
+            exact
+            :aria-current="current === '/jobs' ? 'page' : null"
+            class="font-medium text-gray-600"
+            :class="{ 'router-link-exact-active': current.startsWith('/jobs') }"
+          >
+            {{ $t('pgit.term.jobs') }}
+          </RouterLink>
+          <RouterLink
             v-if="!isAuth"
             to="/signin"
             exact

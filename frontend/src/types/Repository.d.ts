@@ -9,6 +9,13 @@ export interface RepositoryFormVals {
   nodeJSVersion?: string
 }
 
+export interface RepositoryUpdateFormVals {
+  isBuildRequired: boolean
+  buildType?: string
+  buildTargetDirPath?: string
+  nodeJSVersion?: string
+}
+
 export interface Repository extends RepositoryFormVals {
   repoId: string
   deployStatus: string
@@ -16,7 +23,7 @@ export interface Repository extends RepositoryFormVals {
   updatedAt?: string
 }
 
-export interface RepositoryApiResult {
+export interface RepositoriesApiResult {
   items: Repository[]
   pagerKey?: PagerKey
 }
