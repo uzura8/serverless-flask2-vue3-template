@@ -15,13 +15,13 @@ export default defineComponent({
     const classByStatus = computed(() => {
       switch (props.status) {
         case 'pending':
-          return 'warning'
+          return 'text-warning-500'
         case 'inProgress':
-          return 'info'
+          return 'text-info-500'
         case 'completed':
-          return 'success'
+          return 'text-success-500'
         case 'failed':
-          return 'danger'
+          return 'text-danger-500'
         default:
           return ''
       }
@@ -36,8 +36,8 @@ export default defineComponent({
 
 <template>
   <div
-    class="font-font-semibold"
-    :class="`text-${classByStatus}-500`"
+    class="font-font-semibold min-w-60"
+    :class="classByStatus"
   >
     <FontAwesomeIcon
       v-if="status === 'completed'"

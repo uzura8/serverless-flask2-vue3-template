@@ -52,7 +52,7 @@ export default defineComponent({
       <a
         :href="repoUrl"
         target="_blank"
-        class="text-blue-600 dark:text-blue-500 hover:underline"
+        class="text-primary-600 dark:text-primary-500 hover:underline"
       >
         {{ serviceLabel }}
       </a>

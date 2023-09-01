@@ -11,7 +11,8 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const repoId = computed(() => {
-      if (typeof route.params.repoId !== 'string') ''
+      if (route.params.repoId == null) return ''
+      if (Array.isArray(route.params.repoId)) return route.params.repoId[0]
       return route.params.repoId
     })
 
