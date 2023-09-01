@@ -55,6 +55,14 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
+        path: '/servers/:serverDomain/repositories/:repoId/jobs',
+        name: 'ServerRepJobListPage',
+        component: () => import('@/views/ServerRepoJobListPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: '/servers/:serverDomain/jobs',
         name: 'ServerJobListPage',
         component: () => import('@/views/ServerJobListPage.vue'),
@@ -82,6 +90,14 @@ const routes: RouteRecordRaw[] = [
         path: '/repositories/:repoId/edit',
         name: 'RepoEditPage',
         component: () => import('@/views/RepoEditPage.vue'),
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        path: '/repositories/:repoId/jobs',
+        name: 'RepoJobListPage',
+        component: () => import('@/views/RepoJobListPage.vue'),
         meta: {
           requiresAuth: true
         }

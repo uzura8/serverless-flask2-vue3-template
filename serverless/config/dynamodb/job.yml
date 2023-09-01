@@ -6,6 +6,8 @@ Properties:
       AttributeType: S
     - AttributeName: serverDomain
       AttributeType: S
+    - AttributeName: repoId
+      AttributeType: S
     - AttributeName: deployStatusCreatedAt
       AttributeType: S
   KeySchema:
@@ -25,6 +27,14 @@ Properties:
     - IndexName: server_status_idx
       KeySchema:
         - AttributeName: serverDomain
+          KeyType: HASH
+        - AttributeName: deployStatusCreatedAt
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL
+    - IndexName: repo_status_idx
+      KeySchema:
+        - AttributeName: repoId
           KeyType: HASH
         - AttributeName: deployStatusCreatedAt
           KeyType: RANGE

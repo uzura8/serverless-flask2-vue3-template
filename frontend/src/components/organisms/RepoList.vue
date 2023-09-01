@@ -106,6 +106,12 @@ export default defineComponent({
               scope="col"
               class="px-4 py-3"
             >
+              {{ $t('pgit.term.jobs') }}
+            </th>
+            <th
+              scope="col"
+              class="px-4 py-3"
+            >
               <span class="sr-only">Actions</span>
             </th>
           </tr>
@@ -115,6 +121,7 @@ export default defineComponent({
             v-for="repo in repos"
             :key="repo.repoId"
             :repo="repo"
+            :jobs-page-url-path-prefix="serverDomain ? `/servers/${serverDomain}` : ''"
           />
         </tbody>
       </table>

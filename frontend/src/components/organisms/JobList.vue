@@ -4,7 +4,7 @@ import { defineComponent, ref, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { JobApi, ServerApi } from '@/apis'
+import { JobApi, ServerApi, RepositoryApi } from '@/apis'
 import JobListItem from '@/components/molecules/JobListItem.vue'
 
 export default defineComponent({
@@ -12,6 +12,10 @@ export default defineComponent({
 
   props: {
     serverDomain: {
+      type: String as () => string | null,
+      required: false
+    },
+    repoId: {
       type: String as () => string | null,
       required: false
     }
@@ -31,6 +35,8 @@ export default defineComponent({
         let res
         if (props.serverDomain) {
           res = await ServerApi.getJobs(props.serverDomain, params, idToken.value)
+        } else if (props.repoId) {
+          res = await RepositoryApi.getJobs(props.repoId, params, idToken.value)
         } else {
           res = await JobApi.getList(params, idToken.value)
         }

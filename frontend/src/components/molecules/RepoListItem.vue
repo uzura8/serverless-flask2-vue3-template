@@ -15,6 +15,11 @@ export default defineComponent({
     repo: {
       type: Object as () => Repository,
       required: true
+    },
+    jobsPageUrlPathPrefix: {
+      type: String as () => string,
+      required: false,
+      default: ''
     }
   },
 
@@ -77,6 +82,14 @@ export default defineComponent({
     <td class="px-4 py-3">
       <span v-if="repo.isBuildRequired">{{ repo.buildType }}</span>
       <span v-else>-</span>
+    </td>
+    <td class="px-4 py-3">
+      <RouterLink
+        :to="`${jobsPageUrlPathPrefix}/repositories/${repo.repoId}/jobs`"
+        class="text-primary-600 dark:text-primary-500 hover:underline"
+      >
+        {{ $t('common.list') }}
+      </RouterLink>
     </td>
     <td class="px-4 py-3 flex items-center justify-end">
       <button

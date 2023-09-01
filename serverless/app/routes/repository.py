@@ -163,6 +163,21 @@ def delete_repo(repo_id):
     return jsonify(), 204
 
 
+@bp.get('/<string:repo_id>/jobs')
+@check_user_token
+def get_repo_jobs(repo_id):
+    repo = get_repo_by_repo_id(repo_id)
+    vals = validate_params(schema_get_jobs(), request.args.to_dict())
+    keys = {'repoId': repo_id}
+    skey_cond_type = 'eq'
+    if vals.get('status'):
+        keys['deployStatusCreatedAt'] = vals['status']
+        skey_cond_type = 'begins_with'
+    res = Job.get_all_pager(
+        keys, vals, 'repo_status_idx', False, skey_cond_type)
+    return jsonify(res), 200
+
+
 @bp.post('/<string:repo_id>/jobs')
 @check_firebase_auth_or_pgit_client_ip
 def create_repo_job(repo_id):
@@ -307,3 +322,18 @@ def schema_post_job():
         },
     }
     # return allowed_schema_on_update | additional_schema
+
+
+def schema_get_jobs():
+    base = get_list_schema
+    schema = {
+        'status': {
+            'type': 'string',
+            'coerce': (NormalizerUtils.trim),
+            'required': False,
+            'empty': True,
+            'nullable': True,
+            'allowed': Job.allowed_vals['deployStatus'],
+        },
+    }
+    return base | schema
