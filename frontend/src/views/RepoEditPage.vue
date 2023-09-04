@@ -24,9 +24,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1 class="mb-12 text-2xl font-semibold dark:text-white">
+  <h1 class="text-2xl font-semibold dark:text-white">
     {{ $t('common.editOf', { label: $t('pgit.term.repository') }) }}
   </h1>
 
-  <RepoForm :repo-id="repoId" />
+  <RepoForm
+    class="mt-12"
+    :repo-id="repoId"
+  />
 </template>

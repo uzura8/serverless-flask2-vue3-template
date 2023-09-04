@@ -328,7 +328,11 @@ export default defineComponent({
           await RepositoryApi.create(createVals, idToken.value)
         }
         globalLoader.updateLoading(false)
-        router.push('/repositories')
+        if (isSetServerDomain.value) {
+          router.push(`/servers/${serverDomain.value}/repositories`)
+        } else {
+          router.push('/repositories')
+        }
       } catch (error) {
         const apiError = error as AxiosError
         if (apiError.response?.status === 409) {
