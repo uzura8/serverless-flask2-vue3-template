@@ -1,11 +1,10 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.routes import check_user_token, check_firebase_auth_or_pgit_client_ip
-from app.models.dynamodb import Repository, Job, ModelInvalidParamsException, ModelConditionalCheckFailedException
+from app.models.dynamodb import Repository, Job, Branch, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
 from app.utils.date import utc_iso
-from app.utils.string import sanitize_domain_str
 from app.utils.service import generate_repo_id
 from app.validators import NormalizerUtils
 from app.validators.schemas.common import get_list_schema
@@ -175,6 +174,17 @@ def get_repo_jobs(repo_id):
         skey_cond_type = 'begins_with'
     res = Job.get_all_pager(
         keys, vals, 'repo_status_idx', False, skey_cond_type)
+    return jsonify(res), 200
+
+
+@bp.get('/<string:repo_id>/branches')
+@check_user_token
+def get_repo_branches(repo_id):
+    get_repo_by_repo_id(repo_id)
+    vals = validate_params(get_list_schema, request.args.to_dict())
+    keys = {'repoId': repo_id}
+    res = Branch.get_all_pager(keys, vals, 'repo_branch_idx')
+
     return jsonify(res), 200
 
 

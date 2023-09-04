@@ -162,3 +162,4 @@ resources:
     ServerDynamoDBTable: ${file(./config/dynamodb/server.yml)}
     RepositoryDynamoDBTable: ${file(./config/dynamodb/repository.yml)}
     JobDynamoDBTable: ${file(./config/dynamodb/job.yml)}
+    BranchDynamoDBTable: ${file(./config/dynamodb/branch.yml)}

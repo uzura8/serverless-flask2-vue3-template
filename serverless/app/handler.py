@@ -12,6 +12,7 @@ from app.routes.category import bp as category_module
 from app.routes.server import bp as server_module
 from app.routes.repository import bp as repository_module
 from app.routes.job import bp as job_module
+from app.routes.branch import bp as branch_module
 from app.routes.admin import bp as admin_module
 
 import firebase_admin
@@ -103,6 +104,7 @@ def add_cors_headers(response):
 app.register_blueprint(server_module)
 app.register_blueprint(repository_module)
 app.register_blueprint(job_module)
+app.register_blueprint(branch_module)
 app.register_blueprint(category_module)
 # app.register_blueprint(tag_module)
 # app.register_blueprint(post_module)

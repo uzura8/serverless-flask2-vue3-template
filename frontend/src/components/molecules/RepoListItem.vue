@@ -16,7 +16,7 @@ export default defineComponent({
       type: Object as () => Repository,
       required: true
     },
-    jobsPageUrlPathPrefix: {
+    pageUrlPathPrefix: {
       type: String as () => string,
       required: false,
       default: ''
@@ -64,28 +64,34 @@ export default defineComponent({
       <PgDeployStatusUnit :status="repo.deployStatus" />
     </td>
     <td class="px-4 py-3">{{ repo.serverDomain }}</td>
+    <td class="px-4 py-3">{{ repo.repoName }}</td>
     <td class="px-4 py-3">
       <a
         :href="repoUrl"
         target="_blank"
         class="text-blue-600 dark:text-blue-500 hover:underline"
-      >
-        {{ serviceLabel }}
-      </a>
+        v-text="`${repo.serviceDomain}/${repo.serviceSegment}/${repo.repoName}`"
+      ></a>
       <FontAwesomeIcon
         icon="arrow-up-right-from-square"
         class="ml-2 text-gray-300"
       />
     </td>
-    <td class="px-4 py-3">{{ repo.serviceSegment }}</td>
-    <td class="px-4 py-3">{{ repo.repoName }}</td>
     <td class="px-4 py-3">
       <span v-if="repo.isBuildRequired">{{ repo.buildType }}</span>
       <span v-else>-</span>
     </td>
     <td class="px-4 py-3">
       <RouterLink
-        :to="`${jobsPageUrlPathPrefix}/repositories/${repo.repoId}/jobs`"
+        :to="`${pageUrlPathPrefix}/repositories/${repo.repoId}/branches`"
+        class="text-primary-600 dark:text-primary-500 hover:underline"
+      >
+        {{ $t('common.list') }}
+      </RouterLink>
+    </td>
+    <td class="px-4 py-3">
+      <RouterLink
+        :to="`${pageUrlPathPrefix}/repositories/${repo.repoId}/jobs`"
         class="text-primary-600 dark:text-primary-500 hover:underline"
       >
         {{ $t('common.list') }}

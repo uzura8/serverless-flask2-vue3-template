@@ -1,7 +1,7 @@
 import traceback
 from flask import Blueprint, jsonify, request
 from app.routes import check_user_token, check_firebase_auth_or_pgit_client_ip
-from app.models.dynamodb import Job, Repository, ModelInvalidParamsException, ModelConditionalCheckFailedException
+from app.models.dynamodb import Job, Repository, Branch, ModelInvalidParamsException, ModelConditionalCheckFailedException
 from app.utils.error import InvalidUsage
 from app.utils.request import validate_params
 from app.utils.date import utc_iso
@@ -119,6 +119,42 @@ def check_and_update_job_status(job_id, deploy_status):
         print(traceback.format_exc())
         raise InvalidUsage('Server Error', 500)
 
+    if deploy_status == 'completed':
+        if job['deployType'] == 'add':
+            branchVals = {
+                'repoId': job['repoId'],
+                'branchName': job['branchName'],
+                'repoCode': job['repoCode'],
+                'serverDomain': job['serverDomain'],
+                'serviceDomain': job['serviceDomain'],
+                'serviceSegment': job['serviceSegment'],
+                'repoName': job['repoName'],
+                'lastCommitInfo': job.get('lastCommitInfo'),
+                'updatedAt': utc_iso(),
+            }
+            try:
+                Branch.create(branchVals, 'branchId', True)
+            except ModelInvalidParamsException as e:
+                raise InvalidUsage(e.message, 400)
+
+            except Exception as e:
+                print(traceback.format_exc())
+                raise InvalidUsage('Server Error', 500)
+
+        elif job['deployType'] == 'delete':
+            br_keys = {'repoId': job['repoId'],
+                       'branchName': job['branchName']}
+            branch = Branch.get_one(br_keys, 'repo_branch_idx')
+            if branch:
+                try:
+                    Branch.delete({'branchId': branch['branchId']})
+                except ModelInvalidParamsException as e:
+                    raise InvalidUsage(e.message, 400)
+
+                except Exception as e:
+                    print(traceback.format_exc())
+                    raise InvalidUsage('Server Error', 500)
+
     return jsonify(job), 200
 
 
@@ -190,11 +226,36 @@ def schema_create():
 def schema_update():
     return {
         'lastCommitInfo': {
-            'type': 'string',
-            'coerce': (NormalizerUtils.trim),
+            'type': 'dict',
+            # 'coerce': (NormalizerUtils.json2dict),
             'required': False,
             'empty': True,
             'nullable': True,
+            'schema': {
+                'hash': {
+                    'type': 'string',
+                    'required': True,
+                    'empty': False,
+                },
+                'authorName': {
+                    'type': 'string',
+                    'required': False,
+                    'empty': True,
+                    'nullable': True,
+                },
+                'message': {
+                    'type': 'string',
+                    'required': False,
+                    'empty': True,
+                    'nullable': True,
+                },
+                'date': {
+                    'type': 'string',
+                    'required': False,
+                    'empty': True,
+                    # 'regex': r'\d{4}\-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}([\+\-]\d{2}:\d{2}|Z)$',
+                },
+            }
         },
         'resultLog': {
             'type': 'string',

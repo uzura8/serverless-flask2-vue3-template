@@ -1,0 +1,32 @@
+Type: "AWS::DynamoDB::Table"
+Properties:
+  TableName: ${self:custom.prjPrefix}-branch
+  AttributeDefinitions:
+    - AttributeName: branchId
+      AttributeType: S
+    - AttributeName: repoId
+      AttributeType: S
+    - AttributeName: branchName
+      AttributeType: S
+  KeySchema:
+    - AttributeName: branchId
+      KeyType: HASH
+
+  BillingMode: ${self:custom.dynamodbConfig.branch.billingMode, 'PAY_PER_REQUEST'}
+  ProvisionedThroughput:
+    ReadCapacityUnits: ${self:custom.dynamodbConfig.branch.provisionedThroughput.readCapacityUnits, 0}
+    WriteCapacityUnits: ${self:custom.dynamodbConfig.branch.provisionedThroughput.writeCapacityUnits, 0}
+
+  Tags:
+    - Key: backup
+      Value: ${self:custom.dynamoDbBackupTargetTagValue}
+
+  GlobalSecondaryIndexes:
+    - IndexName: repo_branch_idx
+      KeySchema:
+        - AttributeName: repoId
+          KeyType: HASH
+        - AttributeName: branchName
+          KeyType: RANGE
+      Projection:
+        ProjectionType: ALL

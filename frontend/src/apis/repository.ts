@@ -6,6 +6,7 @@ import type {
   RepositoryUpdateFormVals
 } from '@/types/Repository'
 import type { JobsApiResult } from '@/types/Job'
+import type { BranchesApiResult } from '@/types/Branch'
 import { client, getRequestOption } from '@/apis/client'
 
 class RepositoryApi {
@@ -73,6 +74,24 @@ class RepositoryApi {
     return new Promise((resolve, reject) => {
       client(options)
         .then((res: AxiosResponse<JobsApiResult>) => {
+          resolve(res.data)
+        })
+        .catch((err: AxiosError<{ error: string }>) => {
+          reject(err)
+        })
+    })
+  }
+
+  getBranches(
+    repoId: string,
+    params: any | null = null,
+    token: string | null = null
+  ): Promise<BranchesApiResult> {
+    const uri = `repositories/${repoId}/branches`
+    const options = getRequestOption(uri, 'get', params, token)
+    return new Promise((resolve, reject) => {
+      client(options)
+        .then((res: AxiosResponse<BranchesApiResult>) => {
           resolve(res.data)
         })
         .catch((err: AxiosError<{ error: string }>) => {

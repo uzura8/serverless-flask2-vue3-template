@@ -74,3 +74,7 @@ export function numFormat(num: number | string): string {
   if (isNaN(num)) return ''
   return num.toLocaleString()
 }
+
+export function sanitizeDomainStr(str: string): string {
+  return str.replace(/[\/_.@# ]/g, '-').toLowerCase()
+}

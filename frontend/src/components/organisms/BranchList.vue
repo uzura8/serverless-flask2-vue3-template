@@ -1,17 +1,21 @@
 <script lang="ts">
-import type { Repository } from '@/types/Repository'
+import type { Branch } from '@/types/Branch'
 import { defineComponent, ref, onBeforeMount } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useGlobalLoaderStore } from '@/stores/globalLoader.js'
-import { RepositoryApi, ServerApi } from '@/apis'
-import RepoListItem from '@/components/molecules/RepoListItem.vue'
+import { BranchApi, RepositoryApi } from '@/apis'
+import BranchListItem from '@/components/molecules/BranchListItem.vue'
 
 export default defineComponent({
-  components: { RepoListItem },
+  components: { BranchListItem },
 
   props: {
     serverDomain: {
+      type: String as () => string | null,
+      required: false
+    },
+    repoId: {
       type: String as () => string | null,
       required: false
     }
@@ -23,17 +27,18 @@ export default defineComponent({
     const userStore = useUserStore()
     const { idToken } = storeToRefs(userStore)
 
-    const repos = ref<Repository[]>([])
-    const setRepos = async () => {
+    const branches = ref<Branch[]>([])
+    const setBranches = async () => {
       try {
         globalLoader.updateLoading(true)
+        const params = { order: 'desc' }
         let res
-        if (props.serverDomain) {
-          res = await ServerApi.getRepos(props.serverDomain, null, idToken.value)
+        if (props.repoId) {
+          res = await RepositoryApi.getBranches(props.repoId, params, idToken.value)
         } else {
-          res = await RepositoryApi.getList(null, idToken.value)
+          res = await BranchApi.getList(params, idToken.value)
         }
-        repos.value = res.items
+        branches.value = res.items
         globalLoader.updateLoading(false)
       } catch (error) {
         console.error(error)
@@ -42,11 +47,11 @@ export default defineComponent({
     }
 
     onBeforeMount(async () => {
-      await setRepos()
+      await setBranches()
     })
 
     return {
-      repos
+      branches
     }
   }
 })
@@ -54,7 +59,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <p v-if="repos.length === 0">
+    <p v-if="branches.length === 0">
       {{ $t('msg.dataIsEmpty') }}
     </p>
     <div
@@ -66,12 +71,6 @@ export default defineComponent({
           class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
           <tr>
-            <th
-              scope="col"
-              class="px-4 py-3"
-            >
-              {{ $t('pgit.term.deployStatus') }}
-            </th>
             <th
               scope="col"
               class="px-4 py-3"
@@ -88,40 +87,27 @@ export default defineComponent({
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.form.repository.service') }}
-            </th>
-            <th
-              scope="col"
-              class="px-4 py-3"
-            >
-              {{ $t('pgit.form.repository.buildType') }}
-            </th>
-            <th
-              scope="col"
-              class="px-4 py-3"
-            >
               {{ $t('pgit.term.branch') }}
             </th>
             <th
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.term.jobs') }}
+              {{ $t('common.preview') }}
             </th>
             <th
               scope="col"
               class="px-4 py-3"
             >
-              <span class="sr-only">Actions</span>
+              {{ $t('pgit.term.lastCommit') }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <RepoListItem
-            v-for="repo in repos"
-            :key="repo.repoId"
-            :repo="repo"
-            :page-url-path-prefix="serverDomain ? `/servers/${serverDomain}` : ''"
+          <BranchListItem
+            v-for="branch in branches"
+            :key="branch.branchId"
+            :branch="branch"
           />
         </tbody>
       </table>
