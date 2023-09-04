@@ -95,18 +95,6 @@ export default defineComponent({
               scope="col"
               class="px-4 py-3"
             >
-              {{ $t('pgit.form.repository.serviceSegment') }}
-            </th>
-            <th
-              scope="col"
-              class="px-4 py-3"
-            >
-              {{ $t('pgit.form.repository.repoName') }}
-            </th>
-            <th
-              scope="col"
-              class="px-4 py-3"
-            >
               {{ $t('pgit.term.branch') }}
             </th>
             <th

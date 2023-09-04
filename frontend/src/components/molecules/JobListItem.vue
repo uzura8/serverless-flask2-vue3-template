@@ -49,21 +49,21 @@ export default defineComponent({
     </td>
     <td class="px-4 py-3">{{ job.serverDomain }}</td>
     <td class="px-4 py-3">
+      <span v-text="`${job.serviceDomain}/${job.serviceSegment}/${job.repoName}`"> </span>
+    </td>
+    <td class="px-4 py-3">
       <a
         :href="repoUrl"
         target="_blank"
         class="text-primary-600 dark:text-primary-500 hover:underline"
       >
-        {{ serviceLabel }}
+        {{ job.branchName }}
       </a>
       <FontAwesomeIcon
         icon="arrow-up-right-from-square"
         class="ml-2 text-gray-300"
       />
     </td>
-    <td class="px-4 py-3">{{ job.serviceSegment }}</td>
-    <td class="px-4 py-3">{{ job.repoName }}</td>
-    <td class="px-4 py-3">{{ job.branchName }}</td>
     <td class="px-4 py-3">{{ job.deployType }}</td>
     <td class="px-4 py-3">
       <span v-if="job.isBuildRequired">{{ job.buildType }}</span>
