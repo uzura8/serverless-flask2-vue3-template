@@ -174,16 +174,18 @@ def get_repo_jobs(repo_id):
         skey_cond_type = 'begins_with'
     res = Job.get_all_pager(
         keys, vals, 'repo_status_idx', False, skey_cond_type)
+    res['meta'] = {'repository': repo}
     return jsonify(res), 200
 
 
 @bp.get('/<string:repo_id>/branches')
 @check_user_token
 def get_repo_branches(repo_id):
-    get_repo_by_repo_id(repo_id)
+    repo = get_repo_by_repo_id(repo_id)
     vals = validate_params(get_list_schema, request.args.to_dict())
     keys = {'repoId': repo_id}
     res = Branch.get_all_pager(keys, vals, 'repo_branch_idx')
+    res['meta'] = {'repository': repo}
 
     return jsonify(res), 200
 

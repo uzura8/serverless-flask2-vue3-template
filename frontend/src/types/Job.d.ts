@@ -17,7 +17,12 @@ export interface Job {
   updatedAt?: string
 }
 
+interface JobsApiResultMeta {
+  repository: Repository
+}
+
 export interface JobsApiResult {
   items: Job[]
   pagerKey?: PagerKey
+  meta?: JobsApiResultMeta
 }

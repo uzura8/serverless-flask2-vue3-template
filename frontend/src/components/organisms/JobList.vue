@@ -21,7 +21,7 @@ export default defineComponent({
     }
   },
 
-  setup(props) {
+  setup(props, context) {
     const globalLoader = useGlobalLoaderStore()
 
     const userStore = useUserStore()
@@ -39,6 +39,9 @@ export default defineComponent({
           res = await RepositoryApi.getJobs(props.repoId, params, idToken.value)
         } else {
           res = await JobApi.getList(params, idToken.value)
+        }
+        if (res.meta && res.meta.repository) {
+          context.emit('loadedRepository', res.meta.repository)
         }
         jobs.value = res.items
         globalLoader.updateLoading(false)

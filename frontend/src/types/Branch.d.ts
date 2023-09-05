@@ -1,3 +1,5 @@
+import type { Repository } from './Repository'
+
 interface LastCommitInfo {
   hash: string
   authorName: string
@@ -19,7 +21,12 @@ export interface Branch {
   updatedAt?: string
 }
 
+interface BranchesApiResultMeta {
+  repository: Repository
+}
+
 export interface BranchesApiResult {
   items: Branch[]
   pagerKey?: PagerKey
+  meta?: BranchesApiResultMeta
 }

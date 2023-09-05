@@ -21,13 +21,14 @@ export default defineComponent({
     }
   },
 
-  setup(props) {
+  setup(props, context) {
     const globalLoader = useGlobalLoaderStore()
 
     const userStore = useUserStore()
     const { idToken } = storeToRefs(userStore)
 
     const branches = ref<Branch[]>([])
+
     const setBranches = async () => {
       try {
         globalLoader.updateLoading(true)
@@ -39,6 +40,9 @@ export default defineComponent({
           res = await BranchApi.getList(params, idToken.value)
         }
         branches.value = res.items
+        if (res.meta && res.meta.repository) {
+          context.emit('loadedRepository', res.meta.repository)
+        }
         globalLoader.updateLoading(false)
       } catch (error) {
         console.error(error)

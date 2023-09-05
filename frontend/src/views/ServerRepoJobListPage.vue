@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import type { Repository } from '@/types/Repository'
+import { defineComponent, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import JobList from '@/components/organisms/JobList.vue'
 
@@ -26,9 +27,21 @@ export default defineComponent({
       return route.params.repoId
     })
 
+    const repository = ref<Repository | null>(null)
+    const setRepository = (repo: Repository) => {
+      if (repo === null) return
+      repository.value = repo
+    }
+    const repoIdentifier = computed(() => {
+      if (repository.value === null) return ''
+      return `${repository.value.serviceDomain}/${repository.value.serviceSegment}/${repository.value.repoName}`
+    })
+
     return {
       serverDomain,
-      repoId
+      repoId,
+      repoIdentifier,
+      setRepository
     }
   }
 })
@@ -49,11 +62,15 @@ export default defineComponent({
     {{ $t('pgit.term.jobList') }}
   </h1>
   <h2 class="mt-2 text-xl font-medium text-gray-500 dark:text-gray-400">
-    <span class="text-base font-medium">RepositoryID:</span>
-    <span class="ml-2">{{ repoId }}</span>
+    <span v-if="repoIdentifier">{{ repoIdentifier }}</span>
+    <span v-else>
+      <span class="text-base font-medium">RepositoryID:</span>
+      <span class="ml-2">{{ repoId }}</span>
+    </span>
   </h2>
   <JobList
     class="mt-12"
     :repo-id="repoId"
+    @loaded-repository="setRepository"
   />
 </template>
